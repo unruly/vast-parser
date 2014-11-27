@@ -1,0 +1,14 @@
+# Build/release folders
+build
+dist
+
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
+node_modules
+
+# IDE support
+.idea
+vast-parser.iml
+
+# OSX file jazz
+.DS_Store

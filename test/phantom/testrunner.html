@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TESTRUNNER backbone-gcl</title>
+    <link rel="stylesheet" href="../../../node_modules/mocha/mocha.css" />
+</head>
+<body>
+<div id="mocha"></div>
+<script type="text/javascript" src="../../../node_modules/q/q.js"></script>
+<script type="text/javascript" src="../../../node_modules/mocha/mocha.js"></script>
+<script type="text/javascript" src="../../../node_modules/chai/chai.js"></script>
+<script type="text/javascript" src="../../../node_modules/sinon-chai/lib/sinon-chai.js"></script>
+<script type="text/javascript" src="../../../node_modules/chai-as-promised/lib/chai-as-promised.js"></script>
+
+<script type="text/javascript" src="http://sinonjs.org/releases/sinon-1.10.3.js"></script>
+
+
+
+
+<script type="text/javascript">
+    // MOCHA SETUP
+    mocha.setup('bdd');
+    expect = chai.expect;
+</script>
+<script data-main="test.config.js" src="../../../node_modules/requirejs/require.js"></script>
+</body>
+</html>

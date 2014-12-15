@@ -6,26 +6,6 @@ define(['util/window'], function(window) {
             CDATA: Node.CDATA_SECTION_NODE || 4
         };
 
-    function parseText(value) {
-        if (/^\s*$/.test(value)) {
-            return null;
-        }
-
-        if (/^(?:true|false)$/i.test(value)) {
-            return value.toLowerCase() === 'true';
-        }
-
-        if (isFinite(value)) {
-            return parseFloat(value);
-        }
-
-        if (isFinite(Date.parse(value))) {
-            return new Date(value);
-        }
-
-        return value;
-    }
-
     function isTextNodeOrCDATANode(node) {
         return node.nodeType === XML_NODE_TYPE.TEXT ||
                node.nodeType === XML_NODE_TYPE.CDATA;
@@ -65,7 +45,7 @@ define(['util/window'], function(window) {
             }
             
             if (text) {
-                this.nodeValue = parseText(text.trim());
+                this.nodeValue = text.trim();
             }
         }
         
@@ -76,7 +56,7 @@ define(['util/window'], function(window) {
             for (attributeIndex = 0; attributeIndex < node.attributes.length; attributeIndex++) {
                 attribute = node.attributes.item(attributeIndex);
                 
-                this['@' + attribute.name] = parseText(attribute.value.trim());
+                this['@' + attribute.name] = attribute.value.trim();
             }
         }
     }

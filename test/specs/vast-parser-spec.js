@@ -31,60 +31,6 @@ describe('VAST Parser', function(){
         });
     });
 
-    describe('uses correct types from XML', function() {
-        var xmlURL = '../xml/type-test.xml';
-
-        it('correctly extracts number from XML', function(done) {
-            loadTestXML(xmlURL, function(xmlDocument) {
-                var obj = vastParser.parse(xmlDocument);
-
-                expect(obj.root.number[0].nodeValue).to.equal(123);
-
-                done();
-            });
-        });
-
-        it('correctly extracts float number from XML', function(done) {
-            loadTestXML(xmlURL, function(xmlDocument) {
-                var obj = vastParser.parse(xmlDocument);
-
-                expect(obj.root.number[1].nodeValue).to.equal(456.789);
-
-                done();
-            });
-        });
-
-        it('correctly extracts text from XML', function(done) {
-            loadTestXML(xmlURL, function(xmlDocument) {
-                var obj = vastParser.parse(xmlDocument);
-
-                expect(obj.root.string[0].nodeValue).to.equal('I am text');
-
-                done();
-            });
-        });
-
-        it('correctly extracts text in CDATA from XML', function(done) {
-            loadTestXML(xmlURL, function(xmlDocument) {
-                var obj = vastParser.parse(xmlDocument);
-
-                expect(obj.root.string[1].nodeValue).to.equal('I am text & I am also text');
-
-                done();
-            });
-        });
-
-        it('correctly extracts text in date from XML', function(done) {
-            loadTestXML(xmlURL, function(xmlDocument) {
-                var obj = vastParser.parse(xmlDocument);
-
-                expect(obj.root.date.nodeValue).to.deep.equal(new Date('Wed, 09 Aug 1995 00:00:00 GMT'));
-
-                done();
-            });
-        });
-    });
-
     describe('parses VAST Inline', function() {
         var inlineURL = 'inlines/test_vast_inline_123.xml';
 

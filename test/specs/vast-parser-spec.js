@@ -59,7 +59,7 @@ describe('VAST Parser', function(){
             loadTestXML(inlineURL, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.InLine.Creatives.Creative.NonLinearAds.NonLinear.StaticResource.nodeValue).to.equal('http://example.com/thumb.jpg');
+                expect(obj.VAST.Ad.InLine.Creatives.Creative[0].NonLinearAds.NonLinear.StaticResource.nodeValue).to.equal('http://example.com/thumb.jpg');
 
                 done();
             });
@@ -69,7 +69,7 @@ describe('VAST Parser', function(){
             loadTestXML(inlineURL, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.InLine.Creatives.Creative.NonLinearAds.NonLinear.NonLinearClickThrough.nodeValue).to.equal('http://example.com/clickthrough.html');
+                expect(obj.VAST.Ad.InLine.Creatives.Creative[0].NonLinearAds.NonLinear.NonLinearClickThrough.nodeValue).to.equal('http://example.com/clickthrough.html');
 
                 done();
             });
@@ -79,7 +79,7 @@ describe('VAST Parser', function(){
             loadTestXML(inlineURL, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.InLine.Creatives.Creative.Linear).to.be.undefined;
+                expect(obj.VAST.Ad.InLine.Creatives.Creative[0].Linear).to.be.undefined;
 
                 done();
             });
@@ -109,6 +109,16 @@ describe('VAST Parser', function(){
 
                 expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks.ClickTracking[1]['@id']).to.equal('post_video_click');
                 expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks.ClickTracking[1].nodeValue).to.equal('http://example.com/inline/linear-post-video-click');
+
+                done();
+            });
+        });
+
+        it('creative should always return an array, even when there is only one creative', function(done) {
+            loadTestXML(inlineURL, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.InLine.Creatives.Creative.length).to.equal(1);
 
                 done();
             });
@@ -168,7 +178,7 @@ describe('VAST Parser', function(){
             loadTestXML(wrapperURL, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.Wrapper.Creatives.Creative.NonLinearAds.NonLinear.NonLinearClickTracking.nodeValue).to.equal('http://example.com/click');
+                expect(obj.VAST.Ad.Wrapper.Creatives.Creative[0].NonLinearAds.NonLinear.NonLinearClickTracking.nodeValue).to.equal('http://example.com/click');
 
                 done();
             });
@@ -196,8 +206,8 @@ describe('VAST Parser', function(){
             loadTestXML(wrapperWithLinearTracking, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.Wrapper.Creatives.Creative.Linear.TrackingEvents.Tracking['@event']).to.equal('start');
-                expect(obj.VAST.Ad.Wrapper.Creatives.Creative.Linear.TrackingEvents.Tracking.nodeValue).to.equal('http://example.com/start');
+                expect(obj.VAST.Ad.Wrapper.Creatives.Creative[0].Linear.TrackingEvents.Tracking['@event']).to.equal('start');
+                expect(obj.VAST.Ad.Wrapper.Creatives.Creative[0].Linear.TrackingEvents.Tracking.nodeValue).to.equal('http://example.com/start');
 
                 done();
             });
@@ -251,7 +261,7 @@ describe('VAST Parser', function(){
 
             loadTestXML(wrapperWithLinearTracking, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument),
-                    clickTracking = obj.VAST.Ad.Wrapper.Creatives.Creative.Linear.VideoClicks.ClickTracking;
+                    clickTracking = obj.VAST.Ad.Wrapper.Creatives.Creative[0].Linear.VideoClicks.ClickTracking;
 
                 expect(clickTracking.length).to.equal(2);
 
@@ -301,6 +311,16 @@ describe('VAST Parser', function(){
                 var obj = vastParser.parse(vastDocument);
 
                 expect(obj.VAST.Ad.Wrapper.Extensions.Extension.CustomElement.nodeValue).to.equal('customThing');
+
+                done();
+            });
+        });
+
+        it('creative should always return an array, even when there is only one creative', function(done) {
+            loadTestXML(wrapperURL, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.Wrapper.Creatives.Creative.length).to.equal(1);
 
                 done();
             });

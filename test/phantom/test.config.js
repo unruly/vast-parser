@@ -7,6 +7,7 @@ require.config({
 });
 
 require([
+    '../specs/xml-parser-spec.js',
     '../specs/vast-parser-spec.js'
 ], function() {
     if (window.mochaPhantomJS) {

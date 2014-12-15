@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<cornetto>
+    <greeting>Hello, world!</greeting>
+    <highlander id="minky" bar="baz"></highlander>
+    <groot>
+        <![CDATA[i am groot]]>
+    </groot>
+
+</cornetto>
+

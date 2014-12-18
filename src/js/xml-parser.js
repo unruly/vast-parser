@@ -16,6 +16,10 @@ define(['util/window'], function(window) {
     }
 
     function JSXMLNode(node) {
+        if ("undefined" === typeof node) {
+            return this;
+        }
+
         if (node.hasChildNodes()) {
             var text = '',
                 childNode, 

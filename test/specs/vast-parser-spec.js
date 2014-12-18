@@ -124,15 +124,41 @@ describe('VAST Parser', function(){
             });
         });
 
+        it('extension should be an array even if there is only one extensions', function(done) {
+            var inlineOneExtensionURL = 'inlines/test_vast_inline_with-long-video.xml';
+
+            loadTestXML(inlineOneExtensionURL, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.InLine.Extensions.Extension).to.be.a('array');
+
+                done();
+            });
+        });
+
+        it('extension should be an array if there are more than one extensions', function(done) {
+            var inlineWithMultipleExtensionsURL = 'inlines/test_vast_inline_with-multiple-extensions.xml';
+
+            loadTestXML(inlineWithMultipleExtensionsURL, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.InLine.Extensions.Extension).to.be.a('array');
+
+                done();
+            });
+        });
+
         describe('with Multiple Creatives', function() {
             var inlineURL = 'inlines/test_vast_inline_with-linear-ad.xml';
 
-            it('parses MediaFile from XML Document', function(done) {
+            it('parses MediaFile from XML Document and places in an array', function(done) {
                 loadTestXML(inlineURL, function(vastDocument) {
                     var obj = vastParser.parse(vastDocument);
                     var expectedUrl = 'http://example.com/video.mp4';
 
-                    expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.MediaFiles.MediaFile.nodeValue).to.equal(expectedUrl);
+                    expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.MediaFiles.MediaFile).to.be.a('array');
+                    expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.MediaFiles.MediaFile[0].nodeValue).to.equal(expectedUrl);
+
                     done();
                 });
             });
@@ -141,7 +167,51 @@ describe('VAST Parser', function(){
     });
 
     describe('parses VAST Wrapper', function() {
-        var wrapperURL = 'wrappers/vast_wrapper_'+targetingUUID+'.xml';
+        var wrapperURL = 'wrappers/vast_wrapper_'+targetingUUID+'.xml',
+            blankAdUrl = 'wrappers/vast_wrapper_with-blank-ad.xml';
+
+        it('should extract extension object', function(done) {
+            var vastWrapperWithExtensionWithPropertyXml = 'wrappers/vast_wrapper_with-extensions-with-property.xml';
+
+            loadTestXML(vastWrapperWithExtensionWithPropertyXml, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                var extensionProperty = obj.VAST.Ad.Wrapper.Extensions.Extension[0].Property;
+                expect(extensionProperty).to.exist;
+                expect(extensionProperty['@id']).to.equal('skid');
+                expect(extensionProperty.nodeValue).to.equal('123');
+
+                done();
+            });
+        });
+
+        it('impressions are empty array when none exist', function(done) {
+            var adWithNoImpression = 'wrappers/vast_wrapper_with-linear-no-impression.xml';
+
+            loadTestXML(adWithNoImpression, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.Wrapper.Impression).to.exist;
+                expect(obj.VAST.Ad.Wrapper.Impression).to.be.a('array');
+                expect(obj.VAST.Ad.Wrapper.Impression.length).to.equal(0);
+
+                done();
+            });
+        });
+
+        it('impressions are array when only one', function(done) {
+            var wrapperWithOneImpressionPixelUrl = 'wrappers/vast_wrapper_with-quartile-tracking.xml';
+
+            loadTestXML(wrapperWithOneImpressionPixelUrl, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.Wrapper.Impression).to.be.a('array');
+                expect(obj.VAST.Ad.Wrapper.Impression.length).to.equal(1);
+                expect(obj.VAST.Ad.Wrapper.Impression[0].nodeValue).to.equal('http://example.com/imp?d=[CACHEBUSTER]');
+
+                done();
+            });
+        });
 
         it('parses Impressions from XML document', function(done) {
             loadTestXML(wrapperURL, function(vastDocument) {
@@ -178,7 +248,7 @@ describe('VAST Parser', function(){
             loadTestXML(wrapperURL, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.Wrapper.Creatives.Creative[0].NonLinearAds.NonLinear.NonLinearClickTracking.nodeValue).to.equal('http://example.com/click');
+                expect(obj.VAST.Ad.Wrapper.Creatives.Creative[0].NonLinearAds.NonLinear.NonLinearClickTracking[0].nodeValue).to.equal('http://example.com/click');
 
                 done();
             });
@@ -293,12 +363,12 @@ describe('VAST Parser', function(){
             loadTestXML(wrapperWithCustomElement, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.Wrapper.Extensions.Extension.CustomArray.CustomElement.length).to.equal(2);
-                expect(obj.VAST.Ad.Wrapper.Extensions.Extension.CustomArray.CustomElement[0].nodeValue).to.equal('customData');
-                expect(obj.VAST.Ad.Wrapper.Extensions.Extension.CustomArray.CustomElement[0]['@customId']).to.equal('stuff');
+                expect(obj.VAST.Ad.Wrapper.Extensions.Extension[0].CustomArray.CustomElement.length).to.equal(2);
+                expect(obj.VAST.Ad.Wrapper.Extensions.Extension[0].CustomArray.CustomElement[0].nodeValue).to.equal('customData');
+                expect(obj.VAST.Ad.Wrapper.Extensions.Extension[0].CustomArray.CustomElement[0]['@customId']).to.equal('stuff');
 
-                expect(obj.VAST.Ad.Wrapper.Extensions.Extension.CustomArray.CustomElement[1].nodeValue).to.equal('moreCustomData');
-                expect(obj.VAST.Ad.Wrapper.Extensions.Extension.CustomArray.CustomElement[1]['@customId']).to.equal('things');
+                expect(obj.VAST.Ad.Wrapper.Extensions.Extension[0].CustomArray.CustomElement[1].nodeValue).to.equal('moreCustomData');
+                expect(obj.VAST.Ad.Wrapper.Extensions.Extension[0].CustomArray.CustomElement[1]['@customId']).to.equal('things');
 
                 done();
             });
@@ -310,7 +380,7 @@ describe('VAST Parser', function(){
             loadTestXML(wrapperWithCustomElement, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
-                expect(obj.VAST.Ad.Wrapper.Extensions.Extension.CustomElement.nodeValue).to.equal('customThing');
+                expect(obj.VAST.Ad.Wrapper.Extensions.Extension[0].CustomElement.nodeValue).to.equal('customThing');
 
                 done();
             });

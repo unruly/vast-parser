@@ -67,6 +67,13 @@ define(['util/window'], function(window) {
 
     return {
         parse : function(doc) {
+            var parser;
+
+            if (!!doc.xml) {
+                parser = new window.DOMParser();
+                doc = parser.parseFromString(doc.xml, "text/xml");
+            }
+
             return new JSXMLNode(doc);
         }
     };

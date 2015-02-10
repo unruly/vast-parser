@@ -7,22 +7,55 @@
 </head>
 <body>
 <div id="mocha"></div>
-<script type="text/javascript" src="../../../node_modules/q/q.js"></script>
-<script type="text/javascript" src="../../../node_modules/mocha/mocha.js"></script>
-<script type="text/javascript" src="../../../node_modules/chai/chai.js"></script>
-<script type="text/javascript" src="../../../node_modules/sinon-chai/lib/sinon-chai.js"></script>
-<script type="text/javascript" src="../../../node_modules/chai-as-promised/lib/chai-as-promised.js"></script>
+<script type="text/javascript" src="../../node_modules/q/q.js"></script>
+<script type="text/javascript" src="../../node_modules/mocha/mocha.js"></script>
+<script type="text/javascript" src="../../node_modules/chai/chai.js"></script>
+<script type="text/javascript" src="../../node_modules/sinon-chai/lib/sinon-chai.js"></script>
+<script type="text/javascript" src="../../node_modules/chai-as-promised/lib/chai-as-promised.js"></script>
+<script type="text/javascript" src="../../node_modules/sinon/pkg/sinon.js"></script>
 
-<script type="text/javascript" src="http://sinonjs.org/releases/sinon-1.10.3.js"></script>
+<!--<script type="text/javascript" src="http://sinonjs.org/releases/sinon-1.10.3.js"></script>-->
+
 
 
 
 
 <script type="text/javascript">
+    function useSinonAsPromised(sinon, Promise) {
+        var internals = {};
+
+        if (!Promise) {
+            throw new Error('A Promise constructor must be provided');
+        }
+
+        internals.resolves = function (Promise, value) {
+            return this.returns(new Promise(function (resolve) {
+                resolve(value);
+            }));
+        };
+
+        internals.rejects = function (Promise, err) {
+            if (typeof err === 'string') {
+                err = new Error(err);
+            }
+            return this.returns(new Promise(function (resolve, reject) {
+                reject(err);
+            }));
+        };
+
+        sinon.stub.resolves = function (value) {
+            return internals.resolves.call(this, Promise, value);
+        };
+        sinon.stub.rejects = function (err) {
+            return internals.rejects.call(this, Promise, err);
+        };
+    }
+
     // MOCHA SETUP
     mocha.setup('bdd');
     expect = chai.expect;
+    useSinonAsPromised(sinon, Q.Promise);
 </script>
-<script data-main="test.config.js" src="../../../node_modules/requirejs/require.js"></script>
+<script data-main="test.config.js" src="../../node_modules/requirejs/require.js"></script>
 </body>
 </html>

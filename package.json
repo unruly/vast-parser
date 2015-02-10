@@ -1,6 +1,6 @@
 {
   "name": "vast-parser",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Parses VAST files into plain javascript objects",
   "main": "index.js",
   "scripts": {
@@ -20,12 +20,18 @@
     "url": "https://github.com/devunrulymedia/vast-parser/issues"
   },
   "devDependencies": {
-    "squirejs": "~0.2.1",
-    "requirejs-text": "~2.0.12",
     "chai": "~1.10.0",
-    "requirejs": "~2.1.15",
+    "chai-as-promised": "^4.1.1",
     "mocha": "~2.0.1",
+    "requirejs": "~2.1.15",
+    "requirejs-text": "~2.0.12",
     "sinon": "~1.12.1",
-    "sinon-chai": "~2.6.0"
+    "sinon-as-promised": "^2.0.3",
+    "sinon-chai": "^2.6.0",
+    "squirejs": "~0.2.1"
+  },
+  "dependencies": {
+    "jquery": "^1.11.2",
+    "q": "^1.1.2"
   }
 }

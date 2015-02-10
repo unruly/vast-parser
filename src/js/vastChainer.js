@@ -1,4 +1,4 @@
-define(['jquery', 'vast-parser', 'q', 'vastErrorCodes', 'vastError'],
+define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
     function($, vastParser, Q, vastErrorCodes, VastError) {
 
         var AJAX_TIMEOUT = 10000,

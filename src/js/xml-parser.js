@@ -1,4 +1,4 @@
-define(['util/window'], function(window) {
+define(['./util/window'], function(window) {
     var Node = Node || {},
         XML_NODE_TYPE = {
             ELEMENT: Node.ELEMENT_NODE || 1,

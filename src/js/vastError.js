@@ -1,4 +1,4 @@
-define(['vastErrorCodes'], function (vastErrorCodes) {
+define(['./vastErrorCodes'], function (vastErrorCodes) {
 
     function getErrorMessageFromCode(code) {
         var errorName,

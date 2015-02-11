@@ -70,7 +70,7 @@ describe('VAST Chainer', function(){
                 "Ad": {
                     "Wrapper": {
                         "VASTAdTagURI": {
-                            "nodeValue": "inlineVASTUrl"
+                            "nodeValue": "http://example.com/inlineVASTUrl"
                         }
                     }
                 }
@@ -205,7 +205,7 @@ describe('VAST Chainer', function(){
             expect(jQuery.ajax.calledTwice).to.equal(true);
 
             var inlineRequest = jQuery.ajax.secondCall;
-            expect(inlineRequest.args[0].url).to.equal('inlineVASTUrl');
+            expect(inlineRequest.args[0].url).to.equal('http://example.com/inlineVASTUrl');
 
             jQuery.ajax.restore();
         });
@@ -247,7 +247,7 @@ describe('VAST Chainer', function(){
             expect(jQuery.ajax.firstCall.args[0].xhrFields.withCredentials).to.be.true;
 
             var inlineRequest = jQuery.ajax.secondCall;
-            expect(inlineRequest.args[0].url).to.equal('inlineVASTUrl');
+            expect(inlineRequest.args[0].url).to.equal('http://example.com/inlineVASTUrl');
             expect(inlineRequest.args[0].xhrFields).to.not.be.defined;
 
             jQuery.ajax.restore();
@@ -313,60 +313,99 @@ describe('VAST Chainer', function(){
         });
 
         describe('with extra params', function() {
+
             beforeEach(function() {
-                wrapperConfig.extraParams = 'unruly_cb=' + now;
-            });
-
-            it('should use question mark if the url does not have a query string', function() {
-                var urlWithNoQueryParams = "http://example.com/" + targetingUUID;
-                wrapperConfig.url = urlWithNoQueryParams;
-
-                mockServer.respondWith('GET', urlWithNoQueryParams + '?' + wrapperConfig.extraParams, [200, {}, mockInlineString]);
-
-                vastChainer.getVastChain(wrapperConfig);
-
-                mockServer.respond();
-
-                expect(vastParser.parse).to.have.been.called;
-                expect(mockDeferred.resolve).to.have.been.called;
-            });
-
-            it('requests inline VAST if parsed VAST tag is a wrapper - without query string', function(){
-                mockServer.respondWith('GET', firstWrapperUrl + '&' + wrapperConfig.extraParams, [200, {}, mockWrapperString]);
-
                 sinon.spy(jQuery, 'ajax');
+            });
 
-                vastChainer.getVastChain(wrapperConfig);
-
-                mockServer.respond();
-
-                expect(jQuery.ajax.calledTwice).to.equal(true);
-
-                var inlineRequest = jQuery.ajax.secondCall;
-                expect(inlineRequest.args[0].url).to.equal('inlineVASTUrl' + '?' + wrapperConfig.extraParams);
-
+            afterEach(function() {
                 jQuery.ajax.restore();
             });
 
-            it('requests inline VAST if parsed VAST tag is a wrapper - with existing query string', function(){
-                var expectedUrl = 'inlineVASTUrl?hey=there%20buddy';
-                mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue = expectedUrl;
+            describe('when non-matching domain', function() {
+                beforeEach(function() {
+                    wrapperConfig.extraParams = [{
+                        params: 'unruly_cb=' + now,
+                        domains: ['somewhereelse.com']
+                    }];
+                });
 
-                mockServer.respondWith('GET', firstWrapperUrl + '&' + wrapperConfig.extraParams, [200, {}, mockWrapperString]);
+                it('should not use extraParams when the domain does not match', function() {
+                    var wrapperRequest,
+                        inlineRequest;
 
-                sinon.spy(jQuery, 'ajax');
+                    mockServer.respondWith('GET', firstWrapperUrl, [200, {}, mockWrapperString]);
 
-                vastChainer.getVastChain(wrapperConfig);
+                    vastChainer.getVastChain(wrapperConfig);
 
-                mockServer.respond();
+                    mockServer.respond();
 
-                expect(jQuery.ajax.calledTwice).to.equal(true);
+                    expect(jQuery.ajax.calledTwice).to.equal(true);
 
-                var inlineRequest = jQuery.ajax.secondCall;
-                expect(inlineRequest.args[0].url).to.equal(expectedUrl + '&' + wrapperConfig.extraParams);
-
-                jQuery.ajax.restore();
+                    wrapperRequest = jQuery.ajax.firstCall;
+                    expect(wrapperRequest.args[0].url).to.equal(firstWrapperUrl);
+                    inlineRequest = jQuery.ajax.secondCall;
+                    expect(inlineRequest.args[0].url).to.equal(mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue);
+                });
             });
+
+            describe('when matching domain', function() {
+                beforeEach(function() {
+                    wrapperConfig.extraParams = [{
+                        params: 'unruly_cb=' + now,
+                        domains: ['example.com']
+                    }];
+                });
+
+                it('should use question mark if the url does not have a query string', function() {
+                    var urlWithNoQueryParams = "http://example.com/" + targetingUUID,
+                        inlineRequest;
+
+                    wrapperConfig.url = urlWithNoQueryParams;
+
+                    mockServer.respondWith('GET', urlWithNoQueryParams + '?' + wrapperConfig.extraParams[0].params, [200, {}, mockInlineString]);
+
+                    vastChainer.getVastChain(wrapperConfig);
+
+                    mockServer.respond();
+
+                    expect(vastParser.parse).to.have.been.called;
+                    expect(mockDeferred.resolve).to.have.been.called;
+                });
+
+                it('requests inline VAST if parsed VAST tag is a wrapper - without query string', function(){
+                    var inlineRequest;
+
+                    mockServer.respondWith('GET', firstWrapperUrl + '&' + wrapperConfig.extraParams[0].params, [200, {}, mockWrapperString]);
+
+                    vastChainer.getVastChain(wrapperConfig);
+
+                    mockServer.respond();
+
+                    expect(jQuery.ajax.calledTwice).to.equal(true);
+
+                    var inlineRequest = jQuery.ajax.secondCall;
+                    expect(inlineRequest.args[0].url).to.equal('http://example.com/inlineVASTUrl' + '?' + wrapperConfig.extraParams[0].params);
+                });
+
+                it('requests inline VAST if parsed VAST tag is a wrapper - with existing query string', function(){
+                    var expectedUrl = 'http://example.com/inlineVASTUrl?hey=there%20buddy',
+                        inlineRequest;
+                    mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue = expectedUrl;
+
+                    mockServer.respondWith('GET', firstWrapperUrl + '&' + wrapperConfig.extraParams[0].params, [200, {}, mockWrapperString]);
+
+                    vastChainer.getVastChain(wrapperConfig);
+
+                    mockServer.respond();
+
+                    expect(jQuery.ajax.calledTwice).to.equal(true);
+
+                    var inlineRequest = jQuery.ajax.secondCall;
+                    expect(inlineRequest.args[0].url).to.equal(expectedUrl + '&' + wrapperConfig.extraParams[0].params);
+                });
+            });
+
         });
     });
 

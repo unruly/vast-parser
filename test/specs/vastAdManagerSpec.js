@@ -78,5 +78,14 @@ describe('VAST Ad Manager', function() {
 
     });
 
+    describe('adds event handlers', function() {
+        it('to the vastChainer', function() {
+            var eventCallback = sinon.stub();
+
+            vastAdManager.addEventListener('someEvent', eventCallback);
+
+            expect(mockVastChainer.addEventListener).to.have.been.calledWith('someEvent', eventCallback);
+        });
+    });
 
 });

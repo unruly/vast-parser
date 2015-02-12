@@ -24,21 +24,14 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
                 deferred = Q.defer(),
                 currentRequestNumber = vastRequestCounter++,
                 requestStartEvent,
-                settings,
-                vastDomain = getDomainFromURL(url);
+                settings;
 
-            if (vastConfig.extraParams) {
-                vastConfig.extraParams.forEach(function(extraParams) {
-                    var paramsAreForThisVASTDomain = extraParams.domains.indexOf(vastDomain) !== -1;
-
-                    if (paramsAreForThisVASTDomain) {
-                        if (vastConfig.url.indexOf('?') !== -1) {
-                            url += '&' + extraParams.params;
-                        } else {
-                            url += '?' + extraParams.params;
-                        }
-                    }
-                });
+            if (vastConfig.extraParams && vastConfig.extraParams.length > 0) {
+                if (vastConfig.url.indexOf('?') !== -1) {
+                    url += '&' + vastConfig.extraParams;
+                } else {
+                    url += '?' + vastConfig.extraParams;
+                }
             }
 
             settings = {

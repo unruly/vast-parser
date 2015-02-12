@@ -55,7 +55,7 @@ describe('VAST Error', function() {
 
             deferred.reject(new VastError(100));
 
-            return expect(promise).to.be.rejectedWith(VastError, 100);
+            return expect(promise).to.be.rejectedWith(VastError, "100");
         });
     });
 

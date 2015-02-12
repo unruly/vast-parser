@@ -10,6 +10,7 @@ require.config({
 
 require([
     '../specs/xml-parser-spec.js',
+    '../specs/vastAdManagerSpec.js',
     '../specs/vast-parser-spec.js',
     '../specs/vastChainerSpec.js',
     '../specs/vastErrorSpec.js'

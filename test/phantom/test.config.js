@@ -4,7 +4,8 @@ require.config({
         Squire: '../../node_modules/squirejs/src/Squire',
         text: '../../node_modules/requirejs-text/text',
         jquery: '../../node_modules/jquery/dist/jquery',
-        q: '../../node_modules/q/q'
+        q: '../../node_modules/q/q',
+        validator: '../../node_modules/validator/validator'
     }
 });
 
@@ -13,7 +14,8 @@ require([
     '../specs/vastAdManagerSpec.js',
     '../specs/vast-parser-spec.js',
     '../specs/vastChainerSpec.js',
-    '../specs/vastErrorSpec.js'
+    '../specs/vastErrorSpec.js',
+    '../specs/model/vastResponseSpec.js'
 ], function() {
     if (window.mochaPhantomJS) {
         mochaPhantomJS.run();

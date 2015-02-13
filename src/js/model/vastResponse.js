@@ -1,4 +1,4 @@
-define(['validator'], function(validator) {
+define(['../../../node_modules/validator/validator'], function(validator) {
 
     function VastResponse(vastChain) {
         this.wrappers = vastChain.wrappers;

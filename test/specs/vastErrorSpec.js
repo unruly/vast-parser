@@ -59,4 +59,180 @@ describe('VAST Error', function() {
         });
     });
 
+    describe('getErrorURIs', function() {
+        it('should return an empty array if no vast tags passed in', function() {
+            var vastError = new VastError(300, 'My Error Message');
+            expect(vastError.getErrorURIs()).to.deep.equals([]);
+        });
+
+        it('should return any error pixels from a wrapper', function() {
+            var errorPixel = "http://example.com/error/ERRORCODE";
+            var vastTag = {
+                wrappers: [
+                    {
+                        "VAST": {
+                            "Ad": {
+                                "Wrapper": {
+                                    "Error": [{
+                                        "nodeValue": errorPixel
+                                    }]
+                                }
+                            }
+                        }
+                    }
+                    ]
+            };
+
+            var vastError = new VastError(101, 'Some message about errors', vastTag);
+
+            expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
+        });
+
+        it('should return any error pixels from the VAST element when on a wrapper', function() {
+            var errorPixel = "http://example.com/error/ERRORCODE";
+            var vastTag = {
+                wrappers: [
+                    {
+                        "VAST": {
+                            "Error": [{
+                                "nodeValue": errorPixel
+                            }],
+                            "Ad": {
+                                "Wrapper": {}
+                            }
+                        }
+                    }
+                    ]
+            };
+
+            var vastError = new VastError(101, 'Some message about errors', vastTag);
+
+            expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
+        });
+
+        it('should return any error pixel from the inline Ad element', function() {
+            var errorPixel = "http://example.com/error/ERRORCODE";
+            var vastTag = {
+                inline: {
+                    "VAST": {
+                        "Ad": {
+                            "InLine": {
+                                "Error": [{
+                                    "nodeValue": errorPixel
+                                }]
+                            }
+                        }
+                    }
+                }
+            };
+
+            var vastError = new VastError(101, 'Some message about errors', vastTag);
+
+            expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
+        });
+
+        it('should return any error pixels from the VAST element when on the inline file', function() {
+            var errorPixel = "http://example.com/error/ERRORCODE";
+            var vastTag = {
+                inline: {
+                    "VAST": {
+                        "Error": [{
+                            "nodeValue": errorPixel
+                        }],
+                        "Ad": {
+                            "InLine": {
+                            }
+                        }
+                    }
+                }
+            };
+
+            var vastError = new VastError(101, 'Some message about errors', vastTag);
+
+            expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
+        });
+
+        it('should return any error pixels from both wrappers and the inline', function() {
+            var errorPixel1 = "http://example.com/error/ERRORCODE",
+                errorPixel2 = "http://example.com/error/ERRORCODE2",
+                errorPixel3 = "http://example.com/error/ERRORCODE3";
+
+            var vastTag = {
+                wrappers: [
+                    {
+                        "VAST": {
+                            "Ad": {
+                                "Wrapper": {
+                                    "Error": [{
+                                        "nodeValue": errorPixel1
+                                    },
+                                    {
+                                        "nodeValue": errorPixel2
+                                    }]
+                                }
+                            }
+                        }
+                    }
+                ],
+                inline: {
+                    "VAST": {
+                        "Ad": {
+                            "InLine": {
+                                "Error": [{
+                                    "nodeValue": errorPixel3
+                                }]
+                            }
+                        }
+                    }
+                }
+            };
+
+            var vastError = new VastError(101, 'Some message about errors', vastTag);
+
+            expect(vastError.getErrorURIs()).to.contain(errorPixel1);
+            expect(vastError.getErrorURIs()).to.contain(errorPixel2);
+            expect(vastError.getErrorURIs()).to.contain(errorPixel3);
+            expect(vastError.getErrorURIs()).to.have.length(3);
+        });
+
+        it('should not include any error pixels that lack nodeValues', function() {
+            var vastTag = {
+                wrappers: [
+                    {
+                        "VAST": {
+                            "Ad": {
+                                "Wrapper": {
+                                    "Error": [{}]
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            var vastError = new VastError(101, 'Some message about errors', vastTag);
+
+            expect(vastError.getErrorURIs()).to.deep.equal([]);
+
+        });
+
+        it('should not include any error pixels when there are no errors', function() {
+            var vastTag = {
+                wrappers: [
+                    {
+                        "VAST": {
+                            "Ad": {
+                                "Wrapper": {}
+                            }
+                        }
+                    }
+                ]
+            };
+
+            var vastError = new VastError(101, 'Some message about errors', vastTag);
+
+            expect(vastError.getErrorURIs()).to.deep.equal([]);
+        });
+    });
+
 });

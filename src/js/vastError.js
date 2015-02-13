@@ -1,4 +1,4 @@
-define(['./vastErrorCodes'], function (vastErrorCodes) {
+define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, objectUtil) {
 
     function getErrorMessageFromCode(code) {
         var errorName,
@@ -17,27 +17,6 @@ define(['./vastErrorCodes'], function (vastErrorCodes) {
         return 'Unknown error code';
     }
 
-    function getArrayFromObjectPath(object, path) {
-        var pathSections = path.split('.'),
-            head,
-            tail;
-
-        if (pathSections.length === 1) {
-            return object[path] || [];
-        }
-
-        head = pathSections[0];
-
-        var next = object[head];
-        if (! next) {
-            return [];
-        }
-
-        tail = pathSections.slice(1).join('.');
-
-        return getArrayFromObjectPath(next, tail);
-    }
-
     function extractErrorURIs(vastChain) {
         var errorURIs = [];
 
@@ -50,13 +29,13 @@ define(['./vastErrorCodes'], function (vastErrorCodes) {
         if (vastChain) {
             if (vastChain.wrappers) {
                 vastChain.wrappers.forEach(function(wrapper) {
-                    getArrayFromObjectPath(wrapper, 'VAST.Error').forEach(addErrorUri);
-                    getArrayFromObjectPath(wrapper, 'VAST.Ad.Wrapper.Error').forEach(addErrorUri);
+                    objectUtil.getArrayFromObjectPath(wrapper, 'VAST.Error').forEach(addErrorUri);
+                    objectUtil.getArrayFromObjectPath(wrapper, 'VAST.Ad.Wrapper.Error').forEach(addErrorUri);
                 });
             }
             if(vastChain.inline) {
-                getArrayFromObjectPath(vastChain.inline, 'VAST.Error').forEach(addErrorUri);
-                getArrayFromObjectPath(vastChain.inline, 'VAST.Ad.InLine.Error').forEach(addErrorUri);
+                objectUtil.getArrayFromObjectPath(vastChain.inline, 'VAST.Error').forEach(addErrorUri);
+                objectUtil.getArrayFromObjectPath(vastChain.inline, 'VAST.Ad.InLine.Error').forEach(addErrorUri);
             }
         }
 

@@ -29,6 +29,10 @@ define(['../../../node_modules/validator/validator'], function(validator) {
         return impressions.filter(isValidURL);
     };
 
+    VastResponse.prototype.getAdTitle = function() {
+        return this.inline.VAST.Ad.InLine.AdTitle.nodeValue;
+    };
+
     return VastResponse;
 
 });

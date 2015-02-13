@@ -350,4 +350,12 @@ describe('VAST Response', function() {
         });
     });
 
+    describe('getTitle', function() {
+        it('should get the title from the Vast Response', function() {
+            var vastResponse = new VastResponse(mockVastTags);
+
+            expect(vastResponse.getAdTitle()).to.be.equal('Example Title');
+        });
+    });
+
 });

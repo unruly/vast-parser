@@ -6,7 +6,10 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
             dispatcher = $({});
 
         function getVastChain(vastConfig) {
-            return getVast(vastConfig);
+            return getVast(vastConfig, {
+                inline: undefined,
+                wrappers: []
+            });
         }
 
         function addEventListener(eventName, handler) {
@@ -19,7 +22,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
             return a.hostname;
         }
 
-        function getVast(vastConfig) {
+        function getVast(vastConfig, vastTags) {
             var url = vastConfig.url,
                 deferred = Q.defer(),
                 currentRequestNumber = vastRequestCounter++,
@@ -52,7 +55,6 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
                 var vastTag,
                     childTagUri,
                     nextRequestConfig,
-                    vastTags,
                     requestEndEvent;
 
                 requestEndEvent = $.Event('requestEnd', {
@@ -79,16 +81,13 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
                 }
 
                 if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
-                    vastTags = {
-                        inline: vastTag
-                    };
+                    vastTags.inline = vastTag;
+
                     deferred.resolve(vastTags);
                     return;
                 }
 
-                vastTags = {
-                    wrappers: [vastTag]
-                };
+                vastTags.wrappers.push(vastTag);
 
                 childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
                 nextRequestConfig = {
@@ -97,16 +96,9 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
                     corsCookieDomains: vastConfig.corsCookieDomains
                 };
 
-                getVast(nextRequestConfig)
-                    .then(function(childTag) {
-
-                        vastTags.inline = childTag.inline;
-
-                        if (childTag.wrappers) {
-                            vastTags.wrappers = vastTags.wrappers.concat(childTag.wrappers);
-                        }
-
-                        deferred.resolve(vastTags);
+                getVast(nextRequestConfig, vastTags)
+                    .then(function(finalVastTags) {
+                        deferred.resolve(finalVastTags);
                     })
                     .fail(function(errorObj) {
                         deferred.reject(errorObj);

@@ -4,12 +4,14 @@ describe('VAST Chainer', function(){
         jQuery,
         mockServer,
         mockWrapper,
+        mockTwoWrapperWrapper,
         mockNoAds,
         mockInline,
         mockQ,
         mockDeferred,
         mockPromise,
         targetingUUID = 'ABCDEF-1234',
+        mockTwoWrapperString = '<TWO_WRAPPER_TEST></TWO_WRAPPER_TEST>',
         mockWrapperString = '<WRAPPER></WRAPPER>',
         mockInlineString = '<INLINE></INLINE>',
         mockNoAdsString = '<NOADS></NOADS>',
@@ -56,6 +58,8 @@ describe('VAST Chainer', function(){
                         return mockNoAds;
                     } else if(document.childNodes[0].nodeName === 'INLINE') {
                         return mockInline;
+                    } else if(document.childNodes[0].nodeName === 'TWO_WRAPPER_TEST') {
+                        return mockTwoWrapperWrapper;
                     } else {
                         return mockWrapper;
                     }
@@ -71,6 +75,18 @@ describe('VAST Chainer', function(){
                     "Wrapper": {
                         "VASTAdTagURI": {
                             "nodeValue": "inlineVASTUrl"
+                        }
+                    }
+                }
+            }
+        };
+
+        mockTwoWrapperWrapper = {
+            "VAST": {
+                "Ad": {
+                    "Wrapper": {
+                        "VASTAdTagURI": {
+                            "nodeValue": firstWrapperUrl
                         }
                     }
                 }
@@ -107,7 +123,7 @@ describe('VAST Chainer', function(){
         mockClock.restore();
     });
 
-    function vastError(error, message) {
+    function vastError(error, message, vastChain) {
         return sinon.match(function (value) {
             return value instanceof VastError &&
                 value.code === error.code &&
@@ -309,7 +325,38 @@ describe('VAST Chainer', function(){
             expect(mockDeferred.resolve).to.have.been.calledTwice;
             expect(finalTags.inline).to.equal(mockInline);
             expect(finalTags.wrappers[0]).to.equal(mockWrapper);
+        });
 
+        it('extracts 2 wrappers and an inline', function() {
+            var twoWrapperRequestUrl = 'http://example.com/three_chain_vast.xml';
+
+            wrapperConfig.url = twoWrapperRequestUrl;
+
+            mockServer.respondWith('GET', twoWrapperRequestUrl, [200, {}, mockTwoWrapperString]);
+            mockServer.respondWith('GET', firstWrapperUrl, [200, {}, mockWrapperString]);
+            mockServer.respondWith('GET', mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue, [200, {}, mockInlineString]);
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+            mockServer.respond();
+            mockServer.respond();
+
+            var inlineTags = mockDeferred.resolve.firstCall.args[0];
+
+            var wrapperThen = mockPromise.then.firstCall.args[0];
+            wrapperThen(inlineTags);
+
+            var secondWrapperTags = mockDeferred.resolve.secondCall.args[0];
+            var twoWrapperThen = mockPromise.then.secondCall.args[0];
+            twoWrapperThen(secondWrapperTags);
+
+            var finalTags = mockDeferred.resolve.thirdCall.args[0];
+
+            expect(mockDeferred.resolve).to.have.been.calledThrice;
+            expect(finalTags.inline).to.equal(mockInline);
+            expect(finalTags.wrappers[0]).to.equal(mockTwoWrapperWrapper);
+            expect(finalTags.wrappers[1]).to.equal(mockWrapper);
         });
 
         describe('with extra params', function() {

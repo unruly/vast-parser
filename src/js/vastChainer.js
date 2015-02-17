@@ -97,12 +97,8 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
                 };
 
                 getVast(nextRequestConfig, vastTags)
-                    .then(function(finalVastTags) {
-                        deferred.resolve(finalVastTags);
-                    })
-                    .fail(function(errorObj) {
-                        deferred.reject(errorObj);
-                    })
+                    .then(deferred.resolve)
+                    .fail(deferred.reject)
                     .done();
             };
 

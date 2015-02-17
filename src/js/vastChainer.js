@@ -63,19 +63,19 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                 dispatcher.trigger(requestEndEvent);
 
                 if (!data) {
-                    deferred.reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, undefined, vastResponse));
+                    deferred.reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse));
                     return;
                 }
 
                 vastTag = vastParser.parse(data);
 
                 if (vastTag.VAST.Error) {
-                    deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, 'VAST request returned no ads and contains error tag', vastResponse));
+                    deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'));
                     return;
                 }
 
                 if (!vastTag.VAST.Ad) {
-                    deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, 'VAST request returned no ads', vastResponse));
+                    deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads'));
                     return;
                 }
 
@@ -123,7 +123,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                     }
                 });
                 dispatcher.trigger(requestEndEvent);
-                deferred.reject(new VastError(code, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ')', vastResponse));
+                deferred.reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ')'));
             };
 
             requestStartEvent = $.Event('requestStart', {

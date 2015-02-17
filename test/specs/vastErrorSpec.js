@@ -35,7 +35,7 @@ describe('VAST Error', function() {
         });
 
         it('should be our own error message when supplied to VastError', function () {
-            var vastError = new VastError(300, 'My Error Message');
+            var vastError = new VastError(300, new VastResponse(), 'My Error Message');
             expect(vastError.message).to.contain("My Error Message");
             expect(vastError.message).to.contain("300");
         });
@@ -44,7 +44,7 @@ describe('VAST Error', function() {
     describe('vastResponse', function() {
         it('should hold on to the VastResponse object passed in', function() {
             var vastResponse = new VastResponse(),
-                vastError = new VastError(100, 'My error message', vastResponse);
+                vastError = new VastError(100, vastResponse, 'My error message');
 
             expect(vastError.vastResponse).to.equal(vastResponse);
         });
@@ -78,7 +78,7 @@ describe('VAST Error', function() {
 
         it('should return any error pixels from a wrapper', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = new VastResponse({
+            var vastResponse = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -94,14 +94,14 @@ describe('VAST Error', function() {
                     ]
             });
 
-            var vastError = new VastError(101, 'Some message about errors', vastTag);
+            var vastError = new VastError(101, vastResponse, 'Some message about errors');
 
             expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
         });
 
         it('should return any error pixels from the VAST element when on a wrapper', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = new VastResponse({
+            var vastResponse = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -116,14 +116,14 @@ describe('VAST Error', function() {
                     ]
             });
 
-            var vastError = new VastError(101, 'Some message about errors', vastTag);
+            var vastError = new VastError(101, vastResponse, 'Some message about errors');
 
             expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
         });
 
         it('should return any error pixel from the inline Ad element', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = new VastResponse({
+            var vastResponse = new VastResponse({
                 inline: {
                     "VAST": {
                         "Ad": {
@@ -137,14 +137,14 @@ describe('VAST Error', function() {
                 }
             });
 
-            var vastError = new VastError(101, 'Some message about errors', vastTag);
+            var vastError = new VastError(101, vastResponse, 'Some message about errors');
 
             expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
         });
 
         it('should return any error pixels from the VAST element when on the inline file', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = new VastResponse({
+            var vastResponse = new VastResponse({
                 inline: {
                     "VAST": {
                         "Error": [{
@@ -158,7 +158,7 @@ describe('VAST Error', function() {
                 }
             });
 
-            var vastError = new VastError(101, 'Some message about errors', vastTag);
+            var vastError = new VastError(101, vastResponse, 'Some message about errors');
 
             expect(vastError.getErrorURIs()).to.deep.equal([errorPixel]);
         });
@@ -168,7 +168,7 @@ describe('VAST Error', function() {
                 errorPixel2 = "http://example.com/error/ERRORCODE2",
                 errorPixel3 = "http://example.com/error/ERRORCODE3";
 
-            var vastTag = new VastResponse({
+            var vastResponse = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -198,7 +198,7 @@ describe('VAST Error', function() {
                 }
             });
 
-            var vastError = new VastError(101, 'Some message about errors', vastTag);
+            var vastError = new VastError(101, vastResponse, 'Some message about errors');
 
             expect(vastError.getErrorURIs()).to.contain(errorPixel1);
             expect(vastError.getErrorURIs()).to.contain(errorPixel2);
@@ -207,7 +207,7 @@ describe('VAST Error', function() {
         });
 
         it('should not include any error pixels that lack nodeValues', function() {
-            var vastTag = new VastResponse({
+            var vastResponse = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -221,14 +221,14 @@ describe('VAST Error', function() {
                 ]
             });
 
-            var vastError = new VastError(101, 'Some message about errors', vastTag);
+            var vastError = new VastError(101, vastResponse, 'Some message about errors');
 
             expect(vastError.getErrorURIs()).to.deep.equal([]);
 
         });
 
         it('should not include any error pixels when there are no errors', function() {
-            var vastTag = new VastResponse({
+            var vastResponse = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -240,7 +240,7 @@ describe('VAST Error', function() {
                 ]
             });
 
-            var vastError = new VastError(101, 'Some message about errors', vastTag);
+            var vastError = new VastError(101, vastResponse, 'Some message about errors');
 
             expect(vastError.getErrorURIs()).to.deep.equal([]);
         });

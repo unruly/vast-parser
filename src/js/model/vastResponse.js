@@ -2,8 +2,13 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil'], func
     var pluckNodeValue = objectUtil.pluckNodeValue;
 
     function VastResponse(vastChain) {
-        this.wrappers = vastChain ? vastChain.wrappers : [];
-        this.inline = vastChain ? vastChain.inline : undefined;
+        this.wrappers = [];
+        this.inline = undefined;
+
+        if (vastChain) {
+            this.wrappers = vastChain.wrappers;
+            this.inline = vastChain.inline;
+        }
     }
 
     function isValidURL(url) {

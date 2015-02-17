@@ -1,12 +1,9 @@
-define(['../../../node_modules/validator/validator'], function(validator) {
+define(['../../../node_modules/validator/validator', '../util/objectUtil'], function(validator, objectUtil) {
+    var pluckNodeValue = objectUtil.pluckNodeValue;
 
     function VastResponse(vastChain) {
         this.wrappers = vastChain.wrappers;
         this.inline = vastChain.inline;
-    }
-
-    function pluckValue(element) {
-        return element.nodeValue;
     }
 
     function isValidURL(url) {
@@ -17,13 +14,13 @@ define(['../../../node_modules/validator/validator'], function(validator) {
         var impressions = [];
 
         if(this.inline.VAST.Ad.InLine.Impression) {
-            impressions = this.inline.VAST.Ad.InLine.Impression.map(pluckValue);
+            impressions = this.inline.VAST.Ad.InLine.Impression.map(pluckNodeValue);
         }
 
         this.wrappers.filter(function(wrapper){
             return !!wrapper.VAST.Ad.Wrapper.Impression;
         }).forEach(function(wrapper) {
-           impressions = impressions.concat(wrapper.VAST.Ad.Wrapper.Impression.map(pluckValue));
+           impressions = impressions.concat(wrapper.VAST.Ad.Wrapper.Impression.map(pluckNodeValue));
         });
 
         return impressions.filter(isValidURL);

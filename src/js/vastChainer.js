@@ -1,15 +1,14 @@
-define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
-    function($, vastParser, Q, vastErrorCodes, VastError) {
+define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './model/vastResponse'],
+    function($, vastParser, Q, vastErrorCodes, VastError, VastResponse) {
 
         var AJAX_TIMEOUT = 10000,
             vastRequestCounter = 0,
             dispatcher = $({});
 
         function getVastChain(vastConfig) {
-            return getVast(vastConfig, {
-                inline: undefined,
-                wrappers: []
-            });
+            var vastResponse = new VastResponse();
+
+            return getVast(vastResponse, vastConfig);
         }
 
         function addEventListener(eventName, handler) {
@@ -22,7 +21,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
             return a.hostname;
         }
 
-        function getVast(vastConfig, vastTags) {
+        function getVast(vastResponse, vastConfig) {
             var url = vastConfig.url,
                 deferred = Q.defer(),
                 currentRequestNumber = vastRequestCounter++,
@@ -81,13 +80,13 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
                 }
 
                 if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
-                    vastTags.inline = vastTag;
+                    vastResponse.inline = vastTag;
 
-                    deferred.resolve(vastTags);
+                    deferred.resolve(vastResponse);
                     return;
                 }
 
-                vastTags.wrappers.push(vastTag);
+                vastResponse.wrappers.push(vastTag);
 
                 childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
                 nextRequestConfig = {
@@ -96,7 +95,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError'],
                     corsCookieDomains: vastConfig.corsCookieDomains
                 };
 
-                getVast(nextRequestConfig, vastTags)
+                getVast(vastResponse, nextRequestConfig)
                     .then(deferred.resolve)
                     .fail(deferred.reject)
                     .done();

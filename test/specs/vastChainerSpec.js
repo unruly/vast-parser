@@ -20,7 +20,8 @@ describe('VAST Chainer', function(){
         wrapperConfig,
         mockClock,
         vastErrorCodes,
-        VastError;
+        VastError,
+        VastResponse;
 
     beforeEach(function(done) {
         requirejs(['Squire'], function(Squire) {
@@ -41,7 +42,7 @@ describe('VAST Chainer', function(){
                 defer: sinon.stub().returns(mockDeferred)
             };
 
-            injector.store(['jquery', 'vast-parser', 'vastErrorCodes', 'vastError']);
+            injector.store(['jquery', 'vast-parser', 'vastErrorCodes', 'vastError', 'model/vastResponse']);
             injector.mock('q', mockQ);
             injector.require(['vastChainer', 'mocks'], function(module, mocks) {
                 vastChainer = module;
@@ -52,6 +53,7 @@ describe('VAST Chainer', function(){
                 vastParser = mocks.store['vast-parser'];
                 vastErrorCodes = mocks.store['vastErrorCodes'];
                 VastError = mocks.store['vastError'];
+                VastResponse = mocks.store['model/vastResponse'];
 
                 sinon.stub(vastParser, 'parse', function(document) {
                     if(document.childNodes[0].nodeName === 'NOADS') {
@@ -323,6 +325,7 @@ describe('VAST Chainer', function(){
             var finalTags = mockDeferred.resolve.secondCall.args[0];
 
             expect(mockDeferred.resolve).to.have.been.calledTwice;
+            expect(finalTags).to.be.an.instanceof(VastResponse);
             expect(finalTags.inline).to.equal(mockInline);
             expect(finalTags.wrappers[0]).to.equal(mockWrapper);
         });
@@ -354,6 +357,7 @@ describe('VAST Chainer', function(){
             var finalTags = mockDeferred.resolve.thirdCall.args[0];
 
             expect(mockDeferred.resolve).to.have.been.calledThrice;
+            expect(finalTags).to.be.an.instanceof(VastResponse);
             expect(finalTags.inline).to.equal(mockInline);
             expect(finalTags.wrappers[0]).to.equal(mockTwoWrapperWrapper);
             expect(finalTags.wrappers[1]).to.equal(mockWrapper);

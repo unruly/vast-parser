@@ -3,10 +3,7 @@ describe('VAST Ad Manager', function() {
         mockVastChainer,
         VastResponse,
         VastError,
-        successResponse = {
-            wrappers: [{some:"ignoredForNow"}],
-            inline: {complicated: "stuff"}
-        },
+        successResponse,
         Q;
 
 
@@ -20,14 +17,19 @@ describe('VAST Ad Manager', function() {
             };
 
             injector
-                .store(['q', 'model/vastResponse', 'vastError'])
                 .mock('vastChainer', mockVastChainer)
-                .require(['vastAdManager', 'mocks'], function(module, mocks) {
+                .require(['vastAdManager', 'mocks', 'model/vastResponse', 'vastError', 'q'], function(module, mocks, _VastResponse, _VastError, _Q) {
                     vastAdManager = module;
                     mockVastChainer.getVastChain.resolves(successResponse);
-                    Q = mocks.store['q'];
-                    VastError = mocks.store['vastError'];
-                    VastResponse = mocks.store['model/vastResponse'];
+                    VastError = _VastError;
+                    VastResponse = _VastResponse;
+                    Q = _Q;
+
+                    successResponse = new VastResponse({
+                        wrappers: [{some:"ignoredForNow"}],
+                        inline: {complicated: "stuff"}
+                    });
+
                     done();
             });
         });

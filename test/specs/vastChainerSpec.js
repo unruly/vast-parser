@@ -125,13 +125,20 @@ describe('VAST Chainer', function(){
         mockClock.restore();
     });
 
-    function vastError(error, message, vastChain) {
+    function vastError(error, message) {
         return sinon.match(function (value) {
             return value instanceof VastError &&
                 value.code === error.code &&
                 value.message.indexOf(message || error.message) >= 0;
-        });
+        }, 'instance of VastError, matching code property and a substring of the message property');
     }
+
+    function hasVastResponseProperty() {
+        return sinon.match(function (value) {
+            return value.vastResponse instanceof VastResponse;
+        }, 'instance of VastResponse');
+    }
+
 
     describe('getVastChain', function(){
 
@@ -176,6 +183,7 @@ describe('VAST Chainer', function(){
             mockServer.respond();
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
         it('rejects promise when VAST tag is empty', function() {

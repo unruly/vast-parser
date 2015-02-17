@@ -24,20 +24,20 @@ define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, obje
         return 'Unknown error code';
     }
 
-    function extractErrorURIs(vastChain) {
+    function extractErrorURIs(vastResponse) {
         var errorURIs = [],
             wrapperErrorArrays;
 
-        if (vastChain) {
-            wrapperErrorArrays = read(vastChain, 'wrappers').map(function getWrapperErrors(wrapper) {
+        if (vastResponse) {
+            wrapperErrorArrays = read(vastResponse, 'wrappers').map(function getWrapperErrors(wrapper) {
                 return []
                     .concat(read(wrapper, 'VAST.Error'))
                     .concat(read(wrapper, 'VAST.Ad.Wrapper.Error'));
             });
 
             errorURIs = flatten(wrapperErrorArrays)
-                .concat(read(vastChain, 'inline.VAST.Error'))
-                .concat(read(vastChain, 'inline.VAST.Ad.InLine.Error'))
+                .concat(read(vastResponse, 'inline.VAST.Error'))
+                .concat(read(vastResponse, 'inline.VAST.Ad.InLine.Error'))
                 .map(pluckNodeValue)
                 .filter(isDefined);
         }
@@ -45,12 +45,13 @@ define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, obje
         return errorURIs;
     }
 
-    function VastError(code, message, vastChain) {
+    function VastError(code, message, vastResponse) {
         this.name = 'VastError';
         this.code = code;
         this.message = "VAST Error: [" + code + "] - " + (message || getErrorMessageFromCode(code));
         this.stack = (new Error()).stack;
-        this.errorURIs = extractErrorURIs(vastChain);
+        this.errorURIs = extractErrorURIs(vastResponse);
+        this.vastResponse = vastResponse;
     }
 
     VastError.prototype = Object.create(Error.prototype);

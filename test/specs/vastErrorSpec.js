@@ -1,14 +1,16 @@
 describe('VAST Error', function() {
     var Q,
-        VastError;
+        VastError,
+        VastResponse;
 
     beforeEach(function(done) {
         requirejs(['Squire'], function(Squire) {
             var injector = new Squire();
 
-            injector.require(['q', 'vastError'], function(q, vastErrorClass) {
+            injector.require(['q', 'vastError', 'model/vastResponse'], function(q, vastErrorClass, VastResponseClass) {
                 Q = q;
                 VastError = vastErrorClass;
+                VastResponse = VastResponseClass;
 
                 done();
             });
@@ -36,6 +38,15 @@ describe('VAST Error', function() {
             var vastError = new VastError(300, 'My Error Message');
             expect(vastError.message).to.contain("My Error Message");
             expect(vastError.message).to.contain("300");
+        });
+    });
+
+    describe('vastResponse', function() {
+        it('should hold on to the VastResponse object passed in', function() {
+            var vastResponse = new VastResponse(),
+                vastError = new VastError(100, 'My error message', vastResponse);
+
+            expect(vastError.vastResponse).to.equal(vastResponse);
         });
     });
 
@@ -67,7 +78,7 @@ describe('VAST Error', function() {
 
         it('should return any error pixels from a wrapper', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = {
+            var vastTag = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -81,7 +92,7 @@ describe('VAST Error', function() {
                         }
                     }
                     ]
-            };
+            });
 
             var vastError = new VastError(101, 'Some message about errors', vastTag);
 
@@ -90,7 +101,7 @@ describe('VAST Error', function() {
 
         it('should return any error pixels from the VAST element when on a wrapper', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = {
+            var vastTag = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -103,7 +114,7 @@ describe('VAST Error', function() {
                         }
                     }
                     ]
-            };
+            });
 
             var vastError = new VastError(101, 'Some message about errors', vastTag);
 
@@ -112,7 +123,7 @@ describe('VAST Error', function() {
 
         it('should return any error pixel from the inline Ad element', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = {
+            var vastTag = new VastResponse({
                 inline: {
                     "VAST": {
                         "Ad": {
@@ -124,7 +135,7 @@ describe('VAST Error', function() {
                         }
                     }
                 }
-            };
+            });
 
             var vastError = new VastError(101, 'Some message about errors', vastTag);
 
@@ -133,7 +144,7 @@ describe('VAST Error', function() {
 
         it('should return any error pixels from the VAST element when on the inline file', function() {
             var errorPixel = "http://example.com/error/ERRORCODE";
-            var vastTag = {
+            var vastTag = new VastResponse({
                 inline: {
                     "VAST": {
                         "Error": [{
@@ -145,7 +156,7 @@ describe('VAST Error', function() {
                         }
                     }
                 }
-            };
+            });
 
             var vastError = new VastError(101, 'Some message about errors', vastTag);
 
@@ -157,7 +168,7 @@ describe('VAST Error', function() {
                 errorPixel2 = "http://example.com/error/ERRORCODE2",
                 errorPixel3 = "http://example.com/error/ERRORCODE3";
 
-            var vastTag = {
+            var vastTag = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -185,7 +196,7 @@ describe('VAST Error', function() {
                         }
                     }
                 }
-            };
+            });
 
             var vastError = new VastError(101, 'Some message about errors', vastTag);
 
@@ -196,7 +207,7 @@ describe('VAST Error', function() {
         });
 
         it('should not include any error pixels that lack nodeValues', function() {
-            var vastTag = {
+            var vastTag = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -208,7 +219,7 @@ describe('VAST Error', function() {
                         }
                     }
                 ]
-            };
+            });
 
             var vastError = new VastError(101, 'Some message about errors', vastTag);
 
@@ -217,7 +228,7 @@ describe('VAST Error', function() {
         });
 
         it('should not include any error pixels when there are no errors', function() {
-            var vastTag = {
+            var vastTag = new VastResponse({
                 wrappers: [
                     {
                         "VAST": {
@@ -227,7 +238,7 @@ describe('VAST Error', function() {
                         }
                     }
                 ]
-            };
+            });
 
             var vastError = new VastError(101, 'Some message about errors', vastTag);
 

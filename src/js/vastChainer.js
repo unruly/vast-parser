@@ -63,7 +63,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                 dispatcher.trigger(requestEndEvent);
 
                 if (!data) {
-                    deferred.reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code));
+                    deferred.reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, undefined, vastResponse));
                     return;
                 }
 

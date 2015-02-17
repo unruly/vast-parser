@@ -1,4 +1,11 @@
 define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, objectUtil) {
+    var read = objectUtil.getArrayFromObjectPath,
+        pluckNodeValue = objectUtil.pluckNodeValue,
+        isDefined = objectUtil.isDefined;
+
+    function flatten(array) {
+        return [].concat.apply(this, array);
+    }
 
     function getErrorMessageFromCode(code) {
         var errorName,
@@ -18,25 +25,21 @@ define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, obje
     }
 
     function extractErrorURIs(vastChain) {
-        var errorURIs = [];
+        var errorURIs = [],
+            wrapperErrorArrays;
 
-        var addErrorUri = function(error) {
-            if (!error.nodeValue){
-                return;
-            }
-            errorURIs.push(error.nodeValue);
-        };
         if (vastChain) {
-            if (vastChain.wrappers) {
-                vastChain.wrappers.forEach(function(wrapper) {
-                    objectUtil.getArrayFromObjectPath(wrapper, 'VAST.Error').forEach(addErrorUri);
-                    objectUtil.getArrayFromObjectPath(wrapper, 'VAST.Ad.Wrapper.Error').forEach(addErrorUri);
-                });
-            }
-            if(vastChain.inline) {
-                objectUtil.getArrayFromObjectPath(vastChain.inline, 'VAST.Error').forEach(addErrorUri);
-                objectUtil.getArrayFromObjectPath(vastChain.inline, 'VAST.Ad.InLine.Error').forEach(addErrorUri);
-            }
+            wrapperErrorArrays = read(vastChain, 'wrappers').map(function getWrapperErrors(wrapper) {
+                return []
+                    .concat(read(wrapper, 'VAST.Error'))
+                    .concat(read(wrapper, 'VAST.Ad.Wrapper.Error'));
+            });
+
+            errorURIs = flatten(wrapperErrorArrays)
+                .concat(read(vastChain, 'inline.VAST.Error'))
+                .concat(read(vastChain, 'inline.VAST.Ad.InLine.Error'))
+                .map(pluckNodeValue)
+                .filter(isDefined);
         }
 
         return errorURIs;

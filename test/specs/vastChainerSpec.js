@@ -152,6 +152,7 @@ describe('VAST Chainer', function(){
             mockClock.tick(1);
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, "VAST Request Failed (timeout 0)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
         it('rejects promise when VAST tag request fails', function(){
@@ -162,6 +163,7 @@ describe('VAST Chainer', function(){
             mockServer.respond();
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, "VAST Request Failed (error 404)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
         it('rejects promise when VAST tag is not valid XML', function(){
@@ -172,6 +174,7 @@ describe('VAST Chainer', function(){
             mockServer.respond();
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, "VAST Request Failed (parsererror 200)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
         it('rejects promise when response is empty', function(){
@@ -194,6 +197,7 @@ describe('VAST Chainer', function(){
             mockServer.respond();
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.NO_ADS, 'VAST request returned no ads'));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
         it('rejects promise when VAST response has Error tag', function(){
@@ -206,6 +210,7 @@ describe('VAST Chainer', function(){
             mockServer.respond();
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.NO_ADS, 'VAST request returned no ads and contains error tag'));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
         it('parses response when VAST tag request is successful', function(){
@@ -313,6 +318,7 @@ describe('VAST Chainer', function(){
             mockServer.respond();
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, "VAST Request Failed (error 404)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
 

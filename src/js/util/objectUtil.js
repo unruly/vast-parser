@@ -8,6 +8,8 @@ define([], function() {
             head,
             tail;
 
+        object = object || defaultValue;
+
         if (pathSections.length === 1) {
             return object[path] || defaultValue;
         }

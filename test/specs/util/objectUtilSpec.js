@@ -83,5 +83,21 @@ describe('Object Util', function() {
 
             expect(result).to.deep.equal([]);
         });
+
+        it('returns an empty array if object is null', function() {
+            var obj = null;
+
+            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.does.not.exist');
+
+            expect(result).to.deep.equal([]);
+        });
+
+        it('returns an empty array if object is undefined', function() {
+            var obj = undefined;
+
+            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.does.not.exist');
+
+            expect(result).to.deep.equal([]);
+        });
     });
 });

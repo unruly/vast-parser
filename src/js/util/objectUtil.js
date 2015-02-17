@@ -26,8 +26,18 @@ define([], function() {
         return getArrayFromObjectPath(next, tail, defaultValue);
     }
 
+    function pluckNodeValue(element) {
+        return element.nodeValue;
+    }
+
+    function isDefined(element) {
+        return typeof element !== 'undefined' && element !== null;
+    }
+
     return {
         getArrayFromObjectPath: getArrayFromObjectPath,
-        getFromObjectPath: getFromObjectPath
+        getFromObjectPath: getFromObjectPath,
+        pluckNodeValue: pluckNodeValue,
+        isDefined: isDefined
     };
 });

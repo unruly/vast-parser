@@ -100,4 +100,45 @@ describe('Object Util', function() {
             expect(result).to.deep.equal([]);
         });
     });
+
+    describe('pluckNodeValue', function() {
+        it('returns node value from object', function() {
+            var expectedValue = 'I am a value',
+                obj = {
+                    nodeValue: expectedValue
+                };
+
+            var result = objectUtil.pluckNodeValue(obj);
+
+            expect(result).to.equal(expectedValue);
+        });
+
+        it('returns undefined if no nodevalue on object', function() {
+            var obj = {};
+
+            var result = objectUtil.pluckNodeValue(obj);
+
+            expect(result).to.be.undefined;
+        });
+    });
+
+    describe('isDefined', function() {
+        it('should return true if defined', function() {
+            var result = objectUtil.isDefined('working');
+
+            expect(result).to.be.true;
+        });
+
+        it('should return false if not defined', function() {
+            var result = objectUtil.isDefined(undefined);
+
+            expect(result).to.be.false;
+        });
+
+        it('should return false if not defined', function() {
+            var result = objectUtil.isDefined(null);
+
+            expect(result).to.be.false;
+        });
+    });
 });

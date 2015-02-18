@@ -16,7 +16,9 @@ require([
     '../specs/vastChainerSpec.js',
     '../specs/vastErrorSpec.js',
     '../specs/model/vastResponseSpec.js',
-    '../specs/util/objectUtilSpec.js'
+    '../specs/util/objectUtilSpec.js',
+    '../specs/model/vastLinearCreativeSpec.js',
+    '../specs/util/helpersSpec.js'
 ], function() {
     if (window.mochaPhantomJS) {
         mochaPhantomJS.run();

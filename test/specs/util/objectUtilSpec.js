@@ -120,6 +120,14 @@ describe('Object Util', function() {
 
             expect(result).to.be.undefined;
         });
+
+        it('returns undefined if object is undefined', function() {
+            var obj = undefined;
+
+            var result = objectUtil.pluckNodeValue(obj);
+
+            expect(result).to.be.undefined;
+        });
     });
 
     describe('isDefined', function() {

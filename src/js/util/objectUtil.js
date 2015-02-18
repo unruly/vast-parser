@@ -27,6 +27,9 @@ define([], function() {
     }
 
     function pluckNodeValue(element) {
+        if(!element) {
+            return;
+        }
         return element.nodeValue;
     }
 

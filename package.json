@@ -1,11 +1,12 @@
 {
   "name": "vast-parser",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Parses VAST files into plain javascript objects",
   "main": "index.js",
   "scripts": {
     "start": "python -m SimpleHTTPServer",
-    "test": "google-chrome http://localhost:8000/test/phantom/testrunner.html"
+    "test": "npm run lint && google-chrome http://localhost:8000/test/phantom/testrunner.html",
+    "lint": "jshint -c .jshintrc src/*"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "chai": "~1.10.0",
     "chai-as-promised": "^4.1.1",
+    "jshint": "^2.6.0",
     "mocha": "~2.0.1",
     "requirejs": "~2.1.15",
     "requirejs-text": "~2.0.12",

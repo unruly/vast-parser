@@ -1,29 +1,52 @@
 define([], function() {
-    function getArrayFromObjectPath(object, path) {
-        return getFromObjectPath(object, path, []);
+    function getFromObjectPath(object, path, defaultValue) {
+        var results = getArrayFromObjectPath(object, path);
+
+        if (!isDefined(results[0])) {
+            return defaultValue;
+        }
+
+        return results[0];
     }
 
-    function getFromObjectPath(object, path, defaultValue) {
+    function getArrayFromObjectPath(object, path) {
         var pathSections = path.split('.'),
             head,
-            tail;
+            tail,
+            next,
+            defaultValue = [];
+
+        if(object instanceof Array) {
+            return flatten(object.map(function(nextItem) {
+                return getArrayFromObjectPath(nextItem, path);
+            }));
+        }
 
         object = object || defaultValue;
 
         if (pathSections.length === 1) {
-            return object[path] || defaultValue;
+            var item = object[path];
+
+            if (!isDefined(item)) {
+                return defaultValue;
+            }
+
+            if (!(item instanceof Array)) {
+                item = [item];
+            }
+
+            return item;
         }
 
         head = pathSections[0];
+        tail = pathSections.slice(1).join('.');
+        next = object[head];
 
-        var next = object[head];
-        if (! next) {
+        if (!isDefined(next)) {
             return defaultValue;
         }
 
-        tail = pathSections.slice(1).join('.');
-
-        return getFromObjectPath(next, tail, defaultValue);
+        return getArrayFromObjectPath(next, tail);
     }
 
     function pluckNodeValue(element) {
@@ -37,10 +60,15 @@ define([], function() {
         return typeof element !== 'undefined' && element !== null;
     }
 
+    function flatten(array) {
+        return [].concat.apply([], array);
+    }
+
     return {
         getArrayFromObjectPath: getArrayFromObjectPath,
         getFromObjectPath: getFromObjectPath,
         pluckNodeValue: pluckNodeValue,
-        isDefined: isDefined
+        isDefined: isDefined,
+        flatten: flatten
     };
 });

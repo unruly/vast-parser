@@ -27,6 +27,20 @@ describe('Object Util', function() {
             expect(result).to.deep.equal(obj.foo.bar.minky);
         });
 
+        it('fetchs a value from inside the nested object which is falsy', function() {
+            var obj = {
+                foo: {
+                    bar: {
+                        falsy: 0
+                    }
+                }
+            };
+
+            var result = objectUtil.getFromObjectPath(obj, 'foo.bar.falsy');
+
+            expect(result).to.deep.equal(obj.foo.bar.falsy);
+        });
+
         it('returns the supplied argument if the object has no properties', function() {
             var obj = {};
 
@@ -107,6 +121,186 @@ describe('Object Util', function() {
 
             expect(result).to.deep.equal([]);
         });
+
+        it('extracts multiple values from the same object in an array', function() {
+            var obj = {
+                foo: {
+                    bar: [
+                        {
+                            minky: ['binky']
+                        },
+                        {
+                            minky: ['stinky']
+                        }
+                    ]
+                }
+            };
+
+            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky');
+
+            expect(result).to.deep.equal(['binky', 'stinky']);
+        });
+
+        it('extracts multiple values from the same object when the lead object is an array', function() {
+            var array = [
+                {
+                    foo: {
+                        bar: [
+                            {
+                                minky: ['binky']
+                            },
+                            {
+                                minky: ['stinky']
+                            }
+                        ]
+                    }
+                }
+            ];
+
+            var result = objectUtil.getArrayFromObjectPath(array, 'foo.bar.minky');
+
+            expect(result).to.deep.equal(['binky', 'stinky']);
+        });
+
+        it('extracts multiple values from the same object in an array, ignoring non matching objects', function() {
+            var obj = {
+                foo: {
+                    bar: [
+                        {
+                            minky: {
+                                name: 'binky'
+                            }
+                        },
+                        {
+                            nonMatching: {
+                                name: 'linky'
+                            }
+                        },
+                        {
+                            minky: {
+                                name: 'stinky'
+                            }
+                        }
+                    ]
+                }
+            };
+
+            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+
+            expect(result).to.deep.equal(['binky', 'stinky']);
+        });
+
+        it('extracts multiple values from the same object in an array, ignoring non matching objects containing arrays', function() {
+            var obj = {
+                foo: {
+                    bar: [
+                        {
+                            minky: [
+                                {
+                                    name: 'binky'
+                                },
+                                {
+                                    name: 'inky'
+                                }
+                            ]
+                        },
+                        {
+                            nonMatching: [
+                                {
+                                    name: 'bob'
+                                },
+                                {
+                                    name: 'sue'
+                                }
+                            ]
+                        },
+                        {
+                            minky: [
+                                {
+                                    name: 'stinky'
+                                },
+                                {
+                                    name: 'linky'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+
+            expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky']);
+        });
+
+        it('extracts multiple values from the same object in an array, ignoring non matching objects containing arrays', function() {
+            var obj = {
+                foo: [
+                    {
+                        bar: [
+                            {
+                                minky: [
+                                    {
+                                        name: 'binky'
+                                    },
+                                    {
+                                        name: 'inky'
+                                    }
+                                ]
+                            },
+                            {
+                                nonMatching: [
+                                    {
+                                        name: 'bob'
+                                    },
+                                    {
+                                        name: 'sue'
+                                    }
+                                ]
+                            },
+                            {
+                                minky: [
+                                    {
+                                        name: 'stinky'
+                                    },
+                                    {
+                                        name: 'linky'
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        baz: [
+                            {
+                                minky: [
+                                    {
+                                        name: 'pinky'
+                                    },
+                                    {
+                                        name: 'tinky'
+                                    }
+                                ]
+                            },
+                            {
+                                nonMatching: [
+                                    {
+                                        name: 'bob'
+                                    },
+                                    {
+                                        name: 'sue'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+
+            expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky']);
+        });
     });
 
     describe('pluckNodeValue', function() {
@@ -155,6 +349,35 @@ describe('Object Util', function() {
             var result = objectUtil.isDefined(null);
 
             expect(result).to.be.false;
+        });
+    });
+
+    describe('flatten', function() {
+        it('should flatten two arrays into one', function() {
+            var arrays = [
+                ['binky'],
+                ['inky']
+            ];
+
+            expect(objectUtil.flatten(arrays)).to.deep.equal(['binky', 'inky']);
+        });
+
+        it('should flatten two arrays into one when one is empty', function() {
+            var arrays = [
+                [],
+                ['inky']
+            ];
+
+            expect(objectUtil.flatten(arrays)).to.deep.equal(['inky']);
+        });
+
+        it('should return array when single array passed', function() {
+            var arrays = [
+                'binky',
+                'inky'
+            ];
+
+            expect(objectUtil.flatten(arrays)).to.deep.equal(['binky', 'inky']);
         });
     });
 });

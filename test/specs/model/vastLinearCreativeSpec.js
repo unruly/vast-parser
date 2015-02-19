@@ -32,6 +32,16 @@ describe('VAST Linear Creative', function() {
                                 "Creatives": {
                                     "Creative": [{
                                         "Linear": {
+                                            "VideoClicks": {
+                                                "ClickTracking": [
+                                                    {
+                                                        "nodeValue":  "http://example.com/video-click1?d=[CACHEBUSTER]"
+                                                    },
+                                                    {
+                                                        "nodeValue": "http://example.com/video-click2?d=[CACHEBUSTER]"
+                                                    }
+                                                ]
+                                            }
                                         }
                                     }]
                                 }
@@ -69,6 +79,16 @@ describe('VAST Linear Creative', function() {
                                 "Creatives": {
                                     "Creative": [{
                                         "Linear": {
+                                            "VideoClicks": {
+                                                "ClickTracking": [
+                                                    {
+                                                        "nodeValue":  "http://example.com/video-click3?d=[CACHEBUSTER]"
+                                                    },
+                                                    {
+                                                        "nodeValue": "http://example.com/video-click4?d=[CACHEBUSTER]"
+                                                    }
+                                                ]
+                                            }
                                         }
                                     }]
                                 }
@@ -127,8 +147,16 @@ describe('VAST Linear Creative', function() {
                                         },
                                         "VideoClicks": {
                                             "ClickThrough": {
-                                                "nodeValue": "http://example.com/video-click?d=[CACHEBUSTER]"
-                                            }
+                                                "nodeValue": "http://example.com/clickthrough"
+                                            },
+                                            "ClickTracking": [
+                                                {
+                                                    "nodeValue":  "http://example.com/video-click5?d=[CACHEBUSTER]"
+                                                },
+                                                {
+                                                    "nodeValue": "http://example.com/video-click6?d=[CACHEBUSTER]"
+                                                }
+                                            ]
                                         }
                                     }
                                 }
@@ -176,6 +204,27 @@ describe('VAST Linear Creative', function() {
             result = linearCreative.getDuration();
 
             expect(result).to.equal(expectedResult);
+        });
+    });
+
+    describe('getVideoClickTracking', function() {
+        beforeEach(function(){
+
+        });
+
+        it('should return an array of click trackers', function() {
+            var result,
+                linearCreative = new VastLinearCreative(mockVastResponse);
+
+            result = linearCreative.getClickTrackers();
+
+            expect(result.length).to.equal(6);
+            expect(result).to.contain("http://example.com/video-click1?d=[CACHEBUSTER]");
+            expect(result).to.contain("http://example.com/video-click2?d=[CACHEBUSTER]");
+            expect(result).to.contain("http://example.com/video-click3?d=[CACHEBUSTER]");
+            expect(result).to.contain("http://example.com/video-click4?d=[CACHEBUSTER]");
+            expect(result).to.contain("http://example.com/video-click5?d=[CACHEBUSTER]");
+            expect(result).to.contain("http://example.com/video-click6?d=[CACHEBUSTER]");
         });
     });
 });

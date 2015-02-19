@@ -16,19 +16,10 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil'], func
     }
 
     VastResponse.prototype.getImpressions = function() {
-        var impressions = [];
+        var inlineImps = objectUtil.getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Impression.nodeValue'),
+            wrapperImps = objectUtil.getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Impression.nodeValue');
 
-        if(this.inline.VAST.Ad.InLine.Impression) {
-            impressions = this.inline.VAST.Ad.InLine.Impression.map(pluckNodeValue);
-        }
-
-        this.wrappers.filter(function(wrapper){
-            return !!wrapper.VAST.Ad.Wrapper.Impression;
-        }).forEach(function(wrapper) {
-           impressions = impressions.concat(wrapper.VAST.Ad.Wrapper.Impression.map(pluckNodeValue));
-        });
-
-        return impressions.filter(isValidURL);
+        return inlineImps.concat(wrapperImps).filter(isValidURL);
     };
 
     VastResponse.prototype.getAdTitle = function() {

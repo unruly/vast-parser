@@ -23,7 +23,7 @@ define([], function() {
 
         tail = pathSections.slice(1).join('.');
 
-        return getArrayFromObjectPath(next, tail, defaultValue);
+        return getFromObjectPath(next, tail, defaultValue);
     }
 
     function pluckNodeValue(element) {

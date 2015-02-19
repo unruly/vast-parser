@@ -27,9 +27,17 @@ describe('Object Util', function() {
             expect(result).to.deep.equal(obj.foo.bar.minky);
         });
 
+        it('returns the supplied argument if the object has no properties', function() {
+            var obj = {};
+
+            var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', "it's missing!");
+
+            expect(result).to.deep.equal("it's missing!");
+        });
+
         it('returns the supplied argument if the path inside the nested objects does not exist', function() {
             var obj = {
-
+                foo: {}
             };
 
             var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', "it's missing!");

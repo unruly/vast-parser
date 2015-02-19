@@ -1,11 +1,8 @@
 define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, objectUtil) {
     var read = objectUtil.getArrayFromObjectPath,
         pluckNodeValue = objectUtil.pluckNodeValue,
-        isDefined = objectUtil.isDefined;
-
-    function flatten(array) {
-        return [].concat.apply(this, array);
-    }
+        isDefined = objectUtil.isDefined,
+        flatten = objectUtil.flatten;
 
     function getErrorMessageFromCode(code) {
         var errorName,

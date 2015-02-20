@@ -1,5 +1,4 @@
 define(['../../../node_modules/validator/validator', '../util/objectUtil'], function(validator, objectUtil) {
-    var pluckNodeValue = objectUtil.pluckNodeValue;
 
     function VastResponse(vastChain) {
         this.wrappers = [];

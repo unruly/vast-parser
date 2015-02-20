@@ -17,5 +17,7 @@ define(['../util/objectUtil', '../util/helpers'], function(objectUtil, helpers) 
         return inlineClickTracking.concat(wrapperClickTracking);
     };
 
-    return VastLinearCreative;
+    return {
+        VastLinearCreative: VastLinearCreative
+    };
 });

@@ -1,7 +1,8 @@
 describe('VAST Response', function() {
 
     var VastResponse,
-        mockVastTags;
+        mockVastTags,
+        mockVastLinearCreative;
 
     function getValidVastTags() {
         return {
@@ -251,10 +252,13 @@ describe('VAST Response', function() {
             var injector = new Squire();
 
             injector
-                .require(['model/vastResponse'], function(module) {
-                VastResponse = module;
+                .store('model/vastLinearCreative')
+                .require(['model/vastResponse', 'mocks'], function(module, mocks) {
+                    var mockVastLinearCreativeModule =  mocks.store['model/vastLinearCreative'];
+                    VastResponse = module;
+                    mockVastLinearCreative = sinon.stub(mockVastLinearCreativeModule, 'VastLinearCreative');
 
-                done();
+                    done();
             });
         });
     });
@@ -355,6 +359,25 @@ describe('VAST Response', function() {
             var vastResponse = new VastResponse(mockVastTags);
 
             expect(vastResponse.getAdTitle()).to.be.equal('Example Title');
+        });
+    });
+
+    describe('getLinearCreative', function() {
+        it('should get the linear creative using the Vast Response', function() {
+            var vastResponse = new VastResponse(mockVastTags);
+
+            expect(vastResponse.getLinearCreative()).to.be.an.instanceOf(mockVastLinearCreative);
+            expect(mockVastLinearCreative).to.be.calledWithNew;
+            expect(mockVastLinearCreative).to.be.calledWith(vastResponse);
+        });
+
+        it('should not instantiate VastLinearCreative multiple times even if getLinearCreative called multiple times', function() {
+            var vastResponse = new VastResponse(mockVastTags);
+
+            vastResponse.getLinearCreative();
+            vastResponse.getLinearCreative();
+
+            expect(mockVastLinearCreative).to.be.calledOnce;
         });
     });
 

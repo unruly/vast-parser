@@ -183,7 +183,7 @@ describe('VAST Linear Creative', function() {
             injector
                 .store(['util/helpers'])
                 .require(['model/vastLinearCreative', 'mocks'], function(module, mocks) {
-                    VastLinearCreative = module;
+                    VastLinearCreative = module.VastLinearCreative;
                     helpers = mocks.store['util/helpers'];
                     sinon.stub(helpers, 'getSecondsFromTimeString');
 

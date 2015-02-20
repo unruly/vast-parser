@@ -1,4 +1,4 @@
-define(['../../../node_modules/validator/validator', '../util/objectUtil'], function(validator, objectUtil) {
+define(['../../../node_modules/validator/validator', '../util/objectUtil', './vastLinearCreative'], function(validator, objectUtil, VastLinearCreative) {
 
     function VastResponse(vastChain) {
         this.wrappers = [];
@@ -8,6 +8,8 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil'], func
             this.wrappers = vastChain.wrappers;
             this.inline = vastChain.inline;
         }
+
+        this._vastChain = vastChain;
     }
 
     function isValidURL(url) {
@@ -23,6 +25,13 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil'], func
 
     VastResponse.prototype.getAdTitle = function() {
         return this.inline.VAST.Ad.InLine.AdTitle.nodeValue;
+    };
+
+    VastResponse.prototype.getLinearCreative = function() {
+        if (!this.linearCreative) {
+            this.linearCreative = new VastLinearCreative.VastLinearCreative(this);
+        }
+        return this.linearCreative;
     };
 
     return VastResponse;

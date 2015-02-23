@@ -11,7 +11,7 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil'], func
     }
 
     function isValidURL(url) {
-        return validator.isURL(url);
+        return validator.isURL(url, { allow_protocol_relative_urls: true });
     }
 
     VastResponse.prototype.getImpressions = function() {

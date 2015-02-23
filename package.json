@@ -1,6 +1,6 @@
 {
   "name": "vast-parser",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Parses VAST files into plain javascript objects",
   "main": "index.js",
   "scripts": {
@@ -35,6 +35,6 @@
   "dependencies": {
     "jquery": "^1.11.2",
     "q": "^1.1.2",
-    "validator": "^3.30.0"
+    "validator": "git+ssh://git@github.com:unruly/validator.js.git"
   }
 }

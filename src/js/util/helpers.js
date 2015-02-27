@@ -1,4 +1,4 @@
-define(['validator'], function(validator) {
+define(['../../../node_modules/validator/validator'], function(validator) {
 
     function getSecondsFromTimeString(timeString) {
         var durationInSeconds = 0,

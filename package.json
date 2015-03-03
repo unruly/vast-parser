@@ -35,6 +35,6 @@
   "dependencies": {
     "jquery": "^1.11.2",
     "q": "^1.1.2",
-    "validator": "git+ssh://git@github.com:unruly/validator.js.git"
+    "validator": "~3.33.0"
   }
 }

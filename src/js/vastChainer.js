@@ -50,7 +50,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
 
             settings.timeout = AJAX_TIMEOUT;
 
-            settings.success = function(data) {
+            settings.success = function(data, status, jqXHR) {
                 var vastTag,
                     childTagUri,
                     nextRequestConfig,
@@ -60,6 +60,14 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                     requestNumber: currentRequestNumber,
                     uri: url
                 });
+
+                vastResponse.addRawResponse({
+                    requestNumber: currentRequestNumber,
+                    uri: url,
+                    response: jqXHR.responseText,
+                    headers: jqXHR.getAllResponseHeaders().trim()
+                });
+
                 dispatcher.trigger(requestEndEvent);
 
                 if (!data) {
@@ -122,6 +130,14 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                         statusText: statusText
                     }
                 });
+
+                vastResponse.addRawResponse({
+                    requestNumber: currentRequestNumber,
+                    uri: url,
+                    response: jqXHR.responseText,
+                    headers: jqXHR.getAllResponseHeaders().trim()
+                });
+
                 dispatcher.trigger(requestEndEvent);
                 deferred.reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ')'));
             };

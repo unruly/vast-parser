@@ -381,4 +381,28 @@ describe('VAST Response', function() {
         });
     });
 
+    describe('raw responses', function() {
+        it('getRawResponse should return an array of response objects', function() {
+            var vastResponse = new VastResponse(mockVastTags),
+                data = {
+                    url: 'foo',
+                    data: '<faketag></faketag>'
+                };
+
+            vastResponse._raw.push(data);
+
+            expect(vastResponse.getRawResponses()).to.deep.equal([data]);
+        });
+
+        it('addRawResponse should add a response object', function() {
+            var vastResponse = new VastResponse(mockVastTags),
+                data = {
+                    url: 'foo',
+                    data: '<faketag></faketag>'
+                };
+            vastResponse.addRawResponse(data);
+
+            expect(vastResponse._raw[0]).to.deep.equal(data);
+        });
+    });
 });

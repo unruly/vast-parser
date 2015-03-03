@@ -3,6 +3,7 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil', './va
     function VastResponse(vastChain) {
         this.wrappers = [];
         this.inline = undefined;
+        this._raw = [];
 
         if (vastChain) {
             this.wrappers = vastChain.wrappers;
@@ -32,6 +33,14 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil', './va
             this.linearCreative = new VastLinearCreative.VastLinearCreative(this);
         }
         return this.linearCreative;
+    };
+
+    VastResponse.prototype.getRawResponses = function() {
+        return this._raw;
+    };
+
+    VastResponse.prototype.addRawResponse = function(data) {
+        this._raw.push(data);
     };
 
     return VastResponse;

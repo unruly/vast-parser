@@ -55,6 +55,8 @@ describe('VAST Chainer', function(){
                 VastError = mocks.store['vastError'];
                 VastResponse = mocks.store['model/vastResponse'];
 
+                sinon.stub(VastResponse.prototype, 'addRawResponse');
+
                 sinon.stub(vastParser, 'parse', function(document) {
                     if(document.childNodes[0].nodeName === 'NOADS') {
                         return mockNoAds;
@@ -528,6 +530,68 @@ describe('VAST Chainer', function(){
                 uri: firstWrapperUrl,
                 error: { status: 200, statusText: "XML parsing error." }
             });
+        });
+    });
+
+    describe('stores raw data on vast response', function () {
+
+        it('should call addRawResponse after successful http request', function() {
+            mockServer.respondWith([200, { "Content-Type": "application/json" }, mockInlineString]);
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(VastResponse.prototype.addRawResponse).to.have.been.calledOnce;
+            expect(VastResponse.prototype.addRawResponse).to.have.been.calledWith({
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                response: mockInlineString,
+                headers: 'Content-Type: application/json'
+            });
+        });
+
+        it('should call addRawResponse after unsuccessful http request', function() {
+            mockServer.respondWith([500, { "Content-Type": "application/json" }, '']);
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(VastResponse.prototype.addRawResponse).to.have.been.calledOnce;
+            expect(VastResponse.prototype.addRawResponse).to.have.been.calledWith({
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                response: '',
+                headers: 'Content-Type: application/json'
+            });
+        });
+
+        it('should call addRawResponse once per http response', function() {
+            var inlineUrl = mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
+
+            mockServer.respondWith('GET', firstWrapperUrl, [200, { "Content-Type": "application/json" }, mockWrapperString]);
+            mockServer.respondWith('GET', inlineUrl, [400, { "Content-Type": "application/json" }, '']);
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+            mockServer.respond();
+
+            expect(VastResponse.prototype.addRawResponse).to.have.been.calledWithMatch({
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                response: mockWrapperString,
+                headers: 'Content-Type: application/json'
+            });
+
+            expect(VastResponse.prototype.addRawResponse).to.have.been.calledWithMatch({
+                requestNumber: 1,
+                uri: inlineUrl,
+                response: '',
+                headers: 'Content-Type: application/json'
+            });
+
+            expect(VastResponse.prototype.addRawResponse).to.have.been.calledTwice;
         });
     });
 });

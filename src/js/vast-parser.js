@@ -73,7 +73,7 @@ define(['./xml-parser'], function(xmlParser) {
         }
     }
 
-    function ensureArraysOnInnerObject(vastInnerObject) {
+    function ensureArraysOnCreatives(vastInnerObject) {
         var creative = vastInnerObject.Creatives.Creative,
             nonLinearCreatives = filter(creative, function(item) { return item.NonLinearAds;}, creative),
             linearCreatives = filter(creative, function(item) { return item.Linear; }, creative);
@@ -100,10 +100,12 @@ define(['./xml-parser'], function(xmlParser) {
 
         if (parsedXml.VAST.Ad.Wrapper) {
             parsedXml.VAST.Ad.Wrapper = ensureArrays(parsedXml.VAST.Ad.Wrapper);
-            parsedXml.VAST.Ad.Wrapper = ensureArraysOnInnerObject(parsedXml.VAST.Ad.Wrapper);
+            if (parsedXml.VAST.Ad.Wrapper.Creatives) {
+                parsedXml.VAST.Ad.Wrapper = ensureArraysOnCreatives(parsedXml.VAST.Ad.Wrapper);
+            }
         } else if (parsedXml.VAST.Ad.InLine) {
             parsedXml.VAST.Ad.InLine = ensureArrays(parsedXml.VAST.Ad.InLine);
-            parsedXml.VAST.Ad.InLine = ensureArraysOnInnerObject(parsedXml.VAST.Ad.InLine);
+            parsedXml.VAST.Ad.InLine = ensureArraysOnCreatives(parsedXml.VAST.Ad.InLine);
         }
 
         return parsedXml;

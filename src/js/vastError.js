@@ -51,7 +51,7 @@ define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, obje
         this.vastResponse = vastResponse;
     }
 
-    VastError.prototype = Object.create(Error.prototype);
+    VastError.prototype = new Error();
     VastError.prototype.constructor = VastError;
 
     VastError.prototype.getErrorURIs = function() {

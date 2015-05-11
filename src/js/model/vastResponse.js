@@ -1,4 +1,4 @@
-define(['../../../node_modules/validator/validator', '../util/objectUtil', './vastLinearCreative'], function(validator, objectUtil, VastLinearCreative) {
+define(['../../../node_modules/validator/validator', '../util/objectUtil', './vastLinearCreative', './vastExtension', './vastModelFactory'], function(validator, objectUtil, VastLinearCreative, VastExtension, vastModelFactory) {
 
     function VastResponse(vastChain) {
         this.wrappers = [];
@@ -41,6 +41,16 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil', './va
 
     VastResponse.prototype.addRawResponse = function(data) {
         this._raw.push(data);
+    };
+
+    VastResponse.prototype.getExtensions = function() {
+        var inlineExtensions = objectUtil.getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Extensions.Extension'),
+            wrapperExtensions = objectUtil.getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Extensions.Extension'),
+            allExtensions = inlineExtensions.concat(wrapperExtensions);
+
+        return allExtensions.map(function(ext) {
+           return vastModelFactory.createVastExtension(ext);
+        });
     };
 
     return VastResponse;

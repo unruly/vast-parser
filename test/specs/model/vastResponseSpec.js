@@ -2,7 +2,9 @@ describe('VAST Response', function() {
 
     var VastResponse,
         mockVastTags,
-        mockVastLinearCreative;
+        mockVastLinearCreative,
+        VastExtension,
+        mockVastModelFactory;
 
     function getValidVastTags() {
         return {
@@ -129,34 +131,39 @@ describe('VAST Response', function() {
                                     }]
                                 },
                                 "Extensions": {
-                                    "Extension": [{
-                                        "Property": [
-                                            {
-                                                "nodeValue": 1234,
-                                                "@id": "skid"
-                                            },
-                                            {
-                                                "nodeValue": 5678,
-                                                "@id": "apid"
-                                            }
-                                        ],
-                                        "CustomTrackingEvents": {
-                                            "CustomTracking": [
+                                    "Extension": [
+                                        {
+                                            "Property": [
                                                 {
-                                                    "nodeValue": "http://example.com/viewable_imp",
-                                                    "@event": "viewableImpression"
+                                                    "nodeValue": 1234,
+                                                    "@id": "skid"
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/pp_imp1",
-                                                    "@event": "pp_imp"
-                                                },
-                                                {
-                                                    "nodeValue": "http://example.com/pp_lb_play",
-                                                    "@event": "pp_lb_play"
+                                                    "nodeValue": 5678,
+                                                    "@id": "apid"
                                                 }
-                                            ]
+                                            ],
+                                            "CustomTrackingEvents": {
+                                                "CustomTracking": [
+                                                    {
+                                                        "nodeValue": "http://example.com/viewable_imp",
+                                                        "@event": "viewableImpression"
+                                                    },
+                                                    {
+                                                        "nodeValue": "http://example.com/pp_imp1",
+                                                        "@event": "pp_imp"
+                                                    },
+                                                    {
+                                                        "nodeValue": "http://example.com/pp_lb_play",
+                                                        "@event": "pp_lb_play"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "anotherExtension": "more than one!"
                                         }
-                                    }]
+                                    ]
                                 }
                             },
                             "@id": 1,
@@ -251,13 +258,19 @@ describe('VAST Response', function() {
         requirejs(['Squire'], function(Squire) {
             var injector = new Squire();
 
+            mockVastModelFactory = {
+                createVastExtension: sinon.stub()
+            };
+
             injector
                 .store('model/vastLinearCreative')
+                .store('model/vastExtension')
+                .mock('model/vastModelFactory', mockVastModelFactory)
                 .require(['model/vastResponse', 'mocks'], function(module, mocks) {
                     var mockVastLinearCreativeModule =  mocks.store['model/vastLinearCreative'];
                     VastResponse = module;
                     mockVastLinearCreative = sinon.stub(mockVastLinearCreativeModule, 'VastLinearCreative');
-
+                    VastExtension = mocks.store['model/vastExtension'];
                     done();
             });
         });
@@ -403,6 +416,23 @@ describe('VAST Response', function() {
             vastResponse.addRawResponse(data);
 
             expect(vastResponse._raw[0]).to.deep.equal(data);
+        });
+    });
+
+    describe('extensions', function() {
+        it('getExtension should return an array of VastExtension objects', function() {
+            var vastResponse = new VastResponse(mockVastTags),
+                extensions;
+
+
+            extensions = vastResponse.getExtensions();
+
+            expect(extensions.length).to.equal(4);
+
+            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.inline.VAST.Ad.InLine.Extensions.Extension[0]);
+            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[0].VAST.Ad.Wrapper.Extensions.Extension[0]);
+            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[1].VAST.Ad.Wrapper.Extensions.Extension[0]);
+            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[1].VAST.Ad.Wrapper.Extensions.Extension[1]);
         });
     });
 });

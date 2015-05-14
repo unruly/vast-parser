@@ -458,12 +458,14 @@ describe('VAST Chainer', function(){
             expect(beginVastDownload).to.have.been.calledWithMatch({
                 type: 'requestStart',
                 requestNumber: 0,
-                uri: firstWrapperUrl
+                uri: firstWrapperUrl,
+                vastResponse: {}
             });
             expect(finishVastDownload).to.have.been.calledWithMatch({
                 type: 'requestEnd',
                 requestNumber: 0,
-                uri: firstWrapperUrl
+                uri: firstWrapperUrl,
+                vastResponse: {}
             });
         });
 
@@ -480,24 +482,28 @@ describe('VAST Chainer', function(){
             expect(beginVastDownload).to.have.been.calledWithMatch({
                 type: 'requestStart',
                 requestNumber: 0,
-                uri: firstWrapperUrl
+                uri: firstWrapperUrl,
+                vastResponse: {}
             });
             expect(finishVastDownload).to.have.been.calledWithMatch({
                 type: 'requestEnd',
                 requestNumber: 0,
-                uri: firstWrapperUrl
+                uri: firstWrapperUrl,
+                vastResponse: {}
             });
 
 
             expect(beginVastDownload).to.have.been.calledWithMatch({
                 type: 'requestStart',
                 requestNumber: 1,
-                uri: inlineUrl
+                uri: inlineUrl,
+                vastResponse: {}
             });
             expect(finishVastDownload).to.have.been.calledWithMatch({
                 type: 'requestEnd',
                 requestNumber: 1,
-                uri: inlineUrl
+                uri: inlineUrl,
+                vastResponse: {}
             });
         });
 
@@ -512,6 +518,7 @@ describe('VAST Chainer', function(){
             expect(finishVastDownload).to.have.been.calledWithMatch({
                 type: 'requestEnd',
                 requestNumber: 0,
+                vastResponse: {},
                 uri: firstWrapperUrl,
                 error: { status: 404, statusText: "Not Found" }
             });
@@ -527,6 +534,7 @@ describe('VAST Chainer', function(){
             expect(finishVastDownload).to.have.been.calledWithMatch({
                 type: 'requestEnd',
                 requestNumber: 0,
+                vastResponse: {},
                 uri: firstWrapperUrl,
                 error: { status: 200, statusText: "XML parsing error." }
             });

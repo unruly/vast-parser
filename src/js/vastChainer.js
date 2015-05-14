@@ -58,7 +58,8 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
 
                 requestEndEvent = $.Event('requestEnd', {
                     requestNumber: currentRequestNumber,
-                    uri: url
+                    uri: url,
+                    vastResponse: vastResponse
                 });
 
                 vastResponse.addRawResponse({
@@ -125,6 +126,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                 requestEndEvent = $.Event('requestEnd', {
                     requestNumber: currentRequestNumber,
                     uri: url,
+                    vastResponse: vastResponse,
                     error: {
                         status: jqXHR.status,
                         statusText: statusText
@@ -144,7 +146,8 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
 
             requestStartEvent = $.Event('requestStart', {
                 requestNumber: currentRequestNumber,
-                uri: url
+                uri: url,
+                vastResponse: vastResponse
             });
             dispatcher.trigger(requestStartEvent);
 

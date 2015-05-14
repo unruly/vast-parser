@@ -3,5 +3,5 @@ define(['./vastExtension'], function(VastExtension) {
         createVastExtension: function(extensionNodes) {
             return new VastExtension(extensionNodes);
         }
-    }
+    };
 });

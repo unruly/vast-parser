@@ -69,9 +69,8 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                     headers: jqXHR.getAllResponseHeaders().trim()
                 });
 
-                dispatcher.trigger(requestEndEvent);
-
                 if (!data) {
+                    dispatcher.trigger(requestEndEvent);
                     deferred.reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse));
                     return;
                 }
@@ -79,35 +78,37 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                 vastTag = vastParser.parse(data);
 
                 if (vastTag.VAST.Error) {
+                    dispatcher.trigger(requestEndEvent);
                     deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'));
                     return;
                 }
 
                 if (!vastTag.VAST.Ad) {
+                    dispatcher.trigger(requestEndEvent);
                     deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads'));
                     return;
                 }
 
                 if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
                     vastResponse.inline = vastTag;
-
+                    dispatcher.trigger(requestEndEvent);
                     deferred.resolve(vastResponse);
-                    return;
+                } else {
+                    vastResponse.wrappers.push(vastTag);
+                    dispatcher.trigger(requestEndEvent);
+
+                    childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
+                    nextRequestConfig = {
+                        url: childTagUri,
+                        extraParams: vastConfig.extraParams,
+                        corsCookieDomains: vastConfig.corsCookieDomains
+                    };
+
+                    getVast(vastResponse, nextRequestConfig)
+                        .then(deferred.resolve)
+                        .fail(deferred.reject)
+                        .done();
                 }
-
-                vastResponse.wrappers.push(vastTag);
-
-                childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
-                nextRequestConfig = {
-                    url: childTagUri,
-                    extraParams: vastConfig.extraParams,
-                    corsCookieDomains: vastConfig.corsCookieDomains
-                };
-
-                getVast(vastResponse, nextRequestConfig)
-                    .then(deferred.resolve)
-                    .fail(deferred.reject)
-                    .done();
             };
 
             settings.error = function(jqXHR, textStatus) {
@@ -161,5 +162,4 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
             addEventListener: addEventListener,
             on: addEventListener
         };
-
     });

@@ -7,6 +7,7 @@ describe('VAST Chainer', function(){
         mockTwoWrapperWrapper,
         mockNoAds,
         mockInline,
+        mockError,
         mockQ,
         mockDeferred,
         mockPromise,
@@ -62,6 +63,8 @@ describe('VAST Chainer', function(){
                         return mockNoAds;
                     } else if(document.childNodes[0].nodeName === 'INLINE') {
                         return mockInline;
+                    } else if(document.childNodes[0].nodeName === 'ERROR') {
+                        return mockError;
                     } else if(document.childNodes[0].nodeName === 'TWO_WRAPPER_TEST') {
                         return mockTwoWrapperWrapper;
                     } else {
@@ -104,6 +107,12 @@ describe('VAST Chainer', function(){
 
                     }
                 }
+            }
+        };
+
+        mockError = {
+            VAST: {
+                Error: {}
             }
         };
 
@@ -437,7 +446,7 @@ describe('VAST Chainer', function(){
         });
     });
 
-    describe('file download events', function () {
+    describe('fire download events', function () {
         var beginVastDownload,
             finishVastDownload;
 
@@ -507,6 +516,69 @@ describe('VAST Chainer', function(){
             });
         });
 
+        it('should fire request start and stop on download of VAST with Error', function(){
+            var vastErrorString = '<ERROR></ERROR>';
+            mockServer.respondWith([200, {}, vastErrorString]);
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(beginVastDownload).to.have.been.calledWithMatch({
+                type: 'requestStart',
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                vastResponse: {}
+            });
+            expect(finishVastDownload).to.have.been.calledWithMatch({
+                type: 'requestEnd',
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                vastResponse: {}
+            });
+        });
+
+        it('should fire request start and stop on download of VAST without Ad', function(){
+            mockServer.respondWith([200, {}, mockNoAdsString]);
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(beginVastDownload).to.have.been.calledWithMatch({
+                type: 'requestStart',
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                vastResponse: {}
+            });
+            expect(finishVastDownload).to.have.been.calledWithMatch({
+                type: 'requestEnd',
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                vastResponse: {}
+            });
+        });
+
+        it('should fire request start and stop when requested data is falsey', function(){
+            mockServer.respondWith([200, {}, '']);
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(beginVastDownload).to.have.been.calledWithMatch({
+                type: 'requestStart',
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                vastResponse: {}
+            });
+            expect(finishVastDownload).to.have.been.calledWithMatch({
+                type: 'requestEnd',
+                requestNumber: 0,
+                uri: firstWrapperUrl,
+                vastResponse: {}
+            });
+        });
 
         it('should fire request end when the request fails', function(){
             mockServer.respondWith([404, {}, '404 Error message']);

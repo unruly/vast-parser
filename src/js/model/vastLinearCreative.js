@@ -42,24 +42,36 @@ define(['util/objectUtil', 'util/helpers', 'model/vastMediaFile'], function(obje
         return mediaFiles;
     };
 
-    VastLinearCreative.prototype.hasFlashVPAID = function hasFlashVPAID() {
+    VastLinearCreative.prototype.getFlashVPAIDMediaFiles = function getFlashVPAIDMediaFiles() {
         return this.getMediaFiles({
             apiFramework: 'VPAID',
             type: 'application/x-shockwave-flash'
-        }).length > 0;
+        });
+    };
+
+    VastLinearCreative.prototype.getJavascriptVPAIDMediaFiles = function getJavascriptVPAIDMediaFiles() {
+        return this.getMediaFiles({
+            apiFramework: 'VPAID',
+            type: 'application/javascript'
+        });
+    };
+
+    VastLinearCreative.prototype.getMp4MediaFiles = function getMp4MediaFiles() {
+        return this.getMediaFiles({
+            type: 'video/mp4'
+        });
+    };
+
+    VastLinearCreative.prototype.hasFlashVPAID = function hasFlashVPAID() {
+        return this.getFlashVPAIDMediaFiles().length > 0;
     };
 
     VastLinearCreative.prototype.hasJavascriptVPAID = function hasJavascriptVPAID() {
-        return this.getMediaFiles({
-                apiFramework: 'VPAID',
-                type: 'application/javascript'
-            }).length > 0;
+        return this.getJavascriptVPAIDMediaFiles().length > 0;
     };
 
     VastLinearCreative.prototype.hasMp4 = function hasMp4() {
-        return this.getMediaFiles({
-                type: 'video/mp4'
-            }).length > 0;
+        return this.getMp4MediaFiles().length > 0;
     };
 
     return {

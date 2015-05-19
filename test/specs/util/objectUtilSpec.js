@@ -13,7 +13,7 @@ describe('Object Util', function() {
     });
 
     describe('getFromObjectPath', function() {
-        it('fetchs a value from inside the nested object', function() {
+        it('fetches a value from inside the nested object', function() {
             var obj = {
                 foo: {
                     bar: {
@@ -27,7 +27,7 @@ describe('Object Util', function() {
             expect(result).to.deep.equal(obj.foo.bar.minky);
         });
 
-        it('fetchs a value from inside the nested object which is falsy', function() {
+        it('fetches a value from inside the nested object which is falsy', function() {
             var obj = {
                 foo: {
                     bar: {
@@ -59,6 +59,51 @@ describe('Object Util', function() {
             expect(result).to.deep.equal("it's missing!");
         });
 
+    });
+    
+    describe('getIntegerFromObjectPath', function() {
+        it('fetches a value from inside the nested object and converts it to an integer', function() {
+            var obj = {
+                foo: {
+                    bar: {
+                        number: '123'
+                    }
+                }
+            };
+
+            var result = objectUtil.getIntegerFromObjectPath(obj, 'foo.bar.number');
+
+            expect(result).to.equal(123);
+        });
+
+        it('fetches a value from inside the nested object and converts it to an integer', function() {
+            var obj = {
+                foo: {
+                    bar: {
+                        string: 'abc'
+                    }
+                }
+            };
+
+            var result = objectUtil.getIntegerFromObjectPath(obj, 'foo.bar.string');
+
+            expect(result).to.be.undefined;
+        });
+
+        it('returns default value when it fails to convert returned value to integer', function() {
+            var defaultValue = 789,
+                    obj = {
+                    foo: {
+                        bar: {
+                            string: 'abc'
+                        }
+                    }
+                };
+
+            var result = objectUtil.getIntegerFromObjectPath(obj, 'foo.bar.string', defaultValue);
+
+            expect(result).to.equal(defaultValue);
+        });
     });
 
     describe('getArrayFromObjectPath', function() {

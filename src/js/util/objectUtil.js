@@ -1,4 +1,16 @@
 define([], function() {
+    function getIntegerFromObjectPath(object, path, defaultValue) {
+        var value = getFromObjectPath(object, path, defaultValue);
+
+        value = parseInt(value, 10);
+
+        if (isNaN(value)) {
+            return defaultValue;
+        } else {
+            return value;
+        }
+    }
+
     function getFromObjectPath(object, path, defaultValue) {
         var results = getArrayFromObjectPath(object, path);
 
@@ -66,6 +78,7 @@ define([], function() {
 
     return {
         getArrayFromObjectPath: getArrayFromObjectPath,
+        getIntegerFromObjectPath: getIntegerFromObjectPath,
         getFromObjectPath: getFromObjectPath,
         pluckNodeValue: pluckNodeValue,
         isDefined: isDefined,

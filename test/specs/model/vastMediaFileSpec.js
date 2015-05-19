@@ -122,4 +122,54 @@ describe('VAST Media File', function() {
             expect(mediaFile.height).to.be.undefined;
         });
     });
+
+    describe('delivery property', function() {
+        it('should return delivery from MediaFile', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'videoFile',
+                    '@delivery': 'progressive'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.delivery).to.equal('progressive');
+        });
+
+        it('should return delivery as undefined when not present on MediaFile', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'videoFile'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.delivery).to.be.undefined;
+        });
+    });
+
+    describe('bitrate property', function() {
+        it('should return bitrate from MediaFile', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'videoFile',
+                    '@bitrate': '600'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.bitrate).to.equal('600');
+        });
+
+        it('should return bitrate as undefined when not present on MediaFile', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'videoFile'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.bitrate).to.be.undefined;
+        });
+    });
 });

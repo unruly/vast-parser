@@ -83,7 +83,19 @@ describe('VAST Media File', function() {
 
             mediaFile = new VastMediaFile(xmlData);
 
-            expect(mediaFile.width).to.equal('300');
+            expect(mediaFile.width).to.equal(300);
+        });
+
+        it('should not set width when it is a string', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'videoFile',
+                    '@width': 'abc'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.width).to.be.undefined;
         });
 
         it('should return width as undefined when not present on MediaFile', function() {
@@ -108,7 +120,19 @@ describe('VAST Media File', function() {
 
             mediaFile = new VastMediaFile(xmlData);
 
-            expect(mediaFile.height).to.equal('200');
+            expect(mediaFile.height).to.equal(200);
+        });
+
+        it('should not set height when it is a string', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'videoFile',
+                    '@height': 'abc'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.height).to.be.undefined;
         });
 
         it('should return height as undefined when not present on MediaFile', function() {
@@ -158,7 +182,19 @@ describe('VAST Media File', function() {
 
             mediaFile = new VastMediaFile(xmlData);
 
-            expect(mediaFile.bitrate).to.equal('600');
+            expect(mediaFile.bitrate).to.equal(600);
+        });
+
+        it('should not set bitrate when it is a string', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'videoFile',
+                    '@bitrate': 'abc'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.bitrate).to.be.undefined;
         });
 
         it('should return bitrate as undefined when not present on MediaFile', function() {

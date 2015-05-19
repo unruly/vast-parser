@@ -58,7 +58,8 @@ define(['util/objectUtil', 'util/helpers', 'model/vastMediaFile'], function(obje
 
     VastLinearCreative.prototype.getMp4MediaFiles = function getMp4MediaFiles() {
         return this.getMediaFiles({
-            type: 'video/mp4'
+            type: 'video/mp4',
+            delivery: 'progressive'
         });
     };
 

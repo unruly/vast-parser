@@ -422,11 +422,25 @@ describe('VAST Linear Creative', function() {
                 expect(linearCreative.hasMp4()).to.be.false;
             });
 
-            it('should return true when a mp4 file type MediaFile found', function() {
+            it('should return false when a streaming mp4 file type MediaFile found', function() {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.mp4',
-                    '@type': 'video/mp4'
+                    '@type': 'video/mp4',
+                    '@delivery': 'streaming'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasMp4()).to.be.false;
+            });
+
+            it('should return true when a progressive mp4 file type MediaFile found', function() {
+                var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.mp4',
+                    '@type': 'video/mp4',
+                    '@delivery': 'progressive'
                 });
 
                 var linearCreative = new VastLinearCreative(mockVastResponse);
@@ -445,12 +459,29 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles).to.deep.equal([]);
             });
 
-            it('should return array of VastMediaFile objects for mp4 MediaFiles found', function() {
+            it('should return empty array when only streaming mp4 MediaFiles found', function() {
                 var mediaFiles,
                     linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.mp4',
-                    '@type': 'video/mp4'
+                    '@type': 'video/mp4',
+                    '@delivery': 'streaming'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                mediaFiles = linearCreative.getMp4MediaFiles();
+
+                expect(mediaFiles).to.deep.equal([]);
+            });
+
+            it('should return array of VastMediaFile objects for progressive mp4 MediaFiles found', function() {
+                var mediaFiles,
+                    linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.mp4',
+                    '@type': 'video/mp4',
+                    '@delivery': 'progressive'
                 });
 
                 var linearCreative = new VastLinearCreative(mockVastResponse);

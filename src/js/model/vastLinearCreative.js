@@ -1,4 +1,4 @@
-define(['util/objectUtil', 'util/helpers', 'model/vastMediaFile'], function(objectUtil, helpers, VastMediaFile) {
+define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], function(objectUtil, helpers, VastMediaFile) {
     function VastLinearCreative(vastResponse) {
         this.vastResponse = vastResponse;
         this.linearInline =  objectUtil.getFromObjectPath(this.vastResponse, 'inline.VAST.Ad.InLine.Creatives.Creative.Linear');

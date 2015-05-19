@@ -392,6 +392,14 @@ describe('VAST Response', function() {
 
             expect(mockVastLinearCreative).to.be.calledOnce;
         });
+
+        it('should return undefined when no linear creative defined in the Vast Response', function() {
+            mockVastTags.inline.VAST.Ad.InLine.Creatives.Creative.pop();
+
+            var vastResponse = new VastResponse(mockVastTags);
+
+            expect(vastResponse.getLinearCreative()).to.be.undefined;
+        });
     });
 
     describe('raw responses', function() {

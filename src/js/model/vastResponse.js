@@ -30,7 +30,11 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil', './va
 
     VastResponse.prototype.getLinearCreative = function() {
         if (!this.linearCreative) {
-            this.linearCreative = new VastLinearCreative.VastLinearCreative(this);
+            var hasLinearCreative = objectUtil.getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.Linear');
+
+            if (hasLinearCreative) {
+                this.linearCreative = new VastLinearCreative.VastLinearCreative(this);
+            }
         }
         return this.linearCreative;
     };

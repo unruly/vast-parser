@@ -19,7 +19,8 @@ require([
     '../specs/util/objectUtilSpec.js',
     '../specs/model/vastLinearCreativeSpec.js',
     '../specs/util/helpersSpec.js',
-    '../specs/model/vastExtensionSpec.js'
+    '../specs/model/vastExtensionSpec.js',
+    '../specs/model/vastMediaFileSpec.js'
 ], function() {
     if (window.mochaPhantomJS) {
         mochaPhantomJS.run();

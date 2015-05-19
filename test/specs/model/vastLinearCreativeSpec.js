@@ -227,4 +227,126 @@ describe('VAST Linear Creative', function() {
             expect(result).to.contain("http://example.com/video-click6?d=[CACHEBUSTER]");
         });
     });
+
+    describe('Media Files', function() {
+        beforeEach(function() {
+            var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+            linearCreativeXml.MediaFiles.MediaFile.push({
+                nodeValue: 'http://example.com/video.mp4'
+            });
+        });
+
+        describe('getMediaFiles', function() {
+            it('should return an array of MediaFile objects', function() {
+                var mediaFiles,
+                    linearCreative = new VastLinearCreative(mockVastResponse);
+
+                mediaFiles = linearCreative.getMediaFiles();
+
+                expect(mediaFiles.length).to.equal(2);
+                expect(mediaFiles[0].url).to.equal('videoUrl');
+                expect(mediaFiles[1].url).to.equal('http://example.com/video.mp4');
+            });
+        });
+
+        describe('hasFlashVPAID', function() {
+            it('should return false when no VPAID creative found', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasFlashVPAID()).to.be.false;
+            });
+
+            it('should return true when a VPAID MediaFile found', function() {
+                var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.swf',
+                    '@type': 'application/javascript',
+                    '@apiFramework': 'VPAID'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasFlashVPAID()).to.be.false;
+            });
+
+            it('should return true when a VPAID MediaFile found', function() {
+                var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.swf',
+                    '@type': 'application/x-shockwave-flash',
+                    '@apiFramework': 'VPAID'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasFlashVPAID()).to.be.true;
+            });
+        });
+
+        describe('hasJavascriptVPAID', function() {
+            it('should return false when no VPAID creative found', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasJavascriptVPAID()).to.be.false;
+            });
+
+            it('should return true when a VPAID MediaFile found', function() {
+                var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.swf',
+                    '@type': 'application/x-shockwave-flash',
+                    '@apiFramework': 'VPAID'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasJavascriptVPAID()).to.be.false;
+            });
+
+            it('should return true when a VPAID MediaFile found', function() {
+                var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.swf',
+                    '@type': 'application/javascript',
+                    '@apiFramework': 'VPAID'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasJavascriptVPAID()).to.be.true;
+            });
+        });
+
+        describe('hasMp4', function() {
+            it('should return false when no mp4 file MediaFile found', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasMp4()).to.be.false;
+            });
+
+            it('should return false when a flv file type MediaFile found', function() {
+                var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.flv',
+                    '@type': 'video/x-flv'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasMp4()).to.be.false;
+            });
+
+            it('should return true when a mp4 file type MediaFile found', function() {
+                var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.mp4',
+                    '@type': 'video/mp4'
+                });
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                expect(linearCreative.hasMp4()).to.be.true;
+            });
+        });
+    });
 });

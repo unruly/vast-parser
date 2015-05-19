@@ -17,36 +17,49 @@ define(['util/objectUtil', 'util/helpers', 'model/vastMediaFile'], function(obje
         return inlineClickTracking.concat(wrapperClickTracking);
     };
 
-    VastLinearCreative.prototype.getMediaFiles = function getMediaFiles() {
-      var mediaFiles =  objectUtil.getArrayFromObjectPath(this.linearInline, 'MediaFiles.MediaFile');
+    VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {
+        var mediaFiles =  objectUtil.getArrayFromObjectPath(this.linearInline, 'MediaFiles.MediaFile');
 
-        return mediaFiles.map(function (vastMediaFileXml) {
+        filter = filter || {};
+
+        mediaFiles = mediaFiles.map(function (vastMediaFileXml) {
             return new VastMediaFile(vastMediaFileXml);
         });
+
+        mediaFiles = mediaFiles.filter(function(vastMediaFileXml) {
+            var property,
+                matchesFilter = true;
+
+            for (property in filter) {
+                if (filter.hasOwnProperty(property)) {
+                    matchesFilter = matchesFilter && vastMediaFileXml[property] === filter[property];
+                }
+            }
+
+            return matchesFilter;
+        });
+
+        return mediaFiles;
     };
 
     VastLinearCreative.prototype.hasFlashVPAID = function hasFlashVPAID() {
-        var flashVPAIDMediaFiles = this.getMediaFiles().filter(function(mediaFile) {
-            return mediaFile.apiFramework === 'VPAID' && mediaFile.type === 'application/x-shockwave-flash';
-        });
-
-        return flashVPAIDMediaFiles.length > 0;
+        return this.getMediaFiles({
+            apiFramework: 'VPAID',
+            type: 'application/x-shockwave-flash'
+        }).length > 0;
     };
 
     VastLinearCreative.prototype.hasJavascriptVPAID = function hasJavascriptVPAID() {
-        var javascriptVPAIDMediaFiles = this.getMediaFiles().filter(function(mediaFile) {
-            return mediaFile.apiFramework === 'VPAID' && mediaFile.type === 'application/javascript';
-        });
-
-        return javascriptVPAIDMediaFiles.length > 0;
+        return this.getMediaFiles({
+                apiFramework: 'VPAID',
+                type: 'application/javascript'
+            }).length > 0;
     };
 
     VastLinearCreative.prototype.hasMp4 = function hasMp4() {
-        var mp4MediaFiles = this.getMediaFiles().filter(function(mediaFile) {
-            return mediaFile.type === 'video/mp4';
-        });
-
-        return mp4MediaFiles.length > 0;
+        return this.getMediaFiles({
+                type: 'video/mp4'
+            }).length > 0;
     };
 
     return {

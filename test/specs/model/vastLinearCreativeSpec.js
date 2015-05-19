@@ -237,7 +237,7 @@ describe('VAST Linear Creative', function() {
         });
 
         describe('getMediaFiles', function() {
-            it('should return an array of MediaFile objects', function() {
+            it('should return all MediaFile objects when no filter supplied', function() {
                 var mediaFiles,
                     linearCreative = new VastLinearCreative(mockVastResponse);
 
@@ -246,6 +246,35 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles.length).to.equal(2);
                 expect(mediaFiles[0].url).to.equal('videoUrl');
                 expect(mediaFiles[1].url).to.equal('http://example.com/video.mp4');
+            });
+
+            it('should return all MediaFile objects when an empty filter is supplied', function() {
+                var mediaFiles,
+                    linearCreative = new VastLinearCreative(mockVastResponse),
+                    filter = {};
+
+                mediaFiles = linearCreative.getMediaFiles(filter);
+
+                expect(mediaFiles.length).to.equal(2);
+                expect(mediaFiles[0].url).to.equal('videoUrl');
+                expect(mediaFiles[1].url).to.equal('http://example.com/video.mp4');
+            });
+
+            it('should return filtered array of MediaFile objects', function() {
+                var mediaFiles,
+                    linearCreative = new VastLinearCreative(mockVastResponse),
+                    linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear,
+                    filter = {type: 'type/mp4'};
+
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/expected.mp4',
+                    '@type': 'type/mp4'
+                });
+
+                mediaFiles = linearCreative.getMediaFiles(filter);
+
+                expect(mediaFiles.length).to.equal(1);
+                expect(mediaFiles[0].url).to.equal('http://example.com/expected.mp4');
             });
         });
 

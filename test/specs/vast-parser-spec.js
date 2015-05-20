@@ -114,6 +114,17 @@ describe('VAST Parser', function(){
             });
         });
 
+        it('parses AdParameters from linear creative', function(done) {
+            var inlineWithAdParameters = 'inlines/test_vast_inline_with-linear-ad.xml';
+
+            loadTestXML(inlineWithAdParameters, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters.nodeValue).to.equal('{"testString":"an ad parameter string","testBoolean":false,"testNumber":1345680,"testURL":"http://example.com","testURLWithParams":"http%3A%2F%2Fexample.com%3Fparam1%3Dtrue%26param2%3Dfalse","testArray":["element1","element2"],"testArrayWithObjects":[{"key":"value"},{"key":"value"}]}');
+                done();
+            });
+        });
+
         it('creative should always return an array, even when there is only one creative', function(done) {
             loadTestXML(inlineURL, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);

@@ -34,6 +34,20 @@
                             <ClickTracking id="video_click"><![CDATA[http://example.com/inline/linear-video-click]]></ClickTracking>
                             <ClickTracking id="post_video_click"><![CDATA[http://example.com/inline/linear-post-video-click]]></ClickTracking>
                         </VideoClicks>
+                        <AdParameters>
+                            <![CDATA[
+                            {"testString":"an ad parameter string","testBoolean":false,"test
+                            ]]>
+                            <![CDATA[
+                            Number":1345680,"testURL":"http://example.com","testURLWithParams":"http
+                            ]]>
+                            <![CDATA[
+                            %3A%2F%2Fexample.com%3Fparam1%3Dtrue%26param2%3Dfalse","testArray":["e
+                            ]]>
+                            <![CDATA[
+                            lement1","element2"],"testArrayWithObjects":[{"key":"value"},{"key":"value"}]}
+                            ]]>
+                        </AdParameters>
                     </Linear>
                 </Creative>
             </Creatives>

@@ -56,6 +56,27 @@ describe('Helpers Util', function() {
         it('should return undefined if time undefined', function() {
             expect(helpers.getSecondsFromTimeString(undefined)).to.be.undefined;
         });
+    });
 
+    describe('decodeXML', function() {
+        it('should decode &apos; to \'', function() {
+          expect(helpers.decodeXML('&apos;')).to.equal('\'')
+        });
+
+        it('should decode &quot; to "', function() {
+            expect(helpers.decodeXML('&quot;')).to.equal('"')
+        });
+
+        it('should decode &gt; to >', function() {
+            expect(helpers.decodeXML('&gt;')).to.equal('>')
+        });
+
+        it('should decode &lt; to <', function() {
+            expect(helpers.decodeXML('&lt;')).to.equal('<')
+        });
+
+        it('should decode &amp; to &', function() {
+            expect(helpers.decodeXML('&amp;')).to.equal('&')
+        });
     });
 });

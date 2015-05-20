@@ -23,7 +23,16 @@ define(['../../../node_modules/validator/validator'], function(validator) {
         return durationInSeconds;
     }
 
+    function decodeXML(encodedXMLString) {
+        return encodedXMLString.replace(/&apos;/g, '\'')
+                                .replace(/&quot;/g, '"')
+                                .replace(/&gt;/g, '>')
+                                .replace(/&lt;/g, '<')
+                                .replace(/&amp;/g, '&');
+    }
+
     return {
-        getSecondsFromTimeString: getSecondsFromTimeString
+        getSecondsFromTimeString: getSecondsFromTimeString,
+        decodeXML: decodeXML
     };
 });

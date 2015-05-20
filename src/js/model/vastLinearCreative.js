@@ -21,6 +21,10 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
         return objectUtil.getFromObjectPath(this.linearInline, 'VideoClicks.ClickThrough.nodeValue');
     };
 
+    VastLinearCreative.prototype.getAdParameters = function getAdParameters() {
+        return objectUtil.getFromObjectPath(this.linearInline, 'AdParameters.nodeValue')
+    };
+
     VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {
         var mediaFiles =  objectUtil.getArrayFromObjectPath(this.linearInline, 'MediaFiles.MediaFile');
 

@@ -157,6 +157,9 @@ describe('VAST Linear Creative', function() {
                                                     "nodeValue": "http://example.com/video-click6?d=[CACHEBUSTER]"
                                                 }
                                             ]
+                                        },
+                                        "AdParameters": {
+                                            "nodeValue": "ad parameter"
                                         }
                                     }
                                 }
@@ -497,9 +500,10 @@ describe('VAST Linear Creative', function() {
             it('should return undefined if VideoClicks is not present', function() {
                 mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks = undefined;
 
-                var linearCreative = new VastLinearCreative(mockVastResponse);
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    clickThrough;
 
-                var clickThrough = linearCreative.getClickThrough();
+                clickThrough = linearCreative.getClickThrough();
 
                 expect(clickThrough).to.be.undefined;
             });
@@ -507,19 +511,42 @@ describe('VAST Linear Creative', function() {
             it('should return undefined if ClickThrough is not present', function() {
                 mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks.ClickThrough = undefined;
 
-                var linearCreative = new VastLinearCreative(mockVastResponse);
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    clickThrough;
 
-                var clickThrough = linearCreative.getClickThrough();
+                clickThrough = linearCreative.getClickThrough();
 
                 expect(clickThrough).to.be.undefined;
             });
 
             it('should return the url if ClickThrough is present', function() {
-                var linearCreative = new VastLinearCreative(mockVastResponse);
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    clickThrough;
 
-                var clickThrough = linearCreative.getClickThrough();
+                clickThrough = linearCreative.getClickThrough();
 
                 expect(clickThrough).to.equal('http://example.com/clickthrough');
+            });
+        });
+
+        describe('getAdParameters', function() {
+            it('should return undefined when no AdParameters', function() {
+               mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = undefined;
+               var linearCreative = new VastLinearCreative(mockVastResponse),
+                   adParameters;
+
+               adParameters = linearCreative.getAdParameters();
+
+               expect(adParameters).to.be.undefined;
+            });
+
+            it('should return the ad parameters when they are present', function() {
+               var linearCreative = new VastLinearCreative(mockVastResponse),
+                   adParameters;
+
+               adParameters = linearCreative.getAdParameters();
+
+               expect(adParameters).to.equal('ad parameter');
             });
         });
     });

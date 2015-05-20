@@ -120,6 +120,7 @@ describe('VAST Parser', function(){
             loadTestXML(inlineWithAdParameters, function(vastDocument) {
                 var obj = vastParser.parse(vastDocument);
 
+                expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters['@xmlEncoded']).to.equal('true');
                 expect(obj.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters.nodeValue).to.equal('{"testString":"an ad parameter string","testBoolean":false,"testNumber":1345680,"testURL":"http://example.com","testURLWithParams":"http%3A%2F%2Fexample.com%3Fparam1%3Dtrue%26param2%3Dfalse","testArray":["element1","element2"],"testArrayWithObjects":[{"key":"value"},{"key":"value"}]}');
                 done();
             });

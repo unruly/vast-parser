@@ -22,7 +22,14 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
     };
 
     VastLinearCreative.prototype.getAdParameters = function getAdParameters() {
-        return objectUtil.getFromObjectPath(this.linearInline, 'AdParameters.nodeValue')
+        var adParameters = objectUtil.getFromObjectPath(this.linearInline, 'AdParameters.nodeValue'),
+            xmlEncoded = objectUtil.getFromObjectPath(this.linearInline, 'AdParameters.@xmlEncoded');
+
+        if(xmlEncoded === 'true' && typeof adParameters === 'string') {
+            adParameters = helpers.decodeXML(adParameters)
+        }
+
+        return adParameters;
     };
 
     VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {

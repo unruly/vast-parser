@@ -548,6 +548,48 @@ describe('VAST Linear Creative', function() {
 
                expect(adParameters).to.equal('ad parameter');
             });
+
+            it('should return the original ad parameters nodeValue when attribute xmlEncoded is false', function() {
+                mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = {
+                    nodeValue: '{&quot;test&quot;:true,&quot;url&quot;:&quot;http://example.com?a=1&amp;b=2&quot;,&apos;string&apos;:&apos;&lt;&gt;&apos;}',
+                    '@xmlEncoded': 'false'
+                };
+
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    adParameters;
+
+                adParameters = linearCreative.getAdParameters();
+
+                expect(adParameters).to.equal('{&quot;test&quot;:true,&quot;url&quot;:&quot;http://example.com?a=1&amp;b=2&quot;,&apos;string&apos;:&apos;&lt;&gt;&apos;}');
+            });
+
+            it('should return the decoded ad parameters when attribute xmlEncoded is true and node value is a string', function() {
+                mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = {
+                    nodeValue: '{&quot;test&quot;:true,&quot;url&quot;:&quot;http://example.com?a=1&amp;b=2&quot;,&apos;string&apos;:&apos;&lt;&gt;&apos;}',
+                    '@xmlEncoded': 'true'
+                };
+
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    adParameters;
+
+                adParameters = linearCreative.getAdParameters();
+
+                expect(adParameters).to.equal('{"test":true,"url":"http://example.com?a=1&b=2",\'string\':\'<>\'}');
+            });
+
+            it('should return the original ad parameters nodeValue when attribute xmlEncoded true but node value is not a string', function() {
+                mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = {
+                    nodeValue: 0,
+                    '@xmlEncoded': 'true'
+                };
+
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    adParameters;
+
+                adParameters = linearCreative.getAdParameters();
+
+                expect(adParameters).to.equal(0);
+            });
         });
     });
 });

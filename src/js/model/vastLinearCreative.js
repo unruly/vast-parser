@@ -17,6 +17,10 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
         return inlineClickTracking.concat(wrapperClickTracking);
     };
 
+    VastLinearCreative.prototype.getClickThrough = function getClickThrough() {
+        return objectUtil.getFromObjectPath(this.linearInline, 'VideoClicks.ClickThrough.nodeValue');
+    };
+
     VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {
         var mediaFiles =  objectUtil.getArrayFromObjectPath(this.linearInline, 'MediaFiles.MediaFile');
 

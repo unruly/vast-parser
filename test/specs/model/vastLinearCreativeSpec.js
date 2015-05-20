@@ -492,5 +492,35 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles[0].url).to.equal('http://example.com/vpaid.mp4');
             });
         });
+
+        describe('getClickThrough', function() {
+            it('should return undefined if VideoClicks is not present', function() {
+                mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks = undefined;
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                var clickThrough = linearCreative.getClickThrough();
+
+                expect(clickThrough).to.be.undefined;
+            });
+
+            it('should return undefined if ClickThrough is not present', function() {
+                mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks.ClickThrough = undefined;
+
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                var clickThrough = linearCreative.getClickThrough();
+
+                expect(clickThrough).to.be.undefined;
+            });
+
+            it('should return the url if ClickThrough is present', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse);
+
+                var clickThrough = linearCreative.getClickThrough();
+
+                expect(clickThrough).to.equal('http://example.com/clickthrough');
+            });
+        });
     });
 });

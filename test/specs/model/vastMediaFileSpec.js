@@ -73,6 +73,141 @@ describe('VAST Media File', function() {
         });
     });
 
+    describe('isMP4 function', function() {
+        describe('should return true', function() {
+            it('when MIME type is video/mp4 and delivery is progressive', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'video/mp4',
+                        '@delivery': 'progressive'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isMP4()).to.be.true;
+            });
+        });
+
+        describe('should return false', function() {
+            it('when MIME type is video/mp4 and delivery is not progressive', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'video/mp4',
+                        '@delivery': 'streaming'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isMP4()).to.be.false;
+            });
+
+            it('when MIME type is video/flv and delivery is progressive', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'video/flv',
+                        '@delivery': 'progressive'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isMP4()).to.be.false;
+            });
+        });
+    });
+
+    describe('isFlashVPAID function', function() {
+        describe('should return true', function() {
+            it('when MIME type is application/x-shockwave-flash and apiFramework is VPAID', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'application/x-shockwave-flash',
+                        '@apiFramework': 'VPAID'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isFlashVPAID()).to.be.true;
+            });
+        });
+
+        describe('should return false', function() {
+            it('when MIME type is video/flv', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'video/flv',
+                        '@delivery': 'streaming'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isFlashVPAID()).to.be.false;
+            });
+
+            it('when apiFramework is VPAID but MIME type is application/javascript', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'application/javascript',
+                        '@apiFramework': 'VPAID'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isFlashVPAID()).to.be.false;
+            });
+        });
+    });
+
+    describe('isJavascriptVPAID function', function() {
+        describe('should return true', function() {
+            it('when MIME type is application/javascript and apiFramework is VPAID', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'application/javascript',
+                        '@apiFramework': 'VPAID'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isJavascriptVPAID()).to.be.true;
+            });
+        });
+
+        describe('should return false', function() {
+            it('when MIME type is video/flv', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'video/flv',
+                        '@delivery': 'streaming'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isJavascriptVPAID()).to.be.false;
+            });
+
+            it('when apiFramework is VPAID but MIME type is application/x-shockwave-flash', function() {
+                var mediaFile,
+                    xmlData = {
+                        nodeValue: 'videoFile',
+                        '@type': 'application/x-shockwave-flash',
+                        '@apiFramework': 'VPAID'
+                    };
+
+                mediaFile = new VastMediaFile(xmlData);
+
+                expect(mediaFile.isJavascriptVPAID()).to.be.false;
+            });
+        });
+    });
+
     describe('width property', function() {
         it('should return width from MediaFile', function() {
             var mediaFile,

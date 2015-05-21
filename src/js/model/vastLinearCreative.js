@@ -26,7 +26,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
             xmlEncoded = objectUtil.getFromObjectPath(this.linearInline, 'AdParameters.@xmlEncoded');
 
         if(xmlEncoded === 'true' && typeof adParameters === 'string') {
-            adParameters = helpers.decodeXML(adParameters)
+            adParameters = helpers.decodeXML(adParameters);
         }
 
         return adParameters;

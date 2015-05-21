@@ -10,6 +10,18 @@ define(['../util/objectUtil'], function(objectUtil) {
         this.bitrate = objectUtil.getIntegerFromObjectPath(mediaFileXml, '@bitrate');
     }
 
+    VastMediaFile.prototype.isMP4 = function() {
+        return this.delivery === 'progressive' && this.type === 'video/mp4';
+    };
+
+    VastMediaFile.prototype.isFlashVPAID = function() {
+        return this.apiFramework === 'VPAID' && this.type === 'application/x-shockwave-flash';
+    };
+
+    VastMediaFile.prototype.isJavascriptVPAID = function() {
+        return this.apiFramework === 'VPAID' && this.type === 'application/javascript';
+    };
+
     return VastMediaFile;
 });
 

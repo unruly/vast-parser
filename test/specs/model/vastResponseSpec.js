@@ -18,7 +18,7 @@ describe('VAST Response', function() {
                                     "@version": 1
                                 },
                                 "VASTAdTagURI": {
-                                    "nodeValue": "http://test.video.unrulymedia.com/native/vast/inlines/test_vast_inline_with-linear-ad.xml"
+                                    "nodeValue": "http://localhost/test/resources/vast/inlines/test_vast_inline_with-linear-ad.xml"
                                 },
                                 "Error": {
                                     "nodeValue": "http://example.com/error/ERRORCODE"

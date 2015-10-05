@@ -58,3 +58,7 @@ In one terminal run
     
 Then go to [http://localhost:8000/test/phantom/testrunner.html](http://localhost:8000/test/phantom/testrunner.html) in your browser.
 Or run `npm test`
+
+## License
+
+License information can be found in the LICENSE file.

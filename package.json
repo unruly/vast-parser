@@ -6,7 +6,7 @@
   "scripts": {
     "start": "python -m SimpleHTTPServer",
     "test": "npm run lint && google-chrome http://localhost:8000/test/phantom/testrunner.html",
-    "lint": "jshint -c .jshintrc src/*"
+    "lint": "./node_modules/jshint/bin/jshint -c .jshintrc src/*"
   },
   "repository": {
     "type": "git",

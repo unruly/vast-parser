@@ -60,7 +60,7 @@ describe('Helpers Util', function() {
 
     describe('decodeXML', function() {
         it('should decode &apos; to \'', function() {
-          expect(helpers.decodeXML('&apos;')).to.equal('\'')
+            expect(helpers.decodeXML('&apos;')).to.equal('\'')
         });
 
         it('should decode &quot; to "', function() {
@@ -77,6 +77,27 @@ describe('Helpers Util', function() {
 
         it('should decode &amp; to &', function() {
             expect(helpers.decodeXML('&amp;')).to.equal('&')
+        });
+    });
+
+    describe('convertProtocol', function() {
+        it('should return url with https when url is https', function() {
+            var httpsUrl = 'https://example.com';
+
+            expect(helpers.convertProtocol(httpsUrl)).to.equal(httpsUrl);
+        });
+
+        it('should return relative url when url is http', function() {
+            var httpUrl = 'http://example.com';
+            var protocolRelativeUrl = '//example.com';
+
+            expect(helpers.convertProtocol(httpUrl)).to.equal(protocolRelativeUrl);
+        });
+
+        it('should return relative url when url is relative', function() {
+            var protocolRelativeUrl = '//example.com';
+
+            expect(helpers.convertProtocol(protocolRelativeUrl)).to.equal(protocolRelativeUrl);
         });
     });
 });

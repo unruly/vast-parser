@@ -31,8 +31,19 @@ define(['../../../node_modules/validator/validator'], function(validator) {
                                 .replace(/&amp;/g, '&');
     }
 
+    function convertProtocol(url) {
+        if(url.indexOf('https') === 0) {
+            return url;
+        } else if(url.indexOf('http') === 0) {
+            return url.substr(5);
+        } else {
+            return url;
+        }
+    }
+
     return {
         getSecondsFromTimeString: getSecondsFromTimeString,
-        decodeXML: decodeXML
+        decodeXML: decodeXML,
+        convertProtocol: convertProtocol
     };
 });

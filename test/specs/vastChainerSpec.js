@@ -22,7 +22,11 @@ describe('VAST Chainer', function(){
         mockClock,
         vastErrorCodes,
         VastError,
-        VastResponse;
+        VastResponse,
+        mockHttpsWrapper,
+        mockHttpWrapper,
+        mockHttpsEndpoint,
+        helpers;
 
     beforeEach(function(done) {
         requirejs(['Squire'], function(Squire) {
@@ -43,7 +47,7 @@ describe('VAST Chainer', function(){
                 defer: sinon.stub().returns(mockDeferred)
             };
 
-            injector.store(['jquery', 'vast-parser', 'vastErrorCodes', 'vastError', 'model/vastResponse']);
+            injector.store(['jquery', 'vast-parser', 'vastErrorCodes', 'vastError', 'model/vastResponse', 'util/helpers']);
             injector.mock('q', mockQ);
             injector.require(['vastChainer', 'mocks'], function(module, mocks) {
                 vastChainer = module;
@@ -55,6 +59,11 @@ describe('VAST Chainer', function(){
                 vastErrorCodes = mocks.store['vastErrorCodes'];
                 VastError = mocks.store['vastError'];
                 VastResponse = mocks.store['model/vastResponse'];
+                helpers = mocks.store['util/helpers'];
+
+                sinon.stub(helpers, 'convertProtocol', function(url) {
+                    return url;
+                });
 
                 sinon.stub(VastResponse.prototype, 'addRawResponse');
 
@@ -67,6 +76,8 @@ describe('VAST Chainer', function(){
                         return mockError;
                     } else if(document.childNodes[0].nodeName === 'TWO_WRAPPER_TEST') {
                         return mockTwoWrapperWrapper;
+                    } else if(document.childNodes[0].nodeName === 'HTTPS_WRAPPER') {
+                        return mockHttpsWrapper;
                     } else {
                         return mockWrapper;
                     }
@@ -94,6 +105,32 @@ describe('VAST Chainer', function(){
                     "Wrapper": {
                         "VASTAdTagURI": {
                             "nodeValue": firstWrapperUrl
+                        }
+                    }
+                }
+            }
+        };
+
+        mockHttpsEndpoint = 'https://example.com';
+
+        mockHttpsWrapper = {
+            "VAST": {
+                "Ad": {
+                    "Wrapper": {
+                        "VASTAdTagURI": {
+                            "nodeValue": mockHttpsEndpoint
+                        }
+                    }
+                }
+            }
+        };
+
+        mockHttpWrapper = {
+            "VAST": {
+                "Ad": {
+                    "Wrapper": {
+                        "VASTAdTagURI": {
+                            "nodeValue": 'http://example.com'
                         }
                     }
                 }
@@ -386,6 +423,28 @@ describe('VAST Chainer', function(){
             expect(finalTags.inline).to.equal(mockInline);
             expect(finalTags.wrappers[0]).to.equal(mockTwoWrapperWrapper);
             expect(finalTags.wrappers[1]).to.equal(mockWrapper);
+        });
+
+        it('uses helper to convert protocol of url', function() {
+            var httpUrl = 'http://example.com/vast.xml',
+                mockVastString = '<HTTPS_WRAPPER></HTTPS_WRAPPER>',
+                convertedUrl = 'https://example.com/vast.xml';
+
+            sinon.spy(jQuery, 'ajax');
+            helpers.convertProtocol.restore();
+            sinon.stub(helpers, 'convertProtocol').returns(convertedUrl);
+
+            wrapperConfig.url = httpUrl;
+
+            mockServer.respondWith('GET', httpUrl, [200, {}, mockVastString]);
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+            var inlineRequest = jQuery.ajax.secondCall;
+
+            expect(helpers.convertProtocol).to.have.been.calledOnce;
+            expect(inlineRequest.args[0].url).to.equal(convertedUrl);
         });
 
         describe('with extra params', function() {

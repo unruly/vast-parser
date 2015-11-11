@@ -1,5 +1,5 @@
-define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './model/vastResponse'],
-    function($, vastParser, Q, vastErrorCodes, VastError, VastResponse) {
+define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './model/vastResponse', './util/helpers'],
+    function($, vastParser, Q, vastErrorCodes, VastError, VastResponse, helpers) {
 
         var AJAX_TIMEOUT = 10000,
             vastRequestCounter = 0,
@@ -99,7 +99,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
 
                     childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
                     nextRequestConfig = {
-                        url: childTagUri,
+                        url: helpers.convertProtocol(childTagUri),
                         extraParams: vastConfig.extraParams,
                         corsCookieDomains: vastConfig.corsCookieDomains
                     };

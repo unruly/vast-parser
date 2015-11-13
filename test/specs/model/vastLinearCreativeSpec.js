@@ -41,6 +41,18 @@ describe('VAST Linear Creative', function() {
                                                         "nodeValue": "http://example.com/video-click2?d=[CACHEBUSTER]"
                                                     }
                                                 ]
+                                            },
+                                            TrackingEvents: {
+                                                Tracking: [
+                                                    {
+                                                        "@event": "midpoint",
+                                                        nodeValue: "https://example.com/blank.gif?t=midpoint1"
+                                                    },
+                                                    {
+                                                        "@event": "complete",
+                                                        nodeValue: "//example.com/blank.gif?t=complete"
+                                                    }
+                                                ]
                                             }
                                         }
                                     }]
@@ -86,6 +98,18 @@ describe('VAST Linear Creative', function() {
                                                     },
                                                     {
                                                         "nodeValue": "http://example.com/video-click4?d=[CACHEBUSTER]"
+                                                    }
+                                                ]
+                                            },
+                                            TrackingEvents: {
+                                                Tracking: [
+                                                    {
+                                                        "@event": "midpoint",
+                                                        nodeValue: "http://example.com/blank.gif?t=midpoint2"
+                                                    },
+                                                    {
+                                                        "@event": "midpoint",
+                                                        nodeValue: "//example.com/blank.gif?t=midpoint3"
                                                     }
                                                 ]
                                             }
@@ -160,6 +184,18 @@ describe('VAST Linear Creative', function() {
                                         },
                                         "AdParameters": {
                                             "nodeValue": "ad parameter"
+                                        },
+                                        TrackingEvents: {
+                                            Tracking: [
+                                                {
+                                                    "@event": "midpoint",
+                                                    nodeValue: "//example.com/blank.gif?t=midpoint4"
+                                                },
+                                                {
+                                                    "@event": "withInvalidURL",
+                                                    nodeValue: "not!a!valid!url"
+                                                }
+                                            ]
                                         }
                                     }
                                 }
@@ -589,6 +625,50 @@ describe('VAST Linear Creative', function() {
                 adParameters = linearCreative.getAdParameters();
 
                 expect(adParameters).to.equal(0);
+            });
+        });
+
+        describe('getTrackingEvents', function() {
+            it('should return all tracking events for event midpoint', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    trackingEvents;
+
+                trackingEvents = linearCreative.getTrackingEvents('midpoint');
+
+                expect(trackingEvents.length).to.be.equal(4);
+                expect(trackingEvents[0]).to.equal('//example.com/blank.gif?t=midpoint4');
+                expect(trackingEvents[1]).to.equal('https://example.com/blank.gif?t=midpoint1');
+                expect(trackingEvents[2]).to.equal('//example.com/blank.gif?t=midpoint2');
+                expect(trackingEvents[3]).to.equal('//example.com/blank.gif?t=midpoint3');
+            });
+
+            it('should return all tracking events for event complete', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    trackingEvents;
+
+                trackingEvents = linearCreative.getTrackingEvents('complete');
+
+                expect(trackingEvents.length).to.be.equal(1);
+                expect(trackingEvents[0]).to.equal('//example.com/blank.gif?t=complete')
+
+            });
+
+            it('should return empty array for events that can\'t be found', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    trackingEvents;
+
+                trackingEvents = linearCreative.getTrackingEvents('something');
+
+                expect(trackingEvents.length).to.be.equal(0);
+            });
+
+            it('should discard events with invalid URLs', function() {
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    trackingEvents;
+
+                trackingEvents = linearCreative.getTrackingEvents('withInvalidURL');
+
+                expect(trackingEvents.length).to.be.equal(0);
             });
         });
     });

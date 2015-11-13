@@ -1,4 +1,4 @@
-define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], function(objectUtil, helpers, VastMediaFile) {
+define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../../../node_modules/validator/validator'], function(objectUtil, helpers, VastMediaFile, validator) {
     function VastLinearCreative(vastResponse) {
         this.vastResponse = vastResponse;
         this.linearInline =  objectUtil.getFromObjectPath(this.vastResponse, 'inline.VAST.Ad.InLine.Creatives.Creative.Linear');
@@ -19,6 +19,24 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
 
     VastLinearCreative.prototype.getClickThrough = function getClickThrough() {
         return objectUtil.getFromObjectPath(this.linearInline, 'VideoClicks.ClickThrough.nodeValue');
+    };
+
+    VastLinearCreative.prototype.getTrackingEvents = function getTrackingEvents(eventName) {
+
+        function getAllTrackingEvents() {
+            return objectUtil.getArrayFromObjectPath(this.linearInline, 'TrackingEvents.Tracking')
+                .concat(objectUtil.getArrayFromObjectPath(this.linearWrappers, 'TrackingEvents.Tracking'));
+        }
+
+        this.trackingEvents = this.trackingEvents || getAllTrackingEvents.call(this);
+
+        return this.trackingEvents
+            .filter(function(trackingObject) {
+                return trackingObject['@event'] === eventName && validator.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
+            })
+            .map(function(trackingObject) {
+                return helpers.convertProtocol(trackingObject.nodeValue);
+            });
     };
 
     VastLinearCreative.prototype.getAdParameters = function getAdParameters() {

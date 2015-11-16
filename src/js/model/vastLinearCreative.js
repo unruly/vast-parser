@@ -10,11 +10,25 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../.
         return helpers.getSecondsFromTimeString(stringTime);
     };
 
-    VastLinearCreative.prototype.getClickTrackers = function getClickTrackers() {
-        var wrapperClickTracking = objectUtil.getArrayFromObjectPath(this.linearWrappers, 'VideoClicks.ClickTracking.nodeValue'),
-            inlineClickTracking = objectUtil.getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking.nodeValue');
+    VastLinearCreative.prototype.getClickTrackers = function getClickTrackers(clickTrackerId) {
+        var wrapperClickTracking = objectUtil.getArrayFromObjectPath(this.linearWrappers, 'VideoClicks.ClickTracking'),
+            inlineClickTracking = objectUtil.getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking'),
+            allClickTracking = inlineClickTracking.concat(wrapperClickTracking);
 
-        return inlineClickTracking.concat(wrapperClickTracking);
+        return allClickTracking
+            .filter(function(trackingObject) {
+                return validator.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
+            })
+            .filter(function(trackingObject) {
+                if ("undefined" === typeof trackingObject['@id']) {
+                    return true;
+                }
+
+                return clickTrackerId ? trackingObject['@id'] === clickTrackerId : true;
+            })
+            .map(function(trackingObject) {
+                return helpers.convertProtocol(trackingObject.nodeValue);
+            });
     };
 
     VastLinearCreative.prototype.getClickThrough = function getClickThrough() {

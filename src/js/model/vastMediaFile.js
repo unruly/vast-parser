@@ -1,7 +1,7 @@
-define(['../util/objectUtil'], function(objectUtil) {
+define(['../util/objectUtil', '../util/helpers'], function(objectUtil, helpers) {
 
     function VastMediaFile(mediaFileXml) {
-        this.url = objectUtil.getFromObjectPath(mediaFileXml, 'nodeValue');
+        this.url = helpers.convertProtocol(objectUtil.getFromObjectPath(mediaFileXml, 'nodeValue'));
         this.apiFramework = objectUtil.getFromObjectPath(mediaFileXml, '@apiFramework');
         this.type = objectUtil.getFromObjectPath(mediaFileXml, '@type');
         this.width = objectUtil.getIntegerFromObjectPath(mediaFileXml, '@width');

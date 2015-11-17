@@ -11,15 +11,37 @@ describe('VAST Media File', function() {
     });
 
     describe('url property', function() {
-        it('should return URL from MediaFile', function() {
+        it('should return URL from MediaFile as it was if it had https:// protocol in the XML', function() {
             var mediaFile,
                 xmlData = {
-                    nodeValue: 'videoFile'
+                    nodeValue: 'https://example.com/videoFile'
                 };
 
             mediaFile = new VastMediaFile(xmlData);
 
-            expect(mediaFile.url).to.equal('videoFile');
+            expect(mediaFile.url).to.equal('https://example.com/videoFile');
+        });
+
+        it('should return URL from MediaFile as protocol relative if it had http:// in the XML', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: 'http://example.com/videoFile'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.url).to.equal('//example.com/videoFile');
+        });
+
+        it('should return URL from MediaFile as it was if the URL was protocol relative in the XML', function() {
+            var mediaFile,
+                xmlData = {
+                    nodeValue: '//example.com/videoFile'
+                };
+
+            mediaFile = new VastMediaFile(xmlData);
+
+            expect(mediaFile.url).to.equal('//example.com/videoFile');
         });
     });
 

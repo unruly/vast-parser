@@ -460,7 +460,7 @@ describe('VAST Linear Creative', function() {
 
                 expect(mediaFiles.length).to.equal(2);
                 expect(mediaFiles[0].url).to.equal('videoUrl');
-                expect(mediaFiles[1].url).to.equal('http://example.com/video.mp4');
+                expect(mediaFiles[1].url).to.equal('//example.com/video.mp4');
             });
 
             it('should return all MediaFile objects when an empty filter is supplied', function() {
@@ -472,7 +472,7 @@ describe('VAST Linear Creative', function() {
 
                 expect(mediaFiles.length).to.equal(2);
                 expect(mediaFiles[0].url).to.equal('videoUrl');
-                expect(mediaFiles[1].url).to.equal('http://example.com/video.mp4');
+                expect(mediaFiles[1].url).to.equal('//example.com/video.mp4');
             });
 
             it('should return filtered array of MediaFile objects', function() {
@@ -489,7 +489,7 @@ describe('VAST Linear Creative', function() {
                 mediaFiles = linearCreative.getMediaFiles(filter);
 
                 expect(mediaFiles.length).to.equal(1);
-                expect(mediaFiles[0].url).to.equal('http://example.com/expected.mp4');
+                expect(mediaFiles[0].url).to.equal('//example.com/expected.mp4');
             });
         });
 
@@ -552,7 +552,7 @@ describe('VAST Linear Creative', function() {
                 mediaFiles = linearCreative.getFlashVPAIDMediaFiles();
 
                 expect(mediaFiles.length).to.equal(1);
-                expect(mediaFiles[0].url).to.equal('http://example.com/vpaid.swf');
+                expect(mediaFiles[0].url).to.equal('//example.com/vpaid.swf');
             });
         });
 
@@ -614,7 +614,7 @@ describe('VAST Linear Creative', function() {
                 mediaFiles = linearCreative.getJavascriptVPAIDMediaFiles();
 
                 expect(mediaFiles.length).to.equal(1);
-                expect(mediaFiles[0].url).to.equal('http://example.com/vpaid.js');
+                expect(mediaFiles[0].url).to.equal('//example.com/vpaid.js');
             });
         });
 
@@ -704,7 +704,7 @@ describe('VAST Linear Creative', function() {
                 mediaFiles = linearCreative.getMp4MediaFiles();
 
                 expect(mediaFiles.length).to.equal(1);
-                expect(mediaFiles[0].url).to.equal('http://example.com/vpaid.mp4');
+                expect(mediaFiles[0].url).to.equal('//example.com/vpaid.mp4');
             });
         });
 

@@ -1,4 +1,4 @@
-define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../../../node_modules/validator/validator'], function(objectUtil, helpers, VastMediaFile, validator) {
+define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], function(objectUtil, helpers, VastMediaFile) {
     function VastLinearCreative(vastResponse) {
         this.vastResponse = vastResponse;
         this.linearInline =  objectUtil.getFromObjectPath(this.vastResponse, 'inline.VAST.Ad.InLine.Creatives.Creative.Linear');
@@ -17,7 +17,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../.
 
         return allClickTracking
             .filter(function(trackingObject) {
-                return validator.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
+                return helpers.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
             })
             .filter(function(trackingObject) {
                 if ("undefined" === typeof trackingObject['@id']) {
@@ -46,7 +46,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../.
 
         return this.trackingEvents
             .filter(function(trackingObject) {
-                return trackingObject['@event'] === eventName && validator.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
+                return trackingObject['@event'] === eventName && helpers.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
             })
             .map(function(trackingObject) {
                 return helpers.convertProtocol(trackingObject.nodeValue);

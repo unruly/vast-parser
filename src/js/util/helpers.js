@@ -44,6 +44,7 @@ define(['../../../node_modules/validator/validator'], function(validator) {
     return {
         getSecondsFromTimeString: getSecondsFromTimeString,
         decodeXML: decodeXML,
-        convertProtocol: convertProtocol
+        convertProtocol: convertProtocol,
+        isURL: validator.isURL
     };
 });

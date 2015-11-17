@@ -1,4 +1,4 @@
-define(['../../../node_modules/validator/validator', '../util/objectUtil', './vastLinearCreative', './vastExtension', './vastModelFactory'], function(validator, objectUtil, VastLinearCreative, VastExtension, vastModelFactory) {
+define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vastExtension', './vastModelFactory'], function(helpers, objectUtil, VastLinearCreative, VastExtension, vastModelFactory) {
 
     function VastResponse(vastChain) {
         this.wrappers = [];
@@ -14,7 +14,7 @@ define(['../../../node_modules/validator/validator', '../util/objectUtil', './va
     }
 
     function isValidURL(url) {
-        return validator.isURL(url, { allow_protocol_relative_urls: true });
+        return helpers.isURL(url, { allow_protocol_relative_urls: true });
     }
 
     VastResponse.prototype.getImpressions = function() {

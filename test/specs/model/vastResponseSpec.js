@@ -3,6 +3,7 @@ describe('VAST Response', function() {
     var VastResponse,
         mockVastTags,
         mockVastLinearCreative,
+        mockVastNonLinearCreative,
         VastExtension,
         mockVastModelFactory;
 
@@ -264,12 +265,15 @@ describe('VAST Response', function() {
 
             injector
                 .store('model/vastLinearCreative')
+                .store('model/vastNonLinearCreative')
                 .store('model/vastExtension')
                 .mock('model/vastModelFactory', mockVastModelFactory)
                 .require(['model/vastResponse', 'mocks'], function(module, mocks) {
                     var mockVastLinearCreativeModule =  mocks.store['model/vastLinearCreative'];
+                    var mockVastNonLinearCreativeModule =  mocks.store['model/vastNonLinearCreative'];
                     VastResponse = module;
                     mockVastLinearCreative = sinon.stub(mockVastLinearCreativeModule, 'VastLinearCreative');
+                    mockVastNonLinearCreative = sinon.stub(mockVastNonLinearCreativeModule, 'VastNonLinearCreative');
                     VastExtension = mocks.store['model/vastExtension'];
                     done();
             });
@@ -399,6 +403,33 @@ describe('VAST Response', function() {
             var vastResponse = new VastResponse(mockVastTags);
 
             expect(vastResponse.getLinearCreative()).to.be.undefined;
+        });
+    });
+
+    describe('getNonLinearCreative', function() {
+        it('should get the nonlinear creative using the Vast Response', function() {
+            var vastResponse = new VastResponse(mockVastTags);
+
+            expect(vastResponse.getNonLinearCreative()).to.be.an.instanceOf(mockVastNonLinearCreative);
+            expect(mockVastNonLinearCreative).to.be.calledWithNew;
+            expect(mockVastNonLinearCreative).to.be.calledWith(vastResponse);
+        });
+
+        it('should not instantiate VastNonLinearCreative multiple times even if getNonLinearCreative called multiple times', function() {
+            var vastResponse = new VastResponse(mockVastTags);
+
+            vastResponse.getNonLinearCreative();
+            vastResponse.getNonLinearCreative();
+
+            expect(mockVastNonLinearCreative).to.be.calledOnce;
+        });
+
+        it('should return undefined when no nonLinear creative defined in the Vast Response', function() {
+            mockVastTags.inline.VAST.Ad.InLine.Creatives.Creative.shift();
+
+            var vastResponse = new VastResponse(mockVastTags);
+
+            expect(vastResponse.getNonLinearCreative()).to.be.undefined;
         });
     });
 

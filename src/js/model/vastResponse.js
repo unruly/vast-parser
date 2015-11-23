@@ -1,4 +1,4 @@
-define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vastExtension', './vastModelFactory'], function(helpers, objectUtil, VastLinearCreative, VastExtension, vastModelFactory) {
+define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vastNonLinearCreative', './vastExtension', './vastModelFactory'], function(helpers, objectUtil, VastLinearCreative, VastNonLinearCreative, VastExtension, vastModelFactory) {
 
     function VastResponse(vastChain) {
         this.wrappers = [];
@@ -37,6 +37,17 @@ define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vast
             }
         }
         return this.linearCreative;
+    };
+
+    VastResponse.prototype.getNonLinearCreative = function() {
+        if (!this.nonLinearCreative) {
+            var hasNonLinearCreative = objectUtil.getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.NonLinearAds');
+
+            if (hasNonLinearCreative) {
+                this.nonLinearCreative = new VastNonLinearCreative.VastNonLinearCreative(this);
+            }
+        }
+        return this.nonLinearCreative;
     };
 
     VastResponse.prototype.getRawResponses = function() {

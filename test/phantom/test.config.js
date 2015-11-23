@@ -18,6 +18,7 @@ require([
     '../specs/model/vastResponseSpec.js',
     '../specs/util/objectUtilSpec.js',
     '../specs/model/vastLinearCreativeSpec.js',
+    '../specs/model/vastNonLinearCreativeSpec.js',
     '../specs/util/helpersSpec.js',
     '../specs/model/vastExtensionSpec.js',
     '../specs/model/vastMediaFileSpec.js'

@@ -75,7 +75,7 @@ define(['./xml-parser'], function(xmlParser) {
 
     function ensureArraysOnCreatives(vastInnerObject) {
         var creative = vastInnerObject.Creatives.Creative,
-            nonLinearCreatives = filter(creative, function(item) { return item.NonLinearAds;}, creative),
+            nonLinearCreatives = filter(creative, function(item) { return item.NonLinearAds && item.NonLinearAds.NonLinear; }, creative),
             linearCreatives = filter(creative, function(item) { return item.Linear; }, creative);
 
         forEach(nonLinearCreatives, function(creative) {

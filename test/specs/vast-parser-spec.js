@@ -381,6 +381,18 @@ describe('VAST Parser', function(){
             });
         });
 
+        it('doesnt break when VAST without nonlinear provided', function(done) {
+            var wrapperWithNoCreatives = 'wrappers/vast_wrapper_no-nonlinear.xml';
+
+            loadTestXML(wrapperWithNoCreatives, function(vastDocument) {
+                var obj = vastParser.parse(vastDocument);
+
+                expect(obj.VAST.Ad.Wrapper.Creatives).to.not.be.undefined;
+
+                done();
+            });
+        });
+
         it('parses custom array from VAST Wrapper containing custom extensions', function(done) {
             var wrapperWithCustomElement = 'wrappers/vast_wrapper_with-custom-element.xml';
 

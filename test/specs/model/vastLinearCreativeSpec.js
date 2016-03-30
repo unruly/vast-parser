@@ -300,10 +300,6 @@ describe('VAST Linear Creative', function() {
     });
 
     describe('getVideoClickTracking', function() {
-        beforeEach(function(){
-
-        });
-
         it('should return an array of all click trackers if no parameter passed', function() {
             var result,
                 linearCreative = new VastLinearCreative(mockVastResponse);
@@ -354,7 +350,7 @@ describe('VAST Linear Creative', function() {
             expect(result).to.contain('https://example.com/post_video_click2?d=[CACHEBUSTER]');
             expect(result).to.contain('https://example.com/wrapper/post_video_click?d=[CACHEBUSTER]');
         });
-        
+
         it('should discard invalid URLs', function() {
             var result,
                 linearCreative;
@@ -377,7 +373,6 @@ describe('VAST Linear Creative', function() {
             expect(result.length).to.equal(1);
             expect(result).to.contain('//example.com/valid');
         });
-        
 
         it('should keep https:// url protocols', function() {
             var result,
@@ -440,6 +435,170 @@ describe('VAST Linear Creative', function() {
             expect(result.length).to.equal(2);
             expect(result).to.contain('//example.com/video-click5?d=[CACHEBUSTER]');
             expect(result).to.contain('//example.com/wrapper/video-click5?d=[CACHEBUSTER]');
+        });
+    });
+
+    describe('getAllClickTrackersAsMap', function(){
+        it('should return a map of all click tracking events grouped by @id', function () {
+            overrideMockInlineAndWrapperClickTracking(
+                [
+                    {
+                        "nodeValue": "http://example.com/event2",
+                        "@id": "event2"
+                    },
+                    {
+                        "nodeValue": "http://example.com/unknown1"
+                    }
+                ],
+                [
+                    {
+                        "nodeValue": "http://example.com/event1",
+                        "@id": "event1"
+                    },
+                    {
+                        "nodeValue": "http://example.com/unknown2"
+                    },
+                    {
+                        "nodeValue": "http://example.com/event2b",
+                        "@id": "event2"
+                    }
+                ]
+            );
+
+            var result,
+                linearCreative = new VastLinearCreative(mockVastResponse);
+
+            var expectedResult = {
+                "unknown": [
+                    "//example.com/unknown1",
+                    "//example.com/unknown2"
+                ],
+                "event1": [
+                    "//example.com/event1"
+                ],
+                "event2": [
+                    "//example.com/event2",
+                    "//example.com/event2b"
+                ]
+            };
+
+            result = linearCreative.getAllClickTrackersAsMap();
+
+            expect(result).to.have.keys(["unknown", "event1", "event2"]);
+            Object.keys(expectedResult).forEach(function(group){
+               expect(result[group]).to.have.members(expectedResult[group]);
+            });
+        });
+
+        it('should group events without @id as "unknown"', function(){
+            var result,
+                linearCreative = new VastLinearCreative(mockVastResponse);
+
+            var expectedResult = {
+                "unknown" : [
+                    "//example.com/video-click1?d=[CACHEBUSTER]",
+                    "//example.com/video-click2?d=[CACHEBUSTER]",
+                    "//example.com/video-click3?d=[CACHEBUSTER]",
+                    "//example.com/video-click4?d=[CACHEBUSTER]",
+                    "//example.com/video-click5?d=[CACHEBUSTER]",
+                    "//example.com/video-click6?d=[CACHEBUSTER]"
+                ]
+            };
+
+            result = linearCreative.getAllClickTrackersAsMap();
+
+            expect(result).to.have.keys(["unknown"]);
+            expect(result.unknown).to.have.members(expectedResult.unknown);
+        });
+
+        it('should discard invalid URLs', function() {
+            var result,
+                linearCreative;
+
+            overrideMockInlineAndWrapperClickTracking(
+                [{
+                    "nodeValue": "an_invalid_url"
+                }],
+                [{
+                    "nodeValue": "http://example.com/valid"
+                },
+                {
+                    "nodeValue": "abc:invalid:url"
+                }]
+            );
+
+            linearCreative = new VastLinearCreative(mockVastResponse);
+            result = linearCreative.getAllClickTrackersAsMap().unknown;
+
+            expect(result).to.have.members(['//example.com/valid']);
+        });
+
+        it('should keep https:// url protocols', function() {
+            var result,
+                linearCreative;
+
+            overrideMockInlineAndWrapperClickTracking(
+                [{
+                    "nodeValue":  "https://example.com/video-click5?d=[CACHEBUSTER]"
+                }],
+                [{
+                    "nodeValue": "https://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                }]
+            );
+
+            linearCreative = new VastLinearCreative(mockVastResponse);
+            result = linearCreative.getAllClickTrackersAsMap().unknown;
+            var expectedResult = [
+                'https://example.com/video-click5?d=[CACHEBUSTER]',
+                'https://example.com/wrapper/video-click5?d=[CACHEBUSTER]'
+            ];
+            expect(result).to.have.members(expectedResult);
+        });
+
+        it('should remove http:// hardcoded url protocols', function() {
+            var result,
+                linearCreative;
+
+            overrideMockInlineAndWrapperClickTracking(
+                [{
+                    "nodeValue":  "http://example.com/video-click5?d=[CACHEBUSTER]"
+                }],
+                [{
+                    "nodeValue": "http://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                }]
+            );
+
+            linearCreative = new VastLinearCreative(mockVastResponse);
+            result = linearCreative.getAllClickTrackersAsMap().unknown;
+
+            var expectedResult = [
+                '//example.com/video-click5?d=[CACHEBUSTER]',
+                '//example.com/wrapper/video-click5?d=[CACHEBUSTER]'
+            ];
+            expect(result).to.have.members(expectedResult);
+        });
+
+        it('should do nothing with protocols independent urls', function() {
+            var result,
+                linearCreative;
+
+            overrideMockInlineAndWrapperClickTracking(
+                [{
+                    "nodeValue":  "//example.com/video-click5?d=[CACHEBUSTER]"
+                }],
+                [{
+                    "nodeValue": "//example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                }]
+            );
+
+            linearCreative = new VastLinearCreative(mockVastResponse);
+            result = linearCreative.getAllClickTrackersAsMap().unknown;
+
+            var expectedResult = [
+                '//example.com/video-click5?d=[CACHEBUSTER]',
+                '//example.com/wrapper/video-click5?d=[CACHEBUSTER]'
+            ];
+            expect(result).to.have.members(expectedResult);
         });
     });
 

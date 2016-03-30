@@ -1,4 +1,8 @@
 define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], function(objectUtil, helpers, VastMediaFile) {
+    function isValidURL(trackingObject) {
+        return helpers.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
+    }
+
     function VastLinearCreative(vastResponse) {
         this.vastResponse = vastResponse;
         this.linearInline =  objectUtil.getFromObjectPath(this.vastResponse, 'inline.VAST.Ad.InLine.Creatives.Creative.Linear');
@@ -16,9 +20,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
             allClickTracking = inlineClickTracking.concat(wrapperClickTracking);
 
         return allClickTracking
-            .filter(function(trackingObject) {
-                return helpers.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
-            })
+            .filter(isValidURL)
             .filter(function(trackingObject) {
                 if ("undefined" === typeof trackingObject['@id']) {
                     return true;
@@ -29,6 +31,28 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
             .map(function(trackingObject) {
                 return helpers.convertProtocol(trackingObject.nodeValue);
             });
+    };
+
+    VastLinearCreative.prototype.getAllClickTrackersAsMap = function getAllClickTrackersAsMap() {
+        var wrapperClickTracking = objectUtil.getArrayFromObjectPath(this.linearWrappers, 'VideoClicks.ClickTracking'),
+            inlineClickTracking = objectUtil.getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking'),
+            allClickTracking = inlineClickTracking.concat(wrapperClickTracking);
+
+        var defaultID = "unknown";
+
+        function byID(trackersMap, trackingObject) {
+            var id = trackingObject["@id"] || defaultID;
+            var url = helpers.convertProtocol(trackingObject.nodeValue);
+            var group = trackersMap[id] || [];
+
+            group = group.concat([url]);
+            trackersMap[id] = group;
+            return trackersMap;
+        }
+
+        return allClickTracking
+            .filter(isValidURL)
+            .reduce(byID, {});
     };
 
     VastLinearCreative.prototype.getClickThrough = function getClickThrough() {

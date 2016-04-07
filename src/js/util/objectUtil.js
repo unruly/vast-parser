@@ -1,24 +1,10 @@
 define([], function() {
-    function getIntegerFromObjectPath(object, path, defaultValue) {
-        var value = getFromObjectPath(object, path, defaultValue);
-
-        value = parseInt(value, 10);
-
-        if (isNaN(value)) {
-            return defaultValue;
-        } else {
-            return value;
-        }
+    function isDefined(element) {
+        return typeof element !== 'undefined' && element !== null;
     }
 
-    function getFromObjectPath(object, path, defaultValue) {
-        var results = getArrayFromObjectPath(object, path);
-
-        if (!isDefined(results[0])) {
-            return defaultValue;
-        }
-
-        return results[0];
+    function flatten(array) {
+        return [].concat.apply([], array);
     }
 
     function getArrayFromObjectPath(object, path) {
@@ -61,19 +47,33 @@ define([], function() {
         return getArrayFromObjectPath(next, tail);
     }
 
+    function getFromObjectPath(object, path, defaultValue) {
+        var results = getArrayFromObjectPath(object, path);
+
+        if (!isDefined(results[0])) {
+            return defaultValue;
+        }
+
+        return results[0];
+    }
+
+    function getIntegerFromObjectPath(object, path, defaultValue) {
+        var value = getFromObjectPath(object, path, defaultValue);
+
+        value = parseInt(value, 10);
+
+        if (isNaN(value)) {
+            return defaultValue;
+        } else {
+            return value;
+        }
+    }
+
     function pluckNodeValue(element) {
         if(!element) {
             return;
         }
         return element.nodeValue;
-    }
-
-    function isDefined(element) {
-        return typeof element !== 'undefined' && element !== null;
-    }
-
-    function flatten(array) {
-        return [].concat.apply([], array);
     }
 
     return {

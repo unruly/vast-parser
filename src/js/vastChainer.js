@@ -5,12 +5,6 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
             vastRequestCounter = 0,
             dispatcher = $({});
 
-        function getVastChain(vastConfig) {
-            var vastResponse = new VastResponse();
-
-            return getVast(vastResponse, vastConfig);
-        }
-
         function addEventListener(eventName, handler) {
             dispatcher.on(eventName, handler);
         }
@@ -155,6 +149,12 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
             $.ajax(settings);
 
             return deferred.promise;
+        }
+
+        function getVastChain(vastConfig) {
+            var vastResponse = new VastResponse();
+
+            return getVast(vastResponse, vastConfig);
         }
 
         return {

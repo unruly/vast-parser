@@ -225,14 +225,14 @@ describe('VAST Chainer', function(){
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
-        it('rejects promise includes VAST Request URL on error message', function(){
+        it('rejects promise includes VAST Request URL and HTTP errorThrown message on error message', function(){
             mockServer.respondWith('GET', firstWrapperUrl, [200, {}, 'This is not XML']);
 
             vastChainer.getVastChain(wrapperConfig);
 
             mockServer.respond();
 
-            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, "VAST Request Failed (parsererror 200) for " + firstWrapperUrl));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, "VAST Request Failed (parsererror 200) with message [Error: Invalid XML: This is not XML] for " + firstWrapperUrl));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 

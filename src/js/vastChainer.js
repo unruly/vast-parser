@@ -105,7 +105,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                 }
             };
 
-            settings.error = function(jqXHR, textStatus) {
+            settings.error = function(jqXHR, textStatus, errorThrown) {
                 var code,
                     requestEndEvent,
                     statusText;
@@ -136,7 +136,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                 });
 
                 dispatcher.trigger(requestEndEvent);
-                deferred.reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') for ' + url));
+                deferred.reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url));
             };
 
             requestStartEvent = $.Event('requestStart', {

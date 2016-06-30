@@ -41,16 +41,8 @@ describe('Helpers Util', function() {
             expect(helpers.getSecondsFromTimeString('')).to.be.undefined;
         });
 
-        it('should return undefined if time is invalid(hours is float)', function() {
-            expect(helpers.getSecondsFromTimeString('12.42:23:10')).to.be.undefined;
-        });
-
         it('should return undefined if time is invalid(not valid vast format)', function() {
             expect(helpers.getSecondsFromTimeString('12:23')).to.be.undefined;
-        });
-
-        it('should return undefined if time is in invalid(contains letters)', function() {
-            expect(helpers.getSecondsFromTimeString('12:23:12a')).to.be.undefined;
         });
 
         it('should return undefined if time undefined', function() {

@@ -1,4 +1,4 @@
-define(['../../../node_modules/validator/validator'], function(validator) {
+define([], function() {
 
     function getSecondsFromTimeString(timeString) {
         var durationInSeconds = 0,
@@ -8,9 +8,7 @@ define(['../../../node_modules/validator/validator'], function(validator) {
             return;
         }
 
-        timeSegments = timeString.split(':').filter(function(timeSegment, i) {
-            return validator.isNumeric(timeSegment) || (i === 2 && validator.isFloat(timeSegment));
-        });
+        timeSegments = timeString.split(':');
 
         if(timeSegments.length !== 3) {
             return;

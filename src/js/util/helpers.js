@@ -41,10 +41,14 @@ define(['../../../node_modules/validator/validator'], function(validator) {
         }
     }
 
+    function isNonEmptyString(string) {
+        return !!string && string.trim().length > 0;
+    }
+
     return {
         getSecondsFromTimeString: getSecondsFromTimeString,
         decodeXML: decodeXML,
         convertProtocol: convertProtocol,
-        isURL: validator.isURL
+        isNonEmptyString: isNonEmptyString
     };
 });

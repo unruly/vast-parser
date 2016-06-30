@@ -1,6 +1,6 @@
 define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], function(objectUtil, helpers, VastMediaFile) {
-    function isValidURL(trackingObject) {
-        return helpers.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
+    function nonEmptyString(trackingObject) {
+        return helpers.isNonEmptyString(trackingObject.nodeValue);
     }
 
     function VastLinearCreative(vastResponse) {
@@ -20,7 +20,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
             allClickTracking = inlineClickTracking.concat(wrapperClickTracking);
 
         return allClickTracking
-            .filter(isValidURL)
+            .filter(nonEmptyString)
             .filter(function(trackingObject) {
                 if ("undefined" === typeof trackingObject['@id']) {
                     return true;
@@ -51,7 +51,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
         }
 
         return allClickTracking
-            .filter(isValidURL)
+            .filter(nonEmptyString)
             .reduce(byID, {});
     };
 
@@ -70,7 +70,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
 
         return this.trackingEvents
             .filter(function(trackingObject) {
-                return trackingObject['@event'] === eventName && helpers.isURL(trackingObject.nodeValue, { allow_protocol_relative_urls: true });
+                return trackingObject['@event'] === eventName && helpers.isNonEmptyString(trackingObject.nodeValue);
             })
             .map(function(trackingObject) {
                 return helpers.convertProtocol(trackingObject.nodeValue);

@@ -360,7 +360,7 @@ describe('VAST Response', function() {
         });
 
         it('does not include Impressions that are invalid URLs', function() {
-            var invalidNodeValue = 'i am invalid';
+            var invalidNodeValue = ' ';
             mockVastTags.wrappers[1].VAST.Ad.Wrapper.Impression[0].nodeValue = invalidNodeValue;
 
             var vastResponse = new VastResponse(mockVastTags);

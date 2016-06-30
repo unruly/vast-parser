@@ -13,15 +13,11 @@ define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vast
         this._vastChain = vastChain;
     }
 
-    function isValidURL(url) {
-        return helpers.isURL(url, { allow_protocol_relative_urls: true });
-    }
-
     VastResponse.prototype.getImpressions = function() {
         var inlineImps = objectUtil.getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Impression.nodeValue'),
             wrapperImps = objectUtil.getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Impression.nodeValue');
 
-        return inlineImps.concat(wrapperImps).filter(isValidURL);
+        return inlineImps.concat(wrapperImps).filter(helpers.isNonEmptyString);
     };
 
     VastResponse.prototype.getAdTitle = function() {

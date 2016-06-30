@@ -193,7 +193,7 @@ describe('VAST Linear Creative', function() {
                                                 },
                                                 {
                                                     "@event": "withInvalidURL",
-                                                    nodeValue: "not!a!valid!url"
+                                                    nodeValue: " "
                                                 }
                                             ]
                                         }
@@ -357,13 +357,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "an_invalid_url"
+                    "nodeValue": " "
                 }],
                 [{
                     "nodeValue": "http://example.com/valid"
-                },
-                {
-                    "nodeValue": "abc:invalid:url"
                 }]
             );
 
@@ -517,13 +514,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "an_invalid_url"
+                    "nodeValue": " "
                 }],
                 [{
                     "nodeValue": "http://example.com/valid"
-                },
-                {
-                    "nodeValue": "abc:invalid:url"
                 }]
             );
 
@@ -997,7 +991,7 @@ describe('VAST Linear Creative', function() {
                 expect(trackingEvents.length).to.be.equal(0);
             });
 
-            it('should discard events with invalid URLs', function() {
+            it('should discard events with blank URLs', function() {
                 var linearCreative = new VastLinearCreative(mockVastResponse),
                     trackingEvents;
 

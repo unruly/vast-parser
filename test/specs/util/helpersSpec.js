@@ -100,4 +100,24 @@ describe('Helpers Util', function() {
             expect(helpers.convertProtocol(protocolRelativeUrl)).to.equal(protocolRelativeUrl);
         });
     });
+
+    describe('isNonEmptyString', function() {
+       it('should return true if non blank string', function() {
+           var url = 'url';
+
+           expect(helpers.isNonEmptyString(url)).to.equal(true);
+       });
+
+        it('should return false if undefined', function() {
+            var url = undefined;
+
+            expect(helpers.isNonEmptyString(url)).to.equal(false);
+        });
+
+        it('should return false if blank string', function() {
+            var url = ' ';
+
+            expect(helpers.isNonEmptyString(url)).to.equal(false);
+        });
+    });
 });

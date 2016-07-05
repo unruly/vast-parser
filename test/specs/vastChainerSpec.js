@@ -8,7 +8,7 @@ describe('VAST Chainer', function(){
         mockNoAds,
         mockInline,
         mockError,
-        mockQ,
+        mockEs6PromiseShim,
         mockDeferred,
         mockPromise,
         targetingUUID = 'ABCDEF-1234',
@@ -34,21 +34,22 @@ describe('VAST Chainer', function(){
 
             mockPromise = {};
             mockPromise.then = sinon.stub().returns(mockPromise);
-            mockPromise.fail = sinon.stub().returns(mockPromise);
-            mockPromise.done = sinon.stub();
+            mockPromise.catch = sinon.stub().returns(mockPromise);
 
             mockDeferred = {
                 reject: sinon.stub(),
-                resolve: sinon.stub(),
-                promise: mockPromise
+                resolve: sinon.stub()
             };
 
-            mockQ = {
-                defer: sinon.stub().returns(mockDeferred)
+            mockEs6PromiseShim = {
+                Promise: function(callback) {
+                    callback(mockDeferred.resolve, mockDeferred.reject);
+                    return mockPromise;
+                }
             };
 
             injector.store(['jquery', 'vast-parser', 'vastErrorCodes', 'vastError', 'model/vastResponse', 'util/helpers']);
-            injector.mock('q', mockQ);
+            injector.mock('es6promise', mockEs6PromiseShim);
             injector.require(['vastChainer', 'mocks'], function(module, mocks) {
                 vastChainer = module;
 

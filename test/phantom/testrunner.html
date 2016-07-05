@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>TESTRUNNER backbone-gcl</title>
-    <link rel="stylesheet" href="../../../node_modules/mocha/mocha.css" />
+    <link rel="stylesheet" href="../../node_modules/mocha/mocha.css" />
 </head>
 <body>
 <div id="mocha"></div>
-<script type="text/javascript" src="../../node_modules/q/q.js"></script>
+<script type="text/javascript" src="../../node_modules/es6-promise/dist/es6-promise.js"></script>
 <script type="text/javascript" src="../../node_modules/mocha/mocha.js"></script>
 <script type="text/javascript" src="../../node_modules/chai/chai.js"></script>
 <script type="text/javascript" src="../../node_modules/sinon-chai/lib/sinon-chai.js"></script>
@@ -54,7 +54,7 @@
     // MOCHA SETUP
     mocha.setup('bdd');
     expect = chai.expect;
-    useSinonAsPromised(sinon, Q.Promise);
+    useSinonAsPromised(sinon, ES6Promise.Promise);
 </script>
 <script data-main="test.config.js" src="../../node_modules/requirejs/require.js"></script>
 </body>

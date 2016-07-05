@@ -18,12 +18,11 @@ describe('VAST Ad Manager', function() {
 
             injector
                 .mock('vastChainer', mockVastChainer)
-                .require(['vastAdManager', 'mocks', 'model/vastResponse', 'vastError', 'q'], function(module, mocks, _VastResponse, _VastError, _Q) {
+                .require(['vastAdManager', 'mocks', 'model/vastResponse', 'vastError'], function(module, mocks, _VastResponse, _VastError) {
                     vastAdManager = module;
                     mockVastChainer.getVastChain.resolves(successResponse);
                     VastError = _VastError;
                     VastResponse = _VastResponse;
-                    Q = _Q;
 
                     successResponse = new VastResponse({
                         wrappers: [{some:"ignoredForNow"}],
@@ -56,11 +55,11 @@ describe('VAST Ad Manager', function() {
 
                 promise = vastAdManager.requestVastChain('http://example.com/vast.xml');
 
-                return Q.all([
-                    expect(promise).to.eventually.be.an.instanceof(VastResponse),
-                    expect(promise).to.eventually.have.property('wrappers').that.deep.equals(successResponse.wrappers),
-                    expect(promise).to.eventually.have.property('inline').that.deep.equals(successResponse.inline)
-                ]);
+                return promise.then(function(result) {
+                    expect(result).to.be.an.instanceof(VastResponse);
+                    expect(result).to.have.property('wrappers').that.deep.equals(successResponse.wrappers);
+                    expect(result).to.have.property('inline').that.deep.equals(successResponse.inline);
+                });
             });
 
         });

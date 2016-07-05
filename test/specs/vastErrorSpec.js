@@ -1,14 +1,12 @@
 describe('VAST Error', function() {
-    var Q,
-        VastError,
+    var VastError,
         VastResponse;
 
     beforeEach(function(done) {
         requirejs(['Squire'], function(Squire) {
             var injector = new Squire();
 
-            injector.require(['q', 'vastError', 'model/vastResponse'], function(q, vastErrorClass, VastResponseClass) {
-                Q = q;
+            injector.require(['vastError', 'model/vastResponse'], function(vastErrorClass, VastResponseClass) {
                 VastError = vastErrorClass;
                 VastResponse = VastResponseClass;
 
@@ -47,26 +45,6 @@ describe('VAST Error', function() {
                 vastError = new VastError(100, vastResponse, 'My error message');
 
             expect(vastError.vastResponse).to.equal(vastResponse);
-        });
-    });
-
-    describe('working with chai', function () {
-        it("should be possible check the type only", function () {
-            var deferred = Q.defer(),
-                promise = deferred.promise;
-
-            deferred.reject(new VastError(300));
-
-            return expect(promise).to.be.rejectedWith(VastError);
-        });
-
-        it("should be possible check the code", function () {
-            var deferred = Q.defer(),
-                promise = deferred.promise;
-
-            deferred.reject(new VastError(100));
-
-            return expect(promise).to.be.rejectedWith(VastError, "100");
         });
     });
 

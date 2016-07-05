@@ -1,6 +1,6 @@
 {
   "name": "vast-parser",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Parses VAST files into plain javascript objects",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "squirejs": "~0.2.1"
   },
   "dependencies": {
-    "jquery": "^1.11.2",
-    "q": "^1.1.2"
+    "es6-promise": "^3.2.1",
+    "jquery": "^1.11.2"
   }
 }

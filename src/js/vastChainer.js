@@ -1,5 +1,5 @@
-define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './model/vastResponse', './util/helpers'],
-    function($, vastParser, Q, vastErrorCodes, VastError, VastResponse, helpers) {
+define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastError', './model/vastResponse', './util/helpers'],
+    function($, vastParser, promiseShim, vastErrorCodes, VastError, VastResponse, helpers) {
 
         var AJAX_TIMEOUT = 10000,
             vastRequestCounter = 0,
@@ -16,8 +16,14 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
         }
 
         function getVast(vastResponse, vastConfig) {
+
             var url = vastConfig.url,
-                deferred = Q.defer(),
+                resolve,
+                reject,
+                promise = new promiseShim.Promise(function(_resolve, _reject) {
+                    resolve = _resolve;
+                    reject = _reject;
+                }),
                 currentRequestNumber = vastRequestCounter++,
                 requestStartEvent,
                 settings;
@@ -65,7 +71,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
 
                 if (!data) {
                     dispatcher.trigger(requestEndEvent);
-                    deferred.reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse));
+                    reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse));
                     return;
                 }
 
@@ -73,20 +79,20 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
 
                 if (vastTag.VAST.Error) {
                     dispatcher.trigger(requestEndEvent);
-                    deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'));
+                    reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'));
                     return;
                 }
 
                 if (!vastTag.VAST.Ad) {
                     dispatcher.trigger(requestEndEvent);
-                    deferred.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads'));
+                    reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads'));
                     return;
                 }
 
                 if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
                     vastResponse.inline = vastTag;
                     dispatcher.trigger(requestEndEvent);
-                    deferred.resolve(vastResponse);
+                    resolve(vastResponse);
                 } else {
                     vastResponse.wrappers.push(vastTag);
                     dispatcher.trigger(requestEndEvent);
@@ -99,9 +105,8 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                     };
 
                     getVast(vastResponse, nextRequestConfig)
-                        .then(deferred.resolve)
-                        .fail(deferred.reject)
-                        .done();
+                        .then(resolve)
+                        ['catch'](reject);
                 }
             };
 
@@ -136,7 +141,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
                 });
 
                 dispatcher.trigger(requestEndEvent);
-                deferred.reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url));
+                reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url));
             };
 
             requestStartEvent = $.Event('requestStart', {
@@ -148,7 +153,7 @@ define(['jquery', './vast-parser', 'q', './vastErrorCodes', './vastError', './mo
 
             $.ajax(settings);
 
-            return deferred.promise;
+            return promise;
         }
 
         function getVastChain(vastConfig) {

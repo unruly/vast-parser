@@ -4,7 +4,7 @@ require.config({
         Squire: '../../node_modules/squirejs/src/Squire',
         text: '../../node_modules/requirejs-text/text',
         jquery: '../../node_modules/jquery/dist/jquery',
-        q: '../../node_modules/q/q'
+        es6promise: '../../node_modules/es6-promise/dist/es6-promise'
     }
 });
 

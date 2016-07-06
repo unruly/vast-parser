@@ -1,4 +1,4 @@
-define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], function(objectUtil, helpers, VastMediaFile) {
+define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../model/vastIcon'], function(objectUtil, helpers, VastMediaFile, VastIcon) {
     function nonEmptyString(trackingObject) {
         return helpers.isNonEmptyString(trackingObject.nodeValue);
     }
@@ -86,6 +86,14 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile'], func
         }
 
         return adParameters;
+    };
+
+    VastLinearCreative.prototype.getIcons = function getIcons() {
+        return objectUtil.getArrayFromObjectPath(this.linearWrappers, 'Icons.Icon')
+                            .concat(objectUtil.getArrayFromObjectPath(this.linearInline, 'Icons.Icon'))
+                            .map(function (vastIconJSXml) {
+                                return new VastIcon(vastIconJSXml);
+                            });
     };
 
     VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {

@@ -20,7 +20,8 @@ require([
     '../specs/model/vastNonLinearCreativeSpec.js',
     '../specs/util/helpersSpec.js',
     '../specs/model/vastExtensionSpec.js',
-    '../specs/model/vastMediaFileSpec.js'
+    '../specs/model/vastMediaFileSpec.js',
+    '../specs/model/vastIconSpec.js'
 ], function() {
     if (window.mochaPhantomJS) {
         mochaPhantomJS.run();

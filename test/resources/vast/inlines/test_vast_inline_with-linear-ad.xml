@@ -48,10 +48,25 @@
                             lement1","element2"],"testArrayWithObjects":[{"key":"value"},{"key":"value"}]}
                             ]]>
                         </AdParameters>
+                        <Icons>
+                            <Icon program="AdChoices" width="60" height="20" xPosition="right" yPosition="top">
+                                <StaticResource creativeType="image/jpeg"><![CDATA[http://example.com/inline/icon.jpeg]]></StaticResource>
+                                <IconClicks>
+                                    <IconClickThrough>
+                                        <![CDATA[http://example.com/inline/icon-click-through]]>
+                                    </IconClickThrough>
+                                    <IconClickTracking>
+                                        <![CDATA[http://example.com/inline/icon-click-tracking-1]]>
+                                    </IconClickTracking>
+                                    <IconClickTracking>
+                                        <![CDATA[http://example.com/inline/icon-click-tracking-2]]>
+                                    </IconClickTracking>
+                                </IconClicks>
+                            </Icon>
+                        </Icons>
                     </Linear>
                 </Creative>
             </Creatives>
-
         </InLine>
     </Ad>
 </VAST>

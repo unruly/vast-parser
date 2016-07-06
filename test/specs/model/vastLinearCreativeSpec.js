@@ -35,7 +35,7 @@ describe('VAST Linear Creative', function() {
                                             "VideoClicks": {
                                                 "ClickTracking": [
                                                     {
-                                                        "nodeValue":  "http://example.com/video-click1?d=[CACHEBUSTER]"
+                                                        "nodeValue": "http://example.com/video-click1?d=[CACHEBUSTER]"
                                                     },
                                                     {
                                                         "nodeValue": "http://example.com/video-click2?d=[CACHEBUSTER]"
@@ -53,6 +53,27 @@ describe('VAST Linear Creative', function() {
                                                         nodeValue: "//example.com/blank.gif?t=complete"
                                                     }
                                                 ]
+                                            },
+                                            "Icons": {
+                                                "Icon": [{
+                                                    "@program": "AdChoices",
+                                                    "@width": "60",
+                                                    "@height": "20",
+                                                    "@xPosition": "right",
+                                                    "@yPosition": "top",
+                                                    "StaticResource": {
+                                                        "@creativeType": "image/jpeg",
+                                                        "nodeValue": "http://example.com/wrapper/icon.jpeg"
+                                                    },
+                                                    "IconClicks": {
+                                                        "IconClickThrough": {
+                                                            "nodeValue": "http://example.com/wrapper/icon-click-through"
+                                                        },
+                                                        "IconClickTracking": {
+                                                            "nodeValue": "http://example.com/wrapper/icon-click-tracking"
+                                                        }
+                                                    }
+                                                }]
                                             }
                                         }
                                     }]
@@ -94,7 +115,7 @@ describe('VAST Linear Creative', function() {
                                             "VideoClicks": {
                                                 "ClickTracking": [
                                                     {
-                                                        "nodeValue":  "http://example.com/video-click3?d=[CACHEBUSTER]"
+                                                        "nodeValue": "http://example.com/video-click3?d=[CACHEBUSTER]"
                                                     },
                                                     {
                                                         "nodeValue": "http://example.com/video-click4?d=[CACHEBUSTER]"
@@ -142,8 +163,8 @@ describe('VAST Linear Creative', function() {
                             },
                             "Impression":
                                 [{
-                                    "nodeValue": "http://example.com/impression_two_one"
-                                }],
+                                "nodeValue": "http://example.com/impression_two_one"
+                            }],
                             "Creatives": {
                                 "Creative": [{
                                     "NonLinearAds": {
@@ -165,7 +186,7 @@ describe('VAST Linear Creative', function() {
                                             nodeValue: '00:00:40'
                                         },
                                         "MediaFiles": {
-                                            "MediaFile":[{
+                                            "MediaFile": [{
                                                 'nodeValue': 'videoUrl'
                                             }]
                                         },
@@ -175,7 +196,7 @@ describe('VAST Linear Creative', function() {
                                             },
                                             "ClickTracking": [
                                                 {
-                                                    "nodeValue":  "http://example.com/video-click5?d=[CACHEBUSTER]"
+                                                    "nodeValue": "http://example.com/video-click5?d=[CACHEBUSTER]"
                                                 },
                                                 {
                                                     "nodeValue": "http://example.com/video-click6?d=[CACHEBUSTER]"
@@ -194,6 +215,48 @@ describe('VAST Linear Creative', function() {
                                                 {
                                                     "@event": "withInvalidURL",
                                                     nodeValue: " "
+                                                }
+                                            ]
+                                        },
+                                        "Icons": {
+                                            "Icon": [
+                                                {
+                                                    "@program": "AdChoices",
+                                                    "@width": "60",
+                                                    "@height": "20",
+                                                    "@xPosition": "right",
+                                                    "@yPosition": "top",
+                                                    "StaticResource": {
+                                                        "@creativeType": "image/jpeg",
+                                                        "nodeValue": "http://example.com/inline/icon.jpeg"
+                                                    },
+                                                    "IconClicks": {
+                                                        "IconClickThrough": {
+                                                            "nodeValue": "http://example.com/inline/icon-click-through"
+                                                        },
+                                                        "IconClickTracking": {
+                                                            "nodeValue": "http://example.com/inline/icon-click-tracking"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "@program": "AdChoices",
+                                                    "@width": "60",
+                                                    "@height": "20",
+                                                    "@xPosition": "right",
+                                                    "@yPosition": "top",
+                                                    "StaticResource": {
+                                                        "@creativeType": "image/jpeg",
+                                                        "nodeValue": "http://example.com/inline/icon-2.jpeg"
+                                                    },
+                                                    "IconClicks": {
+                                                        "IconClickThrough": {
+                                                            "nodeValue": "http://example.com/inline/icon-click-through-2"
+                                                        },
+                                                        "IconClickTracking": {
+                                                            "nodeValue": "http://example.com/inline/icon-click-tracking-2"
+                                                        }
+                                                    }
                                                 }
                                             ]
                                         }
@@ -255,26 +318,26 @@ describe('VAST Linear Creative', function() {
 
         inlineTracking = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative.Linear.VideoClicks.ClickTracking;
 
-        inlineClickTrackers.forEach(function(clickTracker) {
+        inlineClickTrackers.forEach(function (clickTracker) {
             inlineTracking.push(clickTracker);
         });
 
         wrapperTracking = mockVastResponse.wrappers[0].VAST.Ad.Wrapper.Creatives.Creative.Linear.VideoClicks.ClickTracking;
 
-        wrapperClickTrackers.forEach(function(clickTracker) {
+        wrapperClickTrackers.forEach(function (clickTracker) {
             wrapperTracking.push(clickTracker);
         });
     }
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         mockVastResponse = getVastResponse();
 
-        requirejs(['Squire'], function(Squire) {
+        requirejs(['Squire'], function (Squire) {
             var injector = new Squire();
 
             injector
                 .store(['util/helpers'])
-                .require(['model/vastLinearCreative', 'mocks'], function(module, mocks) {
+                .require(['model/vastLinearCreative', 'mocks'], function (module, mocks) {
                     VastLinearCreative = module.VastLinearCreative;
                     helpers = mocks.store['util/helpers'];
                     sinon.stub(helpers, 'getSecondsFromTimeString');
@@ -284,14 +347,14 @@ describe('VAST Linear Creative', function() {
         });
     });
 
-    describe('getDuration', function() {
-        it('should return number in seconds', function() {
+    describe('getDuration', function () {
+        it('should return number in seconds', function () {
             var result,
                 expectedResult = 40,
                 linearCreative = new VastLinearCreative(mockVastResponse);
 
             helpers.getSecondsFromTimeString.withArgs(mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Duration.nodeValue)
-                                            .returns(expectedResult);
+                .returns(expectedResult);
 
             result = linearCreative.getDuration();
 
@@ -299,8 +362,8 @@ describe('VAST Linear Creative', function() {
         });
     });
 
-    describe('getVideoClickTracking', function() {
-        it('should return an array of all click trackers if no parameter passed', function() {
+    describe('getVideoClickTracking', function () {
+        it('should return an array of all click trackers if no parameter passed', function () {
             var result,
                 linearCreative = new VastLinearCreative(mockVastResponse);
 
@@ -315,30 +378,30 @@ describe('VAST Linear Creative', function() {
             expect(result).to.contain('//example.com/video-click6?d=[CACHEBUSTER]');
         });
 
-        it('should return an array of click trackers of the specified id and those with no id', function() {
+        it('should return an array of click trackers of the specified id and those with no id', function () {
             var result,
                 linearCreative;
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue":  "https://example.com/some_click?d=[CACHEBUSTER]",
+                    "nodeValue": "https://example.com/some_click?d=[CACHEBUSTER]",
                     "@id": "some_click"
                 },
-                {
-                    "nodeValue":  "https://example.com/post_video_click?d=[CACHEBUSTER]",
-                    "@id": "post_video_click"
-                },
-                {
-                    "nodeValue":  "https://example.com/post_video_click2?d=[CACHEBUSTER]"
-                }],
+                    {
+                        "nodeValue": "https://example.com/post_video_click?d=[CACHEBUSTER]",
+                        "@id": "post_video_click"
+                    },
+                    {
+                        "nodeValue": "https://example.com/post_video_click2?d=[CACHEBUSTER]"
+                    }],
                 [{
                     "nodeValue": "https://example.com/wrapper/some_click?d=[CACHEBUSTER]",
                     "@id": "some_click"
                 },
-                {
-                    "nodeValue": "https://example.com/wrapper/post_video_click?d=[CACHEBUSTER]",
-                    "@id": "post_video_click"
-                }]
+                    {
+                        "nodeValue": "https://example.com/wrapper/post_video_click?d=[CACHEBUSTER]",
+                        "@id": "post_video_click"
+                    }]
             );
 
             linearCreative = new VastLinearCreative(mockVastResponse);
@@ -351,7 +414,7 @@ describe('VAST Linear Creative', function() {
             expect(result).to.contain('https://example.com/wrapper/post_video_click?d=[CACHEBUSTER]');
         });
 
-        it('should discard invalid URLs', function() {
+        it('should discard invalid URLs', function () {
             var result,
                 linearCreative;
 
@@ -371,13 +434,13 @@ describe('VAST Linear Creative', function() {
             expect(result).to.contain('//example.com/valid');
         });
 
-        it('should keep https:// url protocols', function() {
+        it('should keep https:// url protocols', function () {
             var result,
                 linearCreative;
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue":  "https://example.com/video-click5?d=[CACHEBUSTER]"
+                    "nodeValue": "https://example.com/video-click5?d=[CACHEBUSTER]"
                 }],
                 [{
                     "nodeValue": "https://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
@@ -392,13 +455,13 @@ describe('VAST Linear Creative', function() {
             expect(result).to.contain('https://example.com/wrapper/video-click5?d=[CACHEBUSTER]');
         });
 
-        it('should remove http:// hardcoded url protocols', function() {
+        it('should remove http:// hardcoded url protocols', function () {
             var result,
                 linearCreative;
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue":  "http://example.com/video-click5?d=[CACHEBUSTER]"
+                    "nodeValue": "http://example.com/video-click5?d=[CACHEBUSTER]"
                 }],
                 [{
                     "nodeValue": "http://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
@@ -413,13 +476,13 @@ describe('VAST Linear Creative', function() {
             expect(result).to.contain('//example.com/wrapper/video-click5?d=[CACHEBUSTER]');
         });
 
-        it('should do nothing with protocols independent urls', function() {
+        it('should do nothing with protocols independent urls', function () {
             var result,
                 linearCreative;
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue":  "//example.com/video-click5?d=[CACHEBUSTER]"
+                    "nodeValue": "//example.com/video-click5?d=[CACHEBUSTER]"
                 }],
                 [{
                     "nodeValue": "//example.com/wrapper/video-click5?d=[CACHEBUSTER]"
@@ -435,7 +498,7 @@ describe('VAST Linear Creative', function() {
         });
     });
 
-    describe('getAllClickTrackersAsMap', function(){
+    describe('getAllClickTrackersAsMap', function () {
         it('should return a map of all click tracking events grouped by @id', function () {
             overrideMockInlineAndWrapperClickTracking(
                 [
@@ -482,17 +545,17 @@ describe('VAST Linear Creative', function() {
             result = linearCreative.getAllClickTrackersAsMap();
 
             expect(result).to.have.keys(["unknown", "event1", "event2"]);
-            Object.keys(expectedResult).forEach(function(group){
-               expect(result[group]).to.have.members(expectedResult[group]);
+            Object.keys(expectedResult).forEach(function (group) {
+                expect(result[group]).to.have.members(expectedResult[group]);
             });
         });
 
-        it('should group events without @id as "unknown"', function(){
+        it('should group events without @id as "unknown"', function () {
             var result,
                 linearCreative = new VastLinearCreative(mockVastResponse);
 
             var expectedResult = {
-                "unknown" : [
+                "unknown": [
                     "//example.com/video-click1?d=[CACHEBUSTER]",
                     "//example.com/video-click2?d=[CACHEBUSTER]",
                     "//example.com/video-click3?d=[CACHEBUSTER]",
@@ -508,7 +571,7 @@ describe('VAST Linear Creative', function() {
             expect(result.unknown).to.have.members(expectedResult.unknown);
         });
 
-        it('should discard invalid URLs', function() {
+        it('should discard invalid URLs', function () {
             var result,
                 linearCreative;
 
@@ -527,13 +590,13 @@ describe('VAST Linear Creative', function() {
             expect(result).to.have.members(['//example.com/valid']);
         });
 
-        it('should keep https:// url protocols', function() {
+        it('should keep https:// url protocols', function () {
             var result,
                 linearCreative;
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue":  "https://example.com/video-click5?d=[CACHEBUSTER]"
+                    "nodeValue": "https://example.com/video-click5?d=[CACHEBUSTER]"
                 }],
                 [{
                     "nodeValue": "https://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
@@ -549,13 +612,13 @@ describe('VAST Linear Creative', function() {
             expect(result).to.have.members(expectedResult);
         });
 
-        it('should remove http:// hardcoded url protocols', function() {
+        it('should remove http:// hardcoded url protocols', function () {
             var result,
                 linearCreative;
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue":  "http://example.com/video-click5?d=[CACHEBUSTER]"
+                    "nodeValue": "http://example.com/video-click5?d=[CACHEBUSTER]"
                 }],
                 [{
                     "nodeValue": "http://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
@@ -572,13 +635,13 @@ describe('VAST Linear Creative', function() {
             expect(result).to.have.members(expectedResult);
         });
 
-        it('should do nothing with protocols independent urls', function() {
+        it('should do nothing with protocols independent urls', function () {
             var result,
                 linearCreative;
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue":  "//example.com/video-click5?d=[CACHEBUSTER]"
+                    "nodeValue": "//example.com/video-click5?d=[CACHEBUSTER]"
                 }],
                 [{
                     "nodeValue": "//example.com/wrapper/video-click5?d=[CACHEBUSTER]"
@@ -596,16 +659,16 @@ describe('VAST Linear Creative', function() {
         });
     });
 
-    describe('Media Files', function() {
-        beforeEach(function() {
+    describe('Media Files', function () {
+        beforeEach(function () {
             var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
             linearCreativeXml.MediaFiles.MediaFile.push({
                 nodeValue: 'http://example.com/video.mp4'
             });
         });
 
-        describe('getMediaFiles', function() {
-            it('should return all MediaFile objects when no filter supplied', function() {
+        describe('getMediaFiles', function () {
+            it('should return all MediaFile objects when no filter supplied', function () {
                 var mediaFiles,
                     linearCreative = new VastLinearCreative(mockVastResponse);
 
@@ -616,7 +679,7 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles[1].url).to.equal('//example.com/video.mp4');
             });
 
-            it('should return all MediaFile objects when an empty filter is supplied', function() {
+            it('should return all MediaFile objects when an empty filter is supplied', function () {
                 var mediaFiles,
                     linearCreative = new VastLinearCreative(mockVastResponse),
                     filter = {};
@@ -628,7 +691,7 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles[1].url).to.equal('//example.com/video.mp4');
             });
 
-            it('should return filtered array of MediaFile objects', function() {
+            it('should return filtered array of MediaFile objects', function () {
                 var mediaFiles,
                     linearCreative = new VastLinearCreative(mockVastResponse),
                     linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear,
@@ -646,14 +709,14 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('hasFlashVPAID', function() {
-            it('should return false when no VPAID creative found', function() {
+        describe('hasFlashVPAID', function () {
+            it('should return false when no VPAID creative found', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse);
 
                 expect(linearCreative.hasFlashVPAID()).to.be.false;
             });
 
-            it('should return true when a VPAID MediaFile found', function() {
+            it('should return true when a VPAID MediaFile found', function () {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.js',
@@ -666,7 +729,7 @@ describe('VAST Linear Creative', function() {
                 expect(linearCreative.hasFlashVPAID()).to.be.false;
             });
 
-            it('should return true when a VPAID MediaFile found', function() {
+            it('should return true when a VPAID MediaFile found', function () {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.swf',
@@ -681,8 +744,8 @@ describe('VAST Linear Creative', function() {
         });
 
 
-        describe('getFlashVPAIDMediaFiles', function() {
-            it('should return empty array when no flash VPAID creatives found', function() {
+        describe('getFlashVPAIDMediaFiles', function () {
+            it('should return empty array when no flash VPAID creatives found', function () {
                 var mediaFiles,
                     linearCreative = new VastLinearCreative(mockVastResponse);
 
@@ -691,14 +754,14 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles).to.deep.equal([]);
             });
 
-            it('should return array of VastMediaFile objects for flash VPAID MediaFiles found', function() {
+            it('should return array of VastMediaFile objects for flash VPAID MediaFiles found', function () {
                 var mediaFiles,
                     linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
-                    linearCreativeXml.MediaFiles.MediaFile.push({
-                        nodeValue: 'http://example.com/vpaid.swf',
-                        '@type': 'application/x-shockwave-flash',
-                        '@apiFramework': 'VPAID'
-                    });
+                linearCreativeXml.MediaFiles.MediaFile.push({
+                    nodeValue: 'http://example.com/vpaid.swf',
+                    '@type': 'application/x-shockwave-flash',
+                    '@apiFramework': 'VPAID'
+                });
 
                 var linearCreative = new VastLinearCreative(mockVastResponse);
 
@@ -709,14 +772,14 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('hasJavascriptVPAID', function() {
-            it('should return false when no VPAID creative found', function() {
+        describe('hasJavascriptVPAID', function () {
+            it('should return false when no VPAID creative found', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse);
 
                 expect(linearCreative.hasJavascriptVPAID()).to.be.false;
             });
 
-            it('should return true when a VPAID MediaFile found', function() {
+            it('should return true when a VPAID MediaFile found', function () {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.swf',
@@ -729,7 +792,7 @@ describe('VAST Linear Creative', function() {
                 expect(linearCreative.hasJavascriptVPAID()).to.be.false;
             });
 
-            it('should return true when a VPAID MediaFile found', function() {
+            it('should return true when a VPAID MediaFile found', function () {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.js',
@@ -743,8 +806,8 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('getJavascriptVPAIDMediaFiles', function() {
-            it('should return empty array when no javascript VPAID creatives found', function() {
+        describe('getJavascriptVPAIDMediaFiles', function () {
+            it('should return empty array when no javascript VPAID creatives found', function () {
                 var mediaFiles,
                     linearCreative = new VastLinearCreative(mockVastResponse);
 
@@ -753,7 +816,7 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles).to.deep.equal([]);
             });
 
-            it('should return array of VastMediaFile objects for javascript VPAID MediaFiles found', function() {
+            it('should return array of VastMediaFile objects for javascript VPAID MediaFiles found', function () {
                 var mediaFiles,
                     linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
@@ -771,14 +834,14 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('hasMp4', function() {
-            it('should return false when no mp4 file MediaFile found', function() {
+        describe('hasMp4', function () {
+            it('should return false when no mp4 file MediaFile found', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse);
 
                 expect(linearCreative.hasMp4()).to.be.false;
             });
 
-            it('should return false when a flv file type MediaFile found', function() {
+            it('should return false when a flv file type MediaFile found', function () {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.flv',
@@ -790,7 +853,7 @@ describe('VAST Linear Creative', function() {
                 expect(linearCreative.hasMp4()).to.be.false;
             });
 
-            it('should return false when a streaming mp4 file type MediaFile found', function() {
+            it('should return false when a streaming mp4 file type MediaFile found', function () {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.mp4',
@@ -803,7 +866,7 @@ describe('VAST Linear Creative', function() {
                 expect(linearCreative.hasMp4()).to.be.false;
             });
 
-            it('should return true when a progressive mp4 file type MediaFile found', function() {
+            it('should return true when a progressive mp4 file type MediaFile found', function () {
                 var linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
                     nodeValue: 'http://example.com/vpaid.mp4',
@@ -817,8 +880,8 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('getMp4MediaFiles', function() {
-            it('should return empty array when no mp4 creatives found', function() {
+        describe('getMp4MediaFiles', function () {
+            it('should return empty array when no mp4 creatives found', function () {
                 var mediaFiles,
                     linearCreative = new VastLinearCreative(mockVastResponse);
 
@@ -827,7 +890,7 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles).to.deep.equal([]);
             });
 
-            it('should return empty array when only streaming mp4 MediaFiles found', function() {
+            it('should return empty array when only streaming mp4 MediaFiles found', function () {
                 var mediaFiles,
                     linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
@@ -843,7 +906,7 @@ describe('VAST Linear Creative', function() {
                 expect(mediaFiles).to.deep.equal([]);
             });
 
-            it('should return array of VastMediaFile objects for progressive mp4 MediaFiles found', function() {
+            it('should return array of VastMediaFile objects for progressive mp4 MediaFiles found', function () {
                 var mediaFiles,
                     linearCreativeXml = mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear;
                 linearCreativeXml.MediaFiles.MediaFile.push({
@@ -861,8 +924,8 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('getClickThrough', function() {
-            it('should return undefined if VideoClicks is not present', function() {
+        describe('getClickThrough', function () {
+            it('should return undefined if VideoClicks is not present', function () {
                 mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks = undefined;
 
                 var linearCreative = new VastLinearCreative(mockVastResponse),
@@ -873,7 +936,7 @@ describe('VAST Linear Creative', function() {
                 expect(clickThrough).to.be.undefined;
             });
 
-            it('should return undefined if ClickThrough is not present', function() {
+            it('should return undefined if ClickThrough is not present', function () {
                 mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.VideoClicks.ClickThrough = undefined;
 
                 var linearCreative = new VastLinearCreative(mockVastResponse),
@@ -884,7 +947,7 @@ describe('VAST Linear Creative', function() {
                 expect(clickThrough).to.be.undefined;
             });
 
-            it('should return the url if ClickThrough is present', function() {
+            it('should return the url if ClickThrough is present', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse),
                     clickThrough;
 
@@ -894,27 +957,27 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('getAdParameters', function() {
-            it('should return undefined when no AdParameters', function() {
-               mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = undefined;
-               var linearCreative = new VastLinearCreative(mockVastResponse),
-                   adParameters;
+        describe('getAdParameters', function () {
+            it('should return undefined when no AdParameters', function () {
+                mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = undefined;
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    adParameters;
 
-               adParameters = linearCreative.getAdParameters();
+                adParameters = linearCreative.getAdParameters();
 
-               expect(adParameters).to.be.undefined;
+                expect(adParameters).to.be.undefined;
             });
 
-            it('should return the ad parameters when they are present', function() {
-               var linearCreative = new VastLinearCreative(mockVastResponse),
-                   adParameters;
+            it('should return the ad parameters when they are present', function () {
+                var linearCreative = new VastLinearCreative(mockVastResponse),
+                    adParameters;
 
-               adParameters = linearCreative.getAdParameters();
+                adParameters = linearCreative.getAdParameters();
 
-               expect(adParameters).to.equal('ad parameter');
+                expect(adParameters).to.equal('ad parameter');
             });
 
-            it('should return the original ad parameters nodeValue when attribute xmlEncoded is false', function() {
+            it('should return the original ad parameters nodeValue when attribute xmlEncoded is false', function () {
                 mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = {
                     nodeValue: '{&quot;test&quot;:true,&quot;url&quot;:&quot;http://example.com?a=1&amp;b=2&quot;,&apos;string&apos;:&apos;&lt;&gt;&apos;}',
                     '@xmlEncoded': 'false'
@@ -928,7 +991,7 @@ describe('VAST Linear Creative', function() {
                 expect(adParameters).to.equal('{&quot;test&quot;:true,&quot;url&quot;:&quot;http://example.com?a=1&amp;b=2&quot;,&apos;string&apos;:&apos;&lt;&gt;&apos;}');
             });
 
-            it('should return the decoded ad parameters when attribute xmlEncoded is true and node value is a string', function() {
+            it('should return the decoded ad parameters when attribute xmlEncoded is true and node value is a string', function () {
                 mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = {
                     nodeValue: '{&quot;test&quot;:true,&quot;url&quot;:&quot;http://example.com?a=1&amp;b=2&quot;,&apos;string&apos;:&apos;&lt;&gt;&apos;}',
                     '@xmlEncoded': 'true'
@@ -942,7 +1005,7 @@ describe('VAST Linear Creative', function() {
                 expect(adParameters).to.equal('{"test":true,"url":"http://example.com?a=1&b=2",\'string\':\'<>\'}');
             });
 
-            it('should return the original ad parameters nodeValue when attribute xmlEncoded true but node value is not a string', function() {
+            it('should return the original ad parameters nodeValue when attribute xmlEncoded true but node value is not a string', function () {
                 mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.AdParameters = {
                     nodeValue: 0,
                     '@xmlEncoded': 'true'
@@ -957,8 +1020,8 @@ describe('VAST Linear Creative', function() {
             });
         });
 
-        describe('getTrackingEvents', function() {
-            it('should return all tracking events for event midpoint', function() {
+        describe('getTrackingEvents', function () {
+            it('should return all tracking events for event midpoint', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse),
                     trackingEvents;
 
@@ -971,7 +1034,7 @@ describe('VAST Linear Creative', function() {
                 expect(trackingEvents[3]).to.equal('//example.com/blank.gif?t=midpoint3');
             });
 
-            it('should return all tracking events for event complete', function() {
+            it('should return all tracking events for event complete', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse),
                     trackingEvents;
 
@@ -982,7 +1045,7 @@ describe('VAST Linear Creative', function() {
 
             });
 
-            it('should return empty array for events that can\'t be found', function() {
+            it('should return empty array for events that can\'t be found', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse),
                     trackingEvents;
 
@@ -991,7 +1054,7 @@ describe('VAST Linear Creative', function() {
                 expect(trackingEvents.length).to.be.equal(0);
             });
 
-            it('should discard events with blank URLs', function() {
+            it('should discard events with blank URLs', function () {
                 var linearCreative = new VastLinearCreative(mockVastResponse),
                     trackingEvents;
 
@@ -1001,4 +1064,43 @@ describe('VAST Linear Creative', function() {
             });
         });
     });
+
+    describe('getIcons', function () {
+        it('should return one icon for the linear creative', function () {
+            var linearCreative = new VastLinearCreative(mockVastResponse),
+                icons;
+
+            delete mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Icons;
+
+            icons = linearCreative.getIcons();
+            expect(icons.length).to.be.equal(1);
+            expect(icons[0].resource.url).to.equal("//example.com/wrapper/icon.jpeg");
+        });
+
+        it('should return all icons for the linear creative including both wrappers and inline', function () {
+            var linearCreative = new VastLinearCreative(mockVastResponse),
+                icons;
+
+            icons = linearCreative.getIcons();
+            expect(icons.length).to.be.equal(3);
+            expect(icons[0].resource.url).to.equal("//example.com/wrapper/icon.jpeg");
+            expect(icons[1].resource.url).to.equal("//example.com/inline/icon.jpeg");
+            expect(icons[2].resource.url).to.equal("//example.com/inline/icon-2.jpeg");
+        });
+
+        it('should return an empty array is no icons are defined', function () {
+
+            delete mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Icons;
+            delete mockVastResponse.wrappers[0].VAST.Ad.Wrapper.Creatives.Creative[0].Linear.Icons
+
+            var linearCreative = new VastLinearCreative(mockVastResponse),
+                icons;
+
+            icons = linearCreative.getIcons();
+            expect(icons.length).to.be.equal(0);
+        });
+
+
+    });
+
 });

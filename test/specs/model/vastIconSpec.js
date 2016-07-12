@@ -34,6 +34,32 @@ describe('VAST Icon', function() {
         });
     });
 
+    describe('when elements are missing', function() {
+        it('does not throw', function() {
+            var iconCreate = function () {
+                new VastIcon({});
+            };
+
+            expect(iconCreate).to.not.throw();
+        });
+
+        it('has sensible defaults', function() {
+            var icon = new VastIcon({});
+
+            expect(icon.program).to.equal('unknown');
+            expect(icon.width).to.equal(0);
+            expect(icon.height).to.equal(0);
+            expect(icon.xPosition).to.equal('top');
+            expect(icon.yPosition).to.equal('right');
+            expect(icon.clickThrough).to.equal('');
+            expect(icon.resource).to.deep.equal({
+                type: '',
+                url: ''
+            });
+            expect(icon.clickTracking).to.have.length(0);
+        });
+    });
+
     describe('constructor', function() {
 
         var icon;

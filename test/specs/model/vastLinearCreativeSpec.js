@@ -240,7 +240,7 @@ describe('VAST Linear Creative', function() {
                                                     }
                                                 },
                                                 {
-                                                    "@program": "AdChoices",
+                                                    "@program": "OptOut",
                                                     "@width": "60",
                                                     "@height": "20",
                                                     "@xPosition": "right",
@@ -1073,19 +1073,17 @@ describe('VAST Linear Creative', function() {
             delete mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Icons;
 
             icons = linearCreative.getIcons();
-            expect(icons.length).to.be.equal(1);
-            expect(icons[0].resource.url).to.equal("//example.com/wrapper/icon.jpeg");
+            expect(Object.keys(icons).length).to.be.equal(1);
+            expect(icons.AdChoices.resource.url).to.equal("//example.com/wrapper/icon.jpeg");
         });
 
-        it('should return all icons for the linear creative including both wrappers and inline', function () {
+        it('should return only the closest icons to the linear creative (prefer inline icons to wrapper\'s)', function () {
             var linearCreative = new VastLinearCreative(mockVastResponse),
-                icons;
+                icons = linearCreative.getIcons();
 
-            icons = linearCreative.getIcons();
-            expect(icons.length).to.be.equal(3);
-            expect(icons[0].resource.url).to.equal("//example.com/wrapper/icon.jpeg");
-            expect(icons[1].resource.url).to.equal("//example.com/inline/icon.jpeg");
-            expect(icons[2].resource.url).to.equal("//example.com/inline/icon-2.jpeg");
+            expect(Object.keys(icons).length).to.be.equal(2);
+            expect(icons.AdChoices.resource.url).to.equal("//example.com/inline/icon.jpeg");
+            expect(icons.OptOut.resource.url).to.equal("//example.com/inline/icon-2.jpeg");
         });
 
         it('should return an empty array is no icons are defined', function () {
@@ -1094,10 +1092,19 @@ describe('VAST Linear Creative', function() {
             delete mockVastResponse.wrappers[0].VAST.Ad.Wrapper.Creatives.Creative[0].Linear.Icons
 
             var linearCreative = new VastLinearCreative(mockVastResponse),
-                icons;
+                icons = linearCreative.getIcons();
 
-            icons = linearCreative.getIcons();
-            expect(icons.length).to.be.equal(0);
+            expect(icons).to.be.deep.equal({});
+        });
+
+        it('should ignore icons with undefined empty program name or "unknown"', function () {
+            delete mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Icons;
+            delete mockVastResponse.wrappers[0].VAST.Ad.Wrapper.Creatives.Creative[0].Linear.Icons.Icon[0]['@program'];
+
+            var linearCreative = new VastLinearCreative(mockVastResponse),
+                icons = linearCreative.getIcons();
+
+            expect(icons).to.be.deep.equal({});
         });
 
 

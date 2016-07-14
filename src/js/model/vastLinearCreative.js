@@ -89,11 +89,23 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../m
     };
 
     VastLinearCreative.prototype.getIcons = function getIcons() {
+
+        var createIcon = function(iconJSXml) {
+                return new VastIcon(iconJSXml);
+            },
+            hasNoProgram = function(icon) {
+                return icon.program && icon.program !== 'unknown';
+            },
+            chooseClosestProgram = function(programDict, icon) {
+                programDict[icon.program] = icon;
+                return programDict;
+            };
+
         return objectUtil.getArrayFromObjectPath(this.linearWrappers, 'Icons.Icon')
                             .concat(objectUtil.getArrayFromObjectPath(this.linearInline, 'Icons.Icon'))
-                            .map(function (vastIconJSXml) {
-                                return new VastIcon(vastIconJSXml);
-                            });
+                            .map(createIcon)
+                            .filter(hasNoProgram)
+                            .reduce(chooseClosestProgram, {});
     };
 
     VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {

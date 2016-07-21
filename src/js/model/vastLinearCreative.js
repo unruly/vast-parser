@@ -93,7 +93,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../m
         var createIcon = function(iconJSXml) {
                 return new VastIcon(iconJSXml);
             },
-            hasNoProgram = function(icon) {
+            hasValidProgram = function(icon) {
                 return icon.program && icon.program !== 'unknown';
             },
             chooseClosestProgram = function(programDict, icon) {
@@ -104,7 +104,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../m
         return objectUtil.getArrayFromObjectPath(this.linearWrappers, 'Icons.Icon')
                             .concat(objectUtil.getArrayFromObjectPath(this.linearInline, 'Icons.Icon'))
                             .map(createIcon)
-                            .filter(hasNoProgram)
+                            .filter(hasValidProgram)
                             .reduce(chooseClosestProgram, {});
     };
 

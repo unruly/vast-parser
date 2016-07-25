@@ -16,7 +16,7 @@ define(['./util/window'], function(window) {
     }
 
     function JSXMLNode(node) {
-        if ("undefined" === typeof node) {
+        if ('undefined' === typeof node) {
             return this;
         }
 
@@ -69,9 +69,9 @@ define(['./util/window'], function(window) {
         parse : function(doc) {
             var parser;
 
-            if (!!doc.xml) {
+            if (doc.xml) {
                 parser = new window.DOMParser();
-                doc = parser.parseFromString(doc.xml, "text/xml");
+                doc = parser.parseFromString(doc.xml, 'text/xml');
             }
 
             return new JSXMLNode(doc);

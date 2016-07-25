@@ -4,7 +4,7 @@ define(['./xml-parser'], function(xmlParser) {
         if(
             item === undefined ||
             // Because Object.keys(new Date()).length === 0 we have to do some additional check
-            (typeof item === "object" && Object.keys(item).length === 0 && item.constructor === Object) ||
+            (typeof item === 'object' && Object.keys(item).length === 0 && item.constructor === Object) ||
             item === null ||
             (typeof item === 'number' && item !== 0 && !item)
         )

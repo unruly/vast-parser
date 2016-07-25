@@ -45,7 +45,7 @@ define(['./vastErrorCodes', './util/objectUtil'], function (vastErrorCodes, obje
     function VastError(code, vastResponse, message) {
         this.name = 'VastError';
         this.code = code;
-        this.message = "VAST Error: [" + code + "] - " + (message || getErrorMessageFromCode(code));
+        this.message = 'VAST Error: [' + code + '] - ' + (message || getErrorMessageFromCode(code));
         this.stack = (new Error()).stack;
         this.errorURIs = extractErrorURIs(vastResponse);
         this.vastResponse = vastResponse;

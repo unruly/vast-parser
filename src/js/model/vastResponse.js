@@ -60,7 +60,7 @@ define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vast
             allExtensions = inlineExtensions.concat(wrapperExtensions);
 
         return allExtensions.map(function(ext) {
-           return vastModelFactory.createVastExtension(ext);
+            return vastModelFactory.createVastExtension(ext);
         });
     };
 

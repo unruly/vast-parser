@@ -106,7 +106,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
 
                     getVast(vastResponse, nextRequestConfig)
                         .then(resolve)
-                        ['catch'](reject);
+                        ['catch'](reject);      // eslint-disable-line no-unexpected-multiline
                 }
             };
 

@@ -22,7 +22,7 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../m
         return allClickTracking
             .filter(nonEmptyString)
             .filter(function(trackingObject) {
-                if ("undefined" === typeof trackingObject['@id']) {
+                if ('undefined' === typeof trackingObject['@id']) {
                     return true;
                 }
 
@@ -38,10 +38,10 @@ define(['../util/objectUtil', '../util/helpers', '../model/vastMediaFile', '../m
             inlineClickTracking = objectUtil.getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking'),
             allClickTracking = inlineClickTracking.concat(wrapperClickTracking);
 
-        var defaultID = "unknown";
+        var defaultID = 'unknown';
 
         function byID(trackersMap, trackingObject) {
-            var id = trackingObject["@id"] || defaultID;
+            var id = trackingObject['@id'] || defaultID;
             var url = helpers.convertProtocol(trackingObject.nodeValue);
             var group = trackersMap[id] || [];
 

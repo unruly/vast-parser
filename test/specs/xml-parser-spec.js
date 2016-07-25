@@ -5,12 +5,12 @@ describe('XML Parser', function(){
     function loadTestXML(filename, test) {
         requirejs(['text!../../test/resources/xml/' + filename], function(xmlString) {
             var parser = new DOMParser(),
-                xmlDocument = parser.parseFromString(xmlString, "application/xml");
+                xmlDocument = parser.parseFromString(xmlString, 'application/xml');
 
             if (typeof xmlDocument.evaluate !== 'function') {
                 xmlDocument = new ActiveXObject('msxml2.DOMDocument');
                 xmlDocument.loadXML(xmlString);
-                xmlDocument.setProperty("SelectionLanguage", "XPath");
+                xmlDocument.setProperty('SelectionLanguage', 'XPath');
             }
 
             test(xmlDocument);
@@ -19,9 +19,7 @@ describe('XML Parser', function(){
 
     before(function(done) {
         requirejs(['Squire'], function(Squire) {
-            var injector;
-
-            injector = new Squire()
+            new Squire()
                 .require(['xml-parser'], function(xmlParserModule) {
                     xmlParser = xmlParserModule;
                     done();
@@ -47,7 +45,7 @@ describe('XML Parser', function(){
         it('parses the attributes of a node', function(done) {
             testWithSimpleXmlDocument(function(xmlDocument) {
                 var parsedXml = xmlParser.parse(xmlDocument);
-                expect(parsedXml.cornetto.highlander['@bar']).to.equal("baz");
+                expect(parsedXml.cornetto.highlander['@bar']).to.equal('baz');
                 done();
             });
         });
@@ -55,7 +53,7 @@ describe('XML Parser', function(){
         it('parses CDATA contents of node', function(done) {
             testWithSimpleXmlDocument(function(xmlDocument) {
                 var parsedXml = xmlParser.parse(xmlDocument);
-                expect(parsedXml.cornetto.groot.nodeValue).to.equal("i am groot");
+                expect(parsedXml.cornetto.groot.nodeValue).to.equal('i am groot');
                 done();
             });
         });

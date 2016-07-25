@@ -24,7 +24,6 @@ describe('VAST Chainer', function(){
         VastError,
         VastResponse,
         mockHttpsWrapper,
-        mockHttpWrapper,
         mockHttpsEndpoint,
         helpers;
 
@@ -89,11 +88,11 @@ describe('VAST Chainer', function(){
         });
 
         mockWrapper = {
-            "VAST": {
-                "Ad": {
-                    "Wrapper": {
-                        "VASTAdTagURI": {
-                            "nodeValue": "inlineVASTUrl"
+            'VAST': {
+                'Ad': {
+                    'Wrapper': {
+                        'VASTAdTagURI': {
+                            'nodeValue': 'inlineVASTUrl'
                         }
                     }
                 }
@@ -101,11 +100,11 @@ describe('VAST Chainer', function(){
         };
 
         mockTwoWrapperWrapper = {
-            "VAST": {
-                "Ad": {
-                    "Wrapper": {
-                        "VASTAdTagURI": {
-                            "nodeValue": firstWrapperUrl
+            'VAST': {
+                'Ad': {
+                    'Wrapper': {
+                        'VASTAdTagURI': {
+                            'nodeValue': firstWrapperUrl
                         }
                     }
                 }
@@ -115,23 +114,11 @@ describe('VAST Chainer', function(){
         mockHttpsEndpoint = 'https://example.com';
 
         mockHttpsWrapper = {
-            "VAST": {
-                "Ad": {
-                    "Wrapper": {
-                        "VASTAdTagURI": {
-                            "nodeValue": mockHttpsEndpoint
-                        }
-                    }
-                }
-            }
-        };
-
-        mockHttpWrapper = {
-            "VAST": {
-                "Ad": {
-                    "Wrapper": {
-                        "VASTAdTagURI": {
-                            "nodeValue": 'http://example.com'
+            'VAST': {
+                'Ad': {
+                    'Wrapper': {
+                        'VASTAdTagURI': {
+                            'nodeValue': mockHttpsEndpoint
                         }
                     }
                 }
@@ -200,18 +187,18 @@ describe('VAST Chainer', function(){
 
             mockClock.tick(1);
 
-            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, "VAST Request Failed (timeout 0)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, 'VAST Request Failed (timeout 0)'));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
         it('rejects promise when VAST tag request fails', function(){
-            mockServer.respondWith([404, { }, "Not Found"]);
+            mockServer.respondWith([404, { }, 'Not Found']);
 
             vastChainer.getVastChain('http://non.existent.endpoint');
 
             mockServer.respond();
 
-            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, "VAST Request Failed (error 404)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, 'VAST Request Failed (error 404)'));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
@@ -222,7 +209,7 @@ describe('VAST Chainer', function(){
 
             mockServer.respond();
 
-            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, "VAST Request Failed (parsererror 200)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, 'VAST Request Failed (parsererror 200)'));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
@@ -233,7 +220,7 @@ describe('VAST Chainer', function(){
 
             mockServer.respond();
 
-            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, "VAST Request Failed (parsererror 200) with message [Error: Invalid XML: This is not XML] for " + firstWrapperUrl));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, 'VAST Request Failed (parsererror 200) with message [Error: Invalid XML: This is not XML] for ' + firstWrapperUrl));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
@@ -370,14 +357,14 @@ describe('VAST Chainer', function(){
 
         it('rejects promise when inline VAST request from parsed VAST wrapper fails', function(){
             mockServer.respondWith('GET', firstWrapperUrl, [200, {}, mockWrapperString]);
-            mockServer.respondWith('GET', mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue, [404, {}, "Not Found"]);
+            mockServer.respondWith('GET', mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue, [404, {}, 'Not Found']);
 
             vastChainer.getVastChain(wrapperConfig);
 
             mockServer.respond();
             mockServer.respond();
 
-            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, "VAST Request Failed (error 404)"));
+            expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.WRAPPER_URI_TIMEOUT, 'VAST Request Failed (error 404)'));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
@@ -465,7 +452,7 @@ describe('VAST Chainer', function(){
             });
 
             it('should use question mark if the url does not have a query string', function() {
-                var urlWithNoQueryParams = "http://example.com/" + targetingUUID;
+                var urlWithNoQueryParams = 'http://example.com/' + targetingUUID;
                 wrapperConfig.url = urlWithNoQueryParams;
 
                 mockServer.respondWith('GET', urlWithNoQueryParams + '?' + wrapperConfig.extraParams, [200, {}, mockInlineString]);
@@ -663,7 +650,7 @@ describe('VAST Chainer', function(){
                 requestNumber: 0,
                 vastResponse: {},
                 uri: firstWrapperUrl,
-                error: { status: 404, statusText: "Not Found" }
+                error: { status: 404, statusText: 'Not Found' }
             });
         });
 
@@ -679,7 +666,7 @@ describe('VAST Chainer', function(){
                 requestNumber: 0,
                 vastResponse: {},
                 uri: firstWrapperUrl,
-                error: { status: 200, statusText: "XML parsing error." }
+                error: { status: 200, statusText: 'XML parsing error.' }
             });
         });
     });
@@ -687,7 +674,7 @@ describe('VAST Chainer', function(){
     describe('stores raw data on vast response', function () {
 
         it('should call addRawResponse after successful http request', function() {
-            mockServer.respondWith([200, { "Content-Type": "application/json" }, mockInlineString]);
+            mockServer.respondWith([200, { 'Content-Type': 'application/json' }, mockInlineString]);
 
             vastChainer.getVastChain(wrapperConfig);
 
@@ -703,7 +690,7 @@ describe('VAST Chainer', function(){
         });
 
         it('should call addRawResponse after unsuccessful http request', function() {
-            mockServer.respondWith([500, { "Content-Type": "application/json" }, '']);
+            mockServer.respondWith([500, { 'Content-Type': 'application/json' }, '']);
 
             vastChainer.getVastChain(wrapperConfig);
 
@@ -721,8 +708,8 @@ describe('VAST Chainer', function(){
         it('should call addRawResponse once per http response', function() {
             var inlineUrl = mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
 
-            mockServer.respondWith('GET', firstWrapperUrl, [200, { "Content-Type": "application/json" }, mockWrapperString]);
-            mockServer.respondWith('GET', inlineUrl, [400, { "Content-Type": "application/json" }, '']);
+            mockServer.respondWith('GET', firstWrapperUrl, [200, { 'Content-Type': 'application/json' }, mockWrapperString]);
+            mockServer.respondWith('GET', inlineUrl, [400, { 'Content-Type': 'application/json' }, '']);
             vastChainer.getVastChain(wrapperConfig);
 
             mockServer.respond();

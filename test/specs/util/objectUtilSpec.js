@@ -44,9 +44,9 @@ describe('Object Util', function() {
         it('returns the supplied argument if the object has no properties', function() {
             var obj = {};
 
-            var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', "it's missing!");
+            var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
 
-            expect(result).to.deep.equal("it's missing!");
+            expect(result).to.deep.equal('it\'s missing!');
         });
 
         it('returns the supplied argument if the path inside the nested objects does not exist', function() {
@@ -54,9 +54,9 @@ describe('Object Util', function() {
                 foo: {}
             };
 
-            var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', "it's missing!");
+            var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
 
-            expect(result).to.deep.equal("it's missing!");
+            expect(result).to.deep.equal('it\'s missing!');
         });
 
     });
@@ -92,7 +92,7 @@ describe('Object Util', function() {
 
         it('returns default value when it fails to convert returned value to integer', function() {
             var defaultValue = 789,
-                    obj = {
+                obj = {
                     foo: {
                         bar: {
                             string: 'abc'
@@ -108,13 +108,13 @@ describe('Object Util', function() {
 
     describe('getArrayFromObjectPath', function() {
         it('extracts arrays from inside a nested object', function() {
-           var obj = {
-               foo: {
-                   bar: {
-                       minky: ['binky']
-                   }
-               }
-           };
+            var obj = {
+                foo: {
+                    bar: {
+                        minky: ['binky']
+                    }
+                }
+            };
 
             var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky');
 

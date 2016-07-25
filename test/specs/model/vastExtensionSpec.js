@@ -2,29 +2,29 @@ describe('VAST Extension', function() {
 
     var VastExtension,
         mockExtensionNodes = {
-            "Property": [
+            'Property': [
                 {
-                    "nodeValue": 1234,
-                    "@id": "skid"
+                    'nodeValue': 1234,
+                    '@id': 'skid'
                 },
                 {
-                    "nodeValue": 5678,
-                    "@id": "apid"
+                    'nodeValue': 5678,
+                    '@id': 'apid'
                 }
             ],
-            "CustomTrackingEvents": {
-                "CustomTracking": [
+            'CustomTrackingEvents': {
+                'CustomTracking': [
                     {
-                        "nodeValue": "http://example.com/viewable_imp",
-                        "@event": "viewableImpression"
+                        'nodeValue': 'http://example.com/viewable_imp',
+                        '@event': 'viewableImpression'
                     },
                     {
-                        "nodeValue": "http://example.com/pp_imp1",
-                        "@event": "pp_imp"
+                        'nodeValue': 'http://example.com/pp_imp1',
+                        '@event': 'pp_imp'
                     },
                     {
-                        "nodeValue": "http://example.com/pp_lb_play",
-                        "@event": "pp_lb_play"
+                        'nodeValue': 'http://example.com/pp_lb_play',
+                        '@event': 'pp_lb_play'
                     }
                 ]
             }
@@ -35,7 +35,7 @@ describe('VAST Extension', function() {
             var injector = new Squire();
 
             injector
-                .require(['model/vastExtension', 'mocks'], function(module, mocks) {
+                .require(['model/vastExtension'], function(module) {
                     VastExtension = module;
                     done();
                 });
@@ -49,17 +49,17 @@ describe('VAST Extension', function() {
             expect(vastExtension.getExtensionNodes()).to.deep.equal(mockExtensionNodes);
         });
 
-        it("returns the part of the stored extension nodes by the specified object path", function () {
+        it('returns the part of the stored extension nodes by the specified object path', function () {
             var vastExtension = new VastExtension(mockExtensionNodes);
 
             expect(vastExtension.getDetailsByPath('Property')).to.deep.equal([{
-                    "nodeValue": 1234,
-                    "@id": "skid"
-                },
-                {
-                    "nodeValue": 5678,
-                    "@id": "apid"
-                }]);
+                'nodeValue': 1234,
+                '@id': 'skid'
+            },
+            {
+                'nodeValue': 5678,
+                '@id': 'apid'
+            }]);
         });
     });
 });

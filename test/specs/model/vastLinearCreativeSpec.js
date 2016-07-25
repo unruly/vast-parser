@@ -8,69 +8,69 @@ describe('VAST Linear Creative', function() {
         return {
             wrappers: [
                 {
-                    "VAST": {
-                        "Ad": {
-                            "Wrapper": {
-                                "AdSystem": {
-                                    "nodeValue": "Test Ad Server",
-                                    "@version": 1
+                    'VAST': {
+                        'Ad': {
+                            'Wrapper': {
+                                'AdSystem': {
+                                    'nodeValue': 'Test Ad Server',
+                                    '@version': 1
                                 },
-                                "VASTAdTagURI": {
-                                    "nodeValue": "http://example.com/native/vast/inlines/test_vast_inline_with-linear-ad.xml"
+                                'VASTAdTagURI': {
+                                    'nodeValue': 'http://example.com/native/vast/inlines/test_vast_inline_with-linear-ad.xml'
                                 },
-                                "Error": {
-                                    "nodeValue": "http://example.com/error/ERRORCODE"
+                                'Error': {
+                                    'nodeValue': 'http://example.com/error/ERRORCODE'
                                 },
-                                "Impression": [
+                                'Impression': [
                                     {
-                                        "nodeValue": "http://example.com/imp?d=[CACHEBUSTER]"
+                                        'nodeValue': 'http://example.com/imp?d=[CACHEBUSTER]'
                                     },
                                     {
-                                        "nodeValue": "http://example.com/another-imp?d=[CACHEBUSTER]"
+                                        'nodeValue': 'http://example.com/another-imp?d=[CACHEBUSTER]'
                                     }
                                 ],
-                                "Creatives": {
-                                    "Creative": [{
-                                        "Linear": {
-                                            "VideoClicks": {
-                                                "ClickTracking": [
+                                'Creatives': {
+                                    'Creative': [{
+                                        'Linear': {
+                                            'VideoClicks': {
+                                                'ClickTracking': [
                                                     {
-                                                        "nodeValue": "http://example.com/video-click1?d=[CACHEBUSTER]"
+                                                        'nodeValue': 'http://example.com/video-click1?d=[CACHEBUSTER]'
                                                     },
                                                     {
-                                                        "nodeValue": "http://example.com/video-click2?d=[CACHEBUSTER]"
+                                                        'nodeValue': 'http://example.com/video-click2?d=[CACHEBUSTER]'
                                                     }
                                                 ]
                                             },
                                             TrackingEvents: {
                                                 Tracking: [
                                                     {
-                                                        "@event": "midpoint",
-                                                        nodeValue: "https://example.com/blank.gif?t=midpoint1"
+                                                        '@event': 'midpoint',
+                                                        nodeValue: 'https://example.com/blank.gif?t=midpoint1'
                                                     },
                                                     {
-                                                        "@event": "complete",
-                                                        nodeValue: "//example.com/blank.gif?t=complete"
+                                                        '@event': 'complete',
+                                                        nodeValue: '//example.com/blank.gif?t=complete'
                                                     }
                                                 ]
                                             },
-                                            "Icons": {
-                                                "Icon": [{
-                                                    "@program": "AdChoices",
-                                                    "@width": "60",
-                                                    "@height": "20",
-                                                    "@xPosition": "right",
-                                                    "@yPosition": "top",
-                                                    "StaticResource": {
-                                                        "@creativeType": "image/jpeg",
-                                                        "nodeValue": "http://example.com/wrapper/icon.jpeg"
+                                            'Icons': {
+                                                'Icon': [{
+                                                    '@program': 'AdChoices',
+                                                    '@width': '60',
+                                                    '@height': '20',
+                                                    '@xPosition': 'right',
+                                                    '@yPosition': 'top',
+                                                    'StaticResource': {
+                                                        '@creativeType': 'image/jpeg',
+                                                        'nodeValue': 'http://example.com/wrapper/icon.jpeg'
                                                     },
-                                                    "IconClicks": {
-                                                        "IconClickThrough": {
-                                                            "nodeValue": "http://example.com/wrapper/icon-click-through"
+                                                    'IconClicks': {
+                                                        'IconClickThrough': {
+                                                            'nodeValue': 'http://example.com/wrapper/icon-click-through'
                                                         },
-                                                        "IconClickTracking": {
-                                                            "nodeValue": "http://example.com/wrapper/icon-click-tracking"
+                                                        'IconClickTracking': {
+                                                            'nodeValue': 'http://example.com/wrapper/icon-click-tracking'
                                                         }
                                                     }
                                                 }]
@@ -79,58 +79,58 @@ describe('VAST Linear Creative', function() {
                                     }]
                                 }
                             },
-                            "@id": 1,
-                            "@sequence": 1
+                            '@id': 1,
+                            '@sequence': 1
                         },
-                        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                        "@version": 3,
-                        "@xsi:noNamespaceSchemaLocation": "../../../../../../../vast/vast3_draft.xsd"
+                        '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                        '@version': 3,
+                        '@xsi:noNamespaceSchemaLocation': '../../../../../../../vast/vast3_draft.xsd'
                     }
                 },
                 {
-                    "VAST": {
-                        "Ad": {
-                            "Wrapper": {
-                                "AdSystem": {
-                                    "nodeValue": "Test Ad Server",
-                                    "@version": 1
+                    'VAST': {
+                        'Ad': {
+                            'Wrapper': {
+                                'AdSystem': {
+                                    'nodeValue': 'Test Ad Server',
+                                    '@version': 1
                                 },
-                                "VASTAdTagURI": {
-                                    "nodeValue": "http://localhost/test/resources/vast/inlines/test_vast_inline_with-linear-ad.xml"
+                                'VASTAdTagURI': {
+                                    'nodeValue': 'http://localhost/test/resources/vast/inlines/test_vast_inline_with-linear-ad.xml'
                                 },
-                                "Error": {
-                                    "nodeValue": "http://example.com/error/ERRORCODE"
+                                'Error': {
+                                    'nodeValue': 'http://example.com/error/ERRORCODE'
                                 },
-                                "Impression": [
+                                'Impression': [
                                     {
-                                        "nodeValue": "http://example.com/impression_two_one"
+                                        'nodeValue': 'http://example.com/impression_two_one'
                                     },
                                     {
-                                        "nodeValue": "http://example.com/impression_two_two"
+                                        'nodeValue': 'http://example.com/impression_two_two'
                                     }
                                 ],
-                                "Creatives": {
-                                    "Creative": [{
-                                        "Linear": {
-                                            "VideoClicks": {
-                                                "ClickTracking": [
+                                'Creatives': {
+                                    'Creative': [{
+                                        'Linear': {
+                                            'VideoClicks': {
+                                                'ClickTracking': [
                                                     {
-                                                        "nodeValue": "http://example.com/video-click3?d=[CACHEBUSTER]"
+                                                        'nodeValue': 'http://example.com/video-click3?d=[CACHEBUSTER]'
                                                     },
                                                     {
-                                                        "nodeValue": "http://example.com/video-click4?d=[CACHEBUSTER]"
+                                                        'nodeValue': 'http://example.com/video-click4?d=[CACHEBUSTER]'
                                                     }
                                                 ]
                                             },
                                             TrackingEvents: {
                                                 Tracking: [
                                                     {
-                                                        "@event": "midpoint",
-                                                        nodeValue: "http://example.com/blank.gif?t=midpoint2"
+                                                        '@event': 'midpoint',
+                                                        nodeValue: 'http://example.com/blank.gif?t=midpoint2'
                                                     },
                                                     {
-                                                        "@event": "midpoint",
-                                                        nodeValue: "//example.com/blank.gif?t=midpoint3"
+                                                        '@event': 'midpoint',
+                                                        nodeValue: '//example.com/blank.gif?t=midpoint3'
                                                     }
                                                 ]
                                             }
@@ -138,123 +138,123 @@ describe('VAST Linear Creative', function() {
                                     }]
                                 }
                             },
-                            "@id": 1,
-                            "@sequence": 1
+                            '@id': 1,
+                            '@sequence': 1
                         },
-                        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                        "@version": 3,
-                        "@xsi:noNamespaceSchemaLocation": "../../../../../../../vast/vast3_draft.xsd"
+                        '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                        '@version': 3,
+                        '@xsi:noNamespaceSchemaLocation': '../../../../../../../vast/vast3_draft.xsd'
                     }
                 }
             ],
             inline: {
-                "VAST": {
-                    "Ad": {
-                        "InLine": {
-                            "AdSystem": {
-                                "nodeValue": "Test Ad Server",
-                                "@version": 1
+                'VAST': {
+                    'Ad': {
+                        'InLine': {
+                            'AdSystem': {
+                                'nodeValue': 'Test Ad Server',
+                                '@version': 1
                             },
-                            "AdTitle": {
-                                "nodeValue": "Example Title"
+                            'AdTitle': {
+                                'nodeValue': 'Example Title'
                             },
-                            "Description": {
-                                "nodeValue": "Example Description"
+                            'Description': {
+                                'nodeValue': 'Example Description'
                             },
-                            "Impression":
+                            'Impression':
                                 [{
-                                "nodeValue": "http://example.com/impression_two_one"
-                            }],
-                            "Creatives": {
-                                "Creative": [{
-                                    "NonLinearAds": {
-                                        "NonLinear": {
-                                            "StaticResource": {
-                                                "nodeValue": "http://example.com/thumb.jpg",
-                                                "@creativeType": "image/jpeg"
+                                    'nodeValue': 'http://example.com/impression_two_one'
+                                }],
+                            'Creatives': {
+                                'Creative': [{
+                                    'NonLinearAds': {
+                                        'NonLinear': {
+                                            'StaticResource': {
+                                                'nodeValue': 'http://example.com/thumb.jpg',
+                                                '@creativeType': 'image/jpeg'
                                             },
-                                            "NonLinearClickThrough": [{
-                                                "nodeValue": "http://example.com/clickthrough.html"
+                                            'NonLinearClickThrough': [{
+                                                'nodeValue': 'http://example.com/clickthrough.html'
                                             }],
-                                            "@width": 100,
-                                            "@height": 100
+                                            '@width': 100,
+                                            '@height': 100
                                         }
                                     }
                                 }, {
-                                    "Linear": {
-                                        "Duration": {
+                                    'Linear': {
+                                        'Duration': {
                                             nodeValue: '00:00:40'
                                         },
-                                        "MediaFiles": {
-                                            "MediaFile": [{
+                                        'MediaFiles': {
+                                            'MediaFile': [{
                                                 'nodeValue': 'videoUrl'
                                             }]
                                         },
-                                        "VideoClicks": {
-                                            "ClickThrough": {
-                                                "nodeValue": "http://example.com/clickthrough"
+                                        'VideoClicks': {
+                                            'ClickThrough': {
+                                                'nodeValue': 'http://example.com/clickthrough'
                                             },
-                                            "ClickTracking": [
+                                            'ClickTracking': [
                                                 {
-                                                    "nodeValue": "http://example.com/video-click5?d=[CACHEBUSTER]"
+                                                    'nodeValue': 'http://example.com/video-click5?d=[CACHEBUSTER]'
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/video-click6?d=[CACHEBUSTER]"
+                                                    'nodeValue': 'http://example.com/video-click6?d=[CACHEBUSTER]'
                                                 }
                                             ]
                                         },
-                                        "AdParameters": {
-                                            "nodeValue": "ad parameter"
+                                        'AdParameters': {
+                                            'nodeValue': 'ad parameter'
                                         },
                                         TrackingEvents: {
                                             Tracking: [
                                                 {
-                                                    "@event": "midpoint",
-                                                    nodeValue: "//example.com/blank.gif?t=midpoint4"
+                                                    '@event': 'midpoint',
+                                                    nodeValue: '//example.com/blank.gif?t=midpoint4'
                                                 },
                                                 {
-                                                    "@event": "withInvalidURL",
-                                                    nodeValue: " "
+                                                    '@event': 'withInvalidURL',
+                                                    nodeValue: ' '
                                                 }
                                             ]
                                         },
-                                        "Icons": {
-                                            "Icon": [
+                                        'Icons': {
+                                            'Icon': [
                                                 {
-                                                    "@program": "AdChoices",
-                                                    "@width": "60",
-                                                    "@height": "20",
-                                                    "@xPosition": "right",
-                                                    "@yPosition": "top",
-                                                    "StaticResource": {
-                                                        "@creativeType": "image/jpeg",
-                                                        "nodeValue": "http://example.com/inline/icon.jpeg"
+                                                    '@program': 'AdChoices',
+                                                    '@width': '60',
+                                                    '@height': '20',
+                                                    '@xPosition': 'right',
+                                                    '@yPosition': 'top',
+                                                    'StaticResource': {
+                                                        '@creativeType': 'image/jpeg',
+                                                        'nodeValue': 'http://example.com/inline/icon.jpeg'
                                                     },
-                                                    "IconClicks": {
-                                                        "IconClickThrough": {
-                                                            "nodeValue": "http://example.com/inline/icon-click-through"
+                                                    'IconClicks': {
+                                                        'IconClickThrough': {
+                                                            'nodeValue': 'http://example.com/inline/icon-click-through'
                                                         },
-                                                        "IconClickTracking": {
-                                                            "nodeValue": "http://example.com/inline/icon-click-tracking"
+                                                        'IconClickTracking': {
+                                                            'nodeValue': 'http://example.com/inline/icon-click-tracking'
                                                         }
                                                     }
                                                 },
                                                 {
-                                                    "@program": "OptOut",
-                                                    "@width": "60",
-                                                    "@height": "20",
-                                                    "@xPosition": "right",
-                                                    "@yPosition": "top",
-                                                    "StaticResource": {
-                                                        "@creativeType": "image/jpeg",
-                                                        "nodeValue": "http://example.com/inline/icon-2.jpeg"
+                                                    '@program': 'OptOut',
+                                                    '@width': '60',
+                                                    '@height': '20',
+                                                    '@xPosition': 'right',
+                                                    '@yPosition': 'top',
+                                                    'StaticResource': {
+                                                        '@creativeType': 'image/jpeg',
+                                                        'nodeValue': 'http://example.com/inline/icon-2.jpeg'
                                                     },
-                                                    "IconClicks": {
-                                                        "IconClickThrough": {
-                                                            "nodeValue": "http://example.com/inline/icon-click-through-2"
+                                                    'IconClicks': {
+                                                        'IconClickThrough': {
+                                                            'nodeValue': 'http://example.com/inline/icon-click-through-2'
                                                         },
-                                                        "IconClickTracking": {
-                                                            "nodeValue": "http://example.com/inline/icon-click-tracking-2"
+                                                        'IconClickTracking': {
+                                                            'nodeValue': 'http://example.com/inline/icon-click-tracking-2'
                                                         }
                                                     }
                                                 }
@@ -265,12 +265,12 @@ describe('VAST Linear Creative', function() {
                                 ]
                             }
                         },
-                        "@id": 1,
-                        "@sequence": 1
+                        '@id': 1,
+                        '@sequence': 1
                     },
-                    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                    "@version": 3,
-                    "@xsi:noNamespaceSchemaLocation": "../../../../../../../vast/vast3_draft.xsd"
+                    '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                    '@version': 3,
+                    '@xsi:noNamespaceSchemaLocation': '../../../../../../../vast/vast3_draft.xsd'
                 }
             }
         };
@@ -281,14 +281,14 @@ describe('VAST Linear Creative', function() {
             wrapperTracking;
 
         mockVastResponse.inline = {
-            "VAST": {
-                "Ad": {
-                    "InLine": {
-                        "Creatives": {
-                            "Creative": {
-                                "Linear": {
-                                    "VideoClicks": {
-                                        "ClickTracking": []
+            'VAST': {
+                'Ad': {
+                    'InLine': {
+                        'Creatives': {
+                            'Creative': {
+                                'Linear': {
+                                    'VideoClicks': {
+                                        'ClickTracking': []
                                     }
                                 }
                             }
@@ -299,14 +299,14 @@ describe('VAST Linear Creative', function() {
         };
 
         mockVastResponse.wrappers = [{
-            "VAST": {
-                "Ad": {
-                    "Wrapper": {
-                        "Creatives": {
-                            "Creative": {
-                                "Linear": {
-                                    "VideoClicks": {
-                                        "ClickTracking": []
+            'VAST': {
+                'Ad': {
+                    'Wrapper': {
+                        'Creatives': {
+                            'Creative': {
+                                'Linear': {
+                                    'VideoClicks': {
+                                        'ClickTracking': []
                                     }
                                 }
                             }
@@ -384,24 +384,24 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "https://example.com/some_click?d=[CACHEBUSTER]",
-                    "@id": "some_click"
+                    'nodeValue': 'https://example.com/some_click?d=[CACHEBUSTER]',
+                    '@id': 'some_click'
                 },
-                    {
-                        "nodeValue": "https://example.com/post_video_click?d=[CACHEBUSTER]",
-                        "@id": "post_video_click"
-                    },
-                    {
-                        "nodeValue": "https://example.com/post_video_click2?d=[CACHEBUSTER]"
-                    }],
+                {
+                    'nodeValue': 'https://example.com/post_video_click?d=[CACHEBUSTER]',
+                    '@id': 'post_video_click'
+                },
+                {
+                    'nodeValue': 'https://example.com/post_video_click2?d=[CACHEBUSTER]'
+                }],
                 [{
-                    "nodeValue": "https://example.com/wrapper/some_click?d=[CACHEBUSTER]",
-                    "@id": "some_click"
+                    'nodeValue': 'https://example.com/wrapper/some_click?d=[CACHEBUSTER]',
+                    '@id': 'some_click'
                 },
-                    {
-                        "nodeValue": "https://example.com/wrapper/post_video_click?d=[CACHEBUSTER]",
-                        "@id": "post_video_click"
-                    }]
+                {
+                    'nodeValue': 'https://example.com/wrapper/post_video_click?d=[CACHEBUSTER]',
+                    '@id': 'post_video_click'
+                }]
             );
 
             linearCreative = new VastLinearCreative(mockVastResponse);
@@ -420,10 +420,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": " "
+                    'nodeValue': ' '
                 }],
                 [{
-                    "nodeValue": "http://example.com/valid"
+                    'nodeValue': 'http://example.com/valid'
                 }]
             );
 
@@ -440,10 +440,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "https://example.com/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'https://example.com/video-click5?d=[CACHEBUSTER]'
                 }],
                 [{
-                    "nodeValue": "https://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'https://example.com/wrapper/video-click5?d=[CACHEBUSTER]'
                 }]
             );
 
@@ -461,10 +461,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "http://example.com/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'http://example.com/video-click5?d=[CACHEBUSTER]'
                 }],
                 [{
-                    "nodeValue": "http://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'http://example.com/wrapper/video-click5?d=[CACHEBUSTER]'
                 }]
             );
 
@@ -482,10 +482,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "//example.com/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': '//example.com/video-click5?d=[CACHEBUSTER]'
                 }],
                 [{
-                    "nodeValue": "//example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': '//example.com/wrapper/video-click5?d=[CACHEBUSTER]'
                 }]
             );
 
@@ -503,24 +503,24 @@ describe('VAST Linear Creative', function() {
             overrideMockInlineAndWrapperClickTracking(
                 [
                     {
-                        "nodeValue": "http://example.com/event2",
-                        "@id": "event2"
+                        'nodeValue': 'http://example.com/event2',
+                        '@id': 'event2'
                     },
                     {
-                        "nodeValue": "http://example.com/unknown1"
+                        'nodeValue': 'http://example.com/unknown1'
                     }
                 ],
                 [
                     {
-                        "nodeValue": "http://example.com/event1",
-                        "@id": "event1"
+                        'nodeValue': 'http://example.com/event1',
+                        '@id': 'event1'
                     },
                     {
-                        "nodeValue": "http://example.com/unknown2"
+                        'nodeValue': 'http://example.com/unknown2'
                     },
                     {
-                        "nodeValue": "http://example.com/event2b",
-                        "@id": "event2"
+                        'nodeValue': 'http://example.com/event2b',
+                        '@id': 'event2'
                     }
                 ]
             );
@@ -529,22 +529,22 @@ describe('VAST Linear Creative', function() {
                 linearCreative = new VastLinearCreative(mockVastResponse);
 
             var expectedResult = {
-                "unknown": [
-                    "//example.com/unknown1",
-                    "//example.com/unknown2"
+                'unknown': [
+                    '//example.com/unknown1',
+                    '//example.com/unknown2'
                 ],
-                "event1": [
-                    "//example.com/event1"
+                'event1': [
+                    '//example.com/event1'
                 ],
-                "event2": [
-                    "//example.com/event2",
-                    "//example.com/event2b"
+                'event2': [
+                    '//example.com/event2',
+                    '//example.com/event2b'
                 ]
             };
 
             result = linearCreative.getAllClickTrackersAsMap();
 
-            expect(result).to.have.keys(["unknown", "event1", "event2"]);
+            expect(result).to.have.keys(['unknown', 'event1', 'event2']);
             Object.keys(expectedResult).forEach(function (group) {
                 expect(result[group]).to.have.members(expectedResult[group]);
             });
@@ -555,19 +555,19 @@ describe('VAST Linear Creative', function() {
                 linearCreative = new VastLinearCreative(mockVastResponse);
 
             var expectedResult = {
-                "unknown": [
-                    "//example.com/video-click1?d=[CACHEBUSTER]",
-                    "//example.com/video-click2?d=[CACHEBUSTER]",
-                    "//example.com/video-click3?d=[CACHEBUSTER]",
-                    "//example.com/video-click4?d=[CACHEBUSTER]",
-                    "//example.com/video-click5?d=[CACHEBUSTER]",
-                    "//example.com/video-click6?d=[CACHEBUSTER]"
+                'unknown': [
+                    '//example.com/video-click1?d=[CACHEBUSTER]',
+                    '//example.com/video-click2?d=[CACHEBUSTER]',
+                    '//example.com/video-click3?d=[CACHEBUSTER]',
+                    '//example.com/video-click4?d=[CACHEBUSTER]',
+                    '//example.com/video-click5?d=[CACHEBUSTER]',
+                    '//example.com/video-click6?d=[CACHEBUSTER]'
                 ]
             };
 
             result = linearCreative.getAllClickTrackersAsMap();
 
-            expect(result).to.have.keys(["unknown"]);
+            expect(result).to.have.keys(['unknown']);
             expect(result.unknown).to.have.members(expectedResult.unknown);
         });
 
@@ -577,10 +577,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": " "
+                    'nodeValue': ' '
                 }],
                 [{
-                    "nodeValue": "http://example.com/valid"
+                    'nodeValue': 'http://example.com/valid'
                 }]
             );
 
@@ -596,10 +596,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "https://example.com/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'https://example.com/video-click5?d=[CACHEBUSTER]'
                 }],
                 [{
-                    "nodeValue": "https://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'https://example.com/wrapper/video-click5?d=[CACHEBUSTER]'
                 }]
             );
 
@@ -618,10 +618,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "http://example.com/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'http://example.com/video-click5?d=[CACHEBUSTER]'
                 }],
                 [{
-                    "nodeValue": "http://example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': 'http://example.com/wrapper/video-click5?d=[CACHEBUSTER]'
                 }]
             );
 
@@ -641,10 +641,10 @@ describe('VAST Linear Creative', function() {
 
             overrideMockInlineAndWrapperClickTracking(
                 [{
-                    "nodeValue": "//example.com/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': '//example.com/video-click5?d=[CACHEBUSTER]'
                 }],
                 [{
-                    "nodeValue": "//example.com/wrapper/video-click5?d=[CACHEBUSTER]"
+                    'nodeValue': '//example.com/wrapper/video-click5?d=[CACHEBUSTER]'
                 }]
             );
 
@@ -1041,7 +1041,7 @@ describe('VAST Linear Creative', function() {
                 trackingEvents = linearCreative.getTrackingEvents('complete');
 
                 expect(trackingEvents.length).to.be.equal(1);
-                expect(trackingEvents[0]).to.equal('//example.com/blank.gif?t=complete')
+                expect(trackingEvents[0]).to.equal('//example.com/blank.gif?t=complete');
 
             });
 
@@ -1074,7 +1074,7 @@ describe('VAST Linear Creative', function() {
 
             icons = linearCreative.getIcons();
             expect(Object.keys(icons).length).to.be.equal(1);
-            expect(icons.AdChoices.resource.url).to.equal("//example.com/wrapper/icon.jpeg");
+            expect(icons.AdChoices.resource.url).to.equal('//example.com/wrapper/icon.jpeg');
         });
 
         it('should return only the closest icons to the linear creative (prefer inline icons to wrapper\'s)', function () {
@@ -1082,14 +1082,14 @@ describe('VAST Linear Creative', function() {
                 icons = linearCreative.getIcons();
 
             expect(Object.keys(icons).length).to.be.equal(2);
-            expect(icons.AdChoices.resource.url).to.equal("//example.com/inline/icon.jpeg");
-            expect(icons.OptOut.resource.url).to.equal("//example.com/inline/icon-2.jpeg");
+            expect(icons.AdChoices.resource.url).to.equal('//example.com/inline/icon.jpeg');
+            expect(icons.OptOut.resource.url).to.equal('//example.com/inline/icon-2.jpeg');
         });
 
         it('should return an empty array is no icons are defined', function () {
 
             delete mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Icons;
-            delete mockVastResponse.wrappers[0].VAST.Ad.Wrapper.Creatives.Creative[0].Linear.Icons
+            delete mockVastResponse.wrappers[0].VAST.Ad.Wrapper.Creatives.Creative[0].Linear.Icons;
 
             var linearCreative = new VastLinearCreative(mockVastResponse),
                 icons = linearCreative.getIcons();

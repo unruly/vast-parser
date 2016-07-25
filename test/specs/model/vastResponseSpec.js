@@ -4,250 +4,249 @@ describe('VAST Response', function() {
         mockVastTags,
         mockVastLinearCreative,
         mockVastNonLinearCreative,
-        VastExtension,
         mockVastModelFactory;
 
     function getValidVastTags() {
         return {
             wrappers: [
                 {
-                    "VAST": {
-                        "Ad": {
-                            "Wrapper": {
-                                "AdSystem": {
-                                    "nodeValue": "Test Ad Server",
-                                    "@version": 1
+                    'VAST': {
+                        'Ad': {
+                            'Wrapper': {
+                                'AdSystem': {
+                                    'nodeValue': 'Test Ad Server',
+                                    '@version': 1
                                 },
-                                "VASTAdTagURI": {
-                                    "nodeValue": "http://localhost/test/resources/vast/inlines/test_vast_inline_with-linear-ad.xml"
+                                'VASTAdTagURI': {
+                                    'nodeValue': 'http://localhost/test/resources/vast/inlines/test_vast_inline_with-linear-ad.xml'
                                 },
-                                "Error": {
-                                    "nodeValue": "http://example.com/error/ERRORCODE"
+                                'Error': {
+                                    'nodeValue': 'http://example.com/error/ERRORCODE'
                                 },
-                                "Impression": [
+                                'Impression': [
                                     {
-                                        "nodeValue": "http://example.com/imp?d=[CACHEBUSTER]"
+                                        'nodeValue': 'http://example.com/imp?d=[CACHEBUSTER]'
                                     },
                                     {
-                                        "nodeValue": "http://example.com/another-imp?d=[CACHEBUSTER]"
+                                        'nodeValue': 'http://example.com/another-imp?d=[CACHEBUSTER]'
                                     }
                                 ],
-                                "Creatives": {
-                                    "Creative": [{
-                                        "NonLinearAds": {
-                                            "NonLinear": {
-                                                "NonLinearClickTracking": [{
-                                                    "nodeValue": "http://example.com/click"
+                                'Creatives': {
+                                    'Creative': [{
+                                        'NonLinearAds': {
+                                            'NonLinear': {
+                                                'NonLinearClickTracking': [{
+                                                    'nodeValue': 'http://example.com/click'
                                                 }]
                                             }
                                         }
                                     }]
                                 },
-                                "Extensions": {
-                                    "Extension": [{
-                                        "Property": [
+                                'Extensions': {
+                                    'Extension': [{
+                                        'Property': [
                                             {
-                                                "nodeValue": 123,
-                                                "@id": "skid"
+                                                'nodeValue': 123,
+                                                '@id': 'skid'
                                             },
                                             {
-                                                "nodeValue": 456,
-                                                "@id": "apid"
+                                                'nodeValue': 456,
+                                                '@id': 'apid'
                                             }
                                         ],
-                                        "CustomTrackingEvents": {
-                                            "CustomTracking": [
+                                        'CustomTrackingEvents': {
+                                            'CustomTracking': [
                                                 {
-                                                    "nodeValue": "http://example.com/share_facebook?d=[CACHEBUSTER]",
-                                                    "@event": "share_facebook"
+                                                    'nodeValue': 'http://example.com/share_facebook?d=[CACHEBUSTER]',
+                                                    '@event': 'share_facebook'
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/share_twitter?d=[CACHEBUSTER]",
-                                                    "@event": "share_twitter"
+                                                    'nodeValue': 'http://example.com/share_twitter?d=[CACHEBUSTER]',
+                                                    '@event': 'share_twitter'
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/share_googleplus?d=[CACHEBUSTER]",
-                                                    "@event": "share_googleplus"
+                                                    'nodeValue': 'http://example.com/share_googleplus?d=[CACHEBUSTER]',
+                                                    '@event': 'share_googleplus'
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/share_linkedin?d=[CACHEBUSTER]",
-                                                    "@event": "share_linkedin"
+                                                    'nodeValue': 'http://example.com/share_linkedin?d=[CACHEBUSTER]',
+                                                    '@event': 'share_linkedin'
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/share_pinterest?d=[CACHEBUSTER]",
-                                                    "@event": "share_pinterest"
+                                                    'nodeValue': 'http://example.com/share_pinterest?d=[CACHEBUSTER]',
+                                                    '@event': 'share_pinterest'
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/pp_imp2",
-                                                    "@event": "pp_imp"
+                                                    'nodeValue': 'http://example.com/pp_imp2',
+                                                    '@event': 'pp_imp'
                                                 },
                                                 {
-                                                    "nodeValue": "http://example.com/pp_lb_play",
-                                                    "@event": "pp_lb_play"
+                                                    'nodeValue': 'http://example.com/pp_lb_play',
+                                                    '@event': 'pp_lb_play'
                                                 }
                                             ]
                                         }
                                     }]
                                 }
                             },
-                            "@id": 1,
-                            "@sequence": 1
+                            '@id': 1,
+                            '@sequence': 1
                         },
-                        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                        "@version": 3,
-                        "@xsi:noNamespaceSchemaLocation": "../../../../../../../vast/vast3_draft.xsd"
+                        '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                        '@version': 3,
+                        '@xsi:noNamespaceSchemaLocation': '../../../../../../../vast/vast3_draft.xsd'
                     }
                 },
                 {
-                    "VAST": {
-                        "Ad": {
-                            "Wrapper": {
-                                "AdSystem": {
-                                    "nodeValue": "Test Ad Server",
-                                    "@version": 1
+                    'VAST': {
+                        'Ad': {
+                            'Wrapper': {
+                                'AdSystem': {
+                                    'nodeValue': 'Test Ad Server',
+                                    '@version': 1
                                 },
-                                "VASTAdTagURI": {
-                                    "nodeValue": "http://example.com/native/vast/inlines/test_vast_inline_with-linear-ad.xml"
+                                'VASTAdTagURI': {
+                                    'nodeValue': 'http://example.com/native/vast/inlines/test_vast_inline_with-linear-ad.xml'
                                 },
-                                "Error": {
-                                    "nodeValue": "http://example.com/error/ERRORCODE"
+                                'Error': {
+                                    'nodeValue': 'http://example.com/error/ERRORCODE'
                                 },
-                                "Impression": [
+                                'Impression': [
                                     {
-                                        "nodeValue": "http://example.com/impression_two_one"
+                                        'nodeValue': 'http://example.com/impression_two_one'
                                     },
                                     {
-                                        "nodeValue": "http://example.com/impression_two_two"
+                                        'nodeValue': 'http://example.com/impression_two_two'
                                     }
                                 ],
-                                "Creatives": {
-                                    "Creative": [{
-                                        "NonLinearAds": {
-                                            "NonLinear": {
-                                                "NonLinearClickTracking": [{
-                                                    "nodeValue": "http://example.com/click_two_one"
+                                'Creatives': {
+                                    'Creative': [{
+                                        'NonLinearAds': {
+                                            'NonLinear': {
+                                                'NonLinearClickTracking': [{
+                                                    'nodeValue': 'http://example.com/click_two_one'
                                                 }]
                                             }
                                         }
                                     }]
                                 },
-                                "Extensions": {
-                                    "Extension": [
+                                'Extensions': {
+                                    'Extension': [
                                         {
-                                            "Property": [
+                                            'Property': [
                                                 {
-                                                    "nodeValue": 1234,
-                                                    "@id": "skid"
+                                                    'nodeValue': 1234,
+                                                    '@id': 'skid'
                                                 },
                                                 {
-                                                    "nodeValue": 5678,
-                                                    "@id": "apid"
+                                                    'nodeValue': 5678,
+                                                    '@id': 'apid'
                                                 }
                                             ],
-                                            "CustomTrackingEvents": {
-                                                "CustomTracking": [
+                                            'CustomTrackingEvents': {
+                                                'CustomTracking': [
                                                     {
-                                                        "nodeValue": "http://example.com/viewable_imp",
-                                                        "@event": "viewableImpression"
+                                                        'nodeValue': 'http://example.com/viewable_imp',
+                                                        '@event': 'viewableImpression'
                                                     },
                                                     {
-                                                        "nodeValue": "http://example.com/pp_imp1",
-                                                        "@event": "pp_imp"
+                                                        'nodeValue': 'http://example.com/pp_imp1',
+                                                        '@event': 'pp_imp'
                                                     },
                                                     {
-                                                        "nodeValue": "http://example.com/pp_lb_play",
-                                                        "@event": "pp_lb_play"
+                                                        'nodeValue': 'http://example.com/pp_lb_play',
+                                                        '@event': 'pp_lb_play'
                                                     }
                                                 ]
                                             }
                                         },
                                         {
-                                            "anotherExtension": "more than one!"
+                                            'anotherExtension': 'more than one!'
                                         }
                                     ]
                                 }
                             },
-                            "@id": 1,
-                            "@sequence": 1
+                            '@id': 1,
+                            '@sequence': 1
                         },
-                        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                        "@version": 3,
-                        "@xsi:noNamespaceSchemaLocation": "../../../../../../../vast/vast3_draft.xsd"
+                        '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                        '@version': 3,
+                        '@xsi:noNamespaceSchemaLocation': '../../../../../../../vast/vast3_draft.xsd'
                     }
                 }
             ],
             inline: {
-                "VAST": {
-                    "Ad": {
-                        "InLine": {
-                            "AdSystem": {
-                                "nodeValue": "Test Ad Server",
-                                "@version": 1
+                'VAST': {
+                    'Ad': {
+                        'InLine': {
+                            'AdSystem': {
+                                'nodeValue': 'Test Ad Server',
+                                '@version': 1
                             },
-                            "AdTitle": {
-                                "nodeValue": "Example Title"
+                            'AdTitle': {
+                                'nodeValue': 'Example Title'
                             },
-                            "Description": {
-                                "nodeValue": "Example Description"
+                            'Description': {
+                                'nodeValue': 'Example Description'
                             },
-                            "Impression":
+                            'Impression':
                                 [{
-                                    "nodeValue": "http://example.com/impression_two_one"
+                                    'nodeValue': 'http://example.com/impression_two_one'
                                 }],
-                            "Creatives": {
-                                "Creative": [{
-                                    "NonLinearAds": {
-                                        "NonLinear": {
-                                            "StaticResource": {
-                                                "nodeValue": "http://example.com/thumb.jpg",
-                                                "@creativeType": "image/jpeg"
+                            'Creatives': {
+                                'Creative': [{
+                                    'NonLinearAds': {
+                                        'NonLinear': {
+                                            'StaticResource': {
+                                                'nodeValue': 'http://example.com/thumb.jpg',
+                                                '@creativeType': 'image/jpeg'
                                             },
-                                            "NonLinearClickThrough": [{
-                                                "nodeValue": "http://example.com/clickthrough.html"
+                                            'NonLinearClickThrough': [{
+                                                'nodeValue': 'http://example.com/clickthrough.html'
                                             }],
-                                            "@width": 100,
-                                            "@height": 100
+                                            '@width': 100,
+                                            '@height': 100
                                         }
                                     }
                                 }, {
-                                    "Linear": {
-                                        "MediaFiles": {
-                                            "MediaFile":[{
+                                    'Linear': {
+                                        'MediaFiles': {
+                                            'MediaFile':[{
                                                 'nodeValue': 'videoUrl'
                                             }]
                                         },
-                                        "VideoClicks": {
-                                            "ClickThrough": {
-                                                "nodeValue": "http://example.com/video-click?d=[CACHEBUSTER]"
+                                        'VideoClicks': {
+                                            'ClickThrough': {
+                                                'nodeValue': 'http://example.com/video-click?d=[CACHEBUSTER]'
                                             }
                                         }
                                     }
                                 }
                                 ]
                             },
-                            "Extensions": {
-                                "Extension": [{
-                                    "DisclosureMessage": {
-                                        "nodeValue": "A different disclosure message"
+                            'Extensions': {
+                                'Extension': [{
+                                    'DisclosureMessage': {
+                                        'nodeValue': 'A different disclosure message'
                                     },
-                                    "SharingUrl": {
-                                        "nodeValue": "http://www.twitch.tv/fishplaystreetfighter"
+                                    'SharingUrl': {
+                                        'nodeValue': 'http://www.twitch.tv/fishplaystreetfighter'
                                     },
-                                    "CustomTrackingEvents": {
-                                        "CustomTracking": [{
-                                            "nodeValue": "http://example.com/inline-viewimp?d=[CACHEBUSTER]",
-                                            "@event": "viewableImpression"
+                                    'CustomTrackingEvents': {
+                                        'CustomTracking': [{
+                                            'nodeValue': 'http://example.com/inline-viewimp?d=[CACHEBUSTER]',
+                                            '@event': 'viewableImpression'
                                         }]
                                     }
                                 }]
                             }
                         },
-                        "@id": 1,
-                        "@sequence": 1
+                        '@id': 1,
+                        '@sequence': 1
                     },
-                    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                    "@version": 3,
-                    "@xsi:noNamespaceSchemaLocation": "../../../../../../../vast/vast3_draft.xsd"
+                    '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                    '@version': 3,
+                    '@xsi:noNamespaceSchemaLocation': '../../../../../../../vast/vast3_draft.xsd'
                 }
             }
         };
@@ -274,9 +273,8 @@ describe('VAST Response', function() {
                     VastResponse = module;
                     mockVastLinearCreative = sinon.stub(mockVastLinearCreativeModule, 'VastLinearCreative');
                     mockVastNonLinearCreative = sinon.stub(mockVastNonLinearCreativeModule, 'VastNonLinearCreative');
-                    VastExtension = mocks.store['model/vastExtension'];
                     done();
-            });
+                });
         });
     });
 

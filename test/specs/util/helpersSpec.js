@@ -52,23 +52,23 @@ describe('Helpers Util', function() {
 
     describe('decodeXML', function() {
         it('should decode &apos; to \'', function() {
-            expect(helpers.decodeXML('&apos;')).to.equal('\'')
+            expect(helpers.decodeXML('&apos;')).to.equal('\'');
         });
 
         it('should decode &quot; to "', function() {
-            expect(helpers.decodeXML('&quot;')).to.equal('"')
+            expect(helpers.decodeXML('&quot;')).to.equal('"');
         });
 
         it('should decode &gt; to >', function() {
-            expect(helpers.decodeXML('&gt;')).to.equal('>')
+            expect(helpers.decodeXML('&gt;')).to.equal('>');
         });
 
         it('should decode &lt; to <', function() {
-            expect(helpers.decodeXML('&lt;')).to.equal('<')
+            expect(helpers.decodeXML('&lt;')).to.equal('<');
         });
 
         it('should decode &amp; to &', function() {
-            expect(helpers.decodeXML('&amp;')).to.equal('&')
+            expect(helpers.decodeXML('&amp;')).to.equal('&');
         });
     });
 
@@ -94,11 +94,11 @@ describe('Helpers Util', function() {
     });
 
     describe('isNonEmptyString', function() {
-       it('should return true if non blank string', function() {
-           var url = 'url';
+        it('should return true if non blank string', function() {
+            var url = 'url';
 
-           expect(helpers.isNonEmptyString(url)).to.equal(true);
-       });
+            expect(helpers.isNonEmptyString(url)).to.equal(true);
+        });
 
         it('should return false if undefined', function() {
             var url = undefined;

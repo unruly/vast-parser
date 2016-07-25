@@ -1,0 +1,15 @@
+{
+    "env": {
+        "mocha": true
+    },
+    "extends": [
+        "./.eslintrc.src.json"
+    ],
+    "globals": {
+        "expect": false,
+        "requirejs": false,
+        "sinon": false,
+        "ActiveXObject": false,
+        "mochaPhantomJS": false
+    }
+}

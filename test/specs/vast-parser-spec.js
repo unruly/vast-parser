@@ -6,12 +6,12 @@ describe('VAST Parser', function(){
     function loadTestXML(filename, test) {
         requirejs(['text!../../test/resources/vast/' + filename], function(xmlString) {
             var parser = new DOMParser(),
-                xmlDocument = parser.parseFromString(xmlString, "application/xml");
+                xmlDocument = parser.parseFromString(xmlString, 'application/xml');
 
             if (typeof xmlDocument.evaluate !== 'function') {
                 xmlDocument = new ActiveXObject('msxml2.DOMDocument');
                 xmlDocument.loadXML(xmlString);
-                xmlDocument.setProperty("SelectionLanguage", "XPath");
+                xmlDocument.setProperty('SelectionLanguage', 'XPath');
             }
 
             test(xmlDocument);
@@ -20,9 +20,7 @@ describe('VAST Parser', function(){
 
     before(function(done) {
         requirejs(['Squire'], function(Squire) {
-            var injector;
-
-            injector = new Squire()
+            new Squire()
                 .require(['vast-parser'], function(vastParserModule) {
                     vastParser = vastParserModule;
                     done();
@@ -179,8 +177,7 @@ describe('VAST Parser', function(){
     });
 
     describe('parses VAST Wrapper', function() {
-        var wrapperURL = 'wrappers/vast_wrapper_'+targetingUUID+'.xml',
-            blankAdUrl = 'wrappers/vast_wrapper_with-blank-ad.xml';
+        var wrapperURL = 'wrappers/vast_wrapper_'+targetingUUID+'.xml';
 
         it('should extract extension object', function(done) {
             var vastWrapperWithExtensionWithPropertyXml = 'wrappers/vast_wrapper_with-extensions-with-property.xml';

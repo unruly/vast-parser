@@ -3,8 +3,7 @@ describe('VAST Ad Manager', function() {
         mockVastChainer,
         VastResponse,
         VastError,
-        successResponse,
-        Q;
+        successResponse;
 
 
     beforeEach(function(done) {
@@ -25,12 +24,12 @@ describe('VAST Ad Manager', function() {
                     VastResponse = _VastResponse;
 
                     successResponse = new VastResponse({
-                        wrappers: [{some:"ignoredForNow"}],
-                        inline: {complicated: "stuff"}
+                        wrappers: [{some:'ignoredForNow'}],
+                        inline: {complicated: 'stuff'}
                     });
 
                     done();
-            });
+                });
         });
     });
 
@@ -73,7 +72,7 @@ describe('VAST Ad Manager', function() {
 
                 promise = vastAdManager.requestVastChain('http://example.com/vast.xml');
 
-                return expect(promise).to.be.eventually.rejectedWith(VastError, "100");
+                return expect(promise).to.be.eventually.rejectedWith(VastError, '100');
             });
         });
 

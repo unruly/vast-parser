@@ -21,21 +21,21 @@ describe('VAST Error', function() {
 
     describe('message', function () {
         it('should be parsing error for 100', function () {
-            expect(new VastError(100).message).to.contain("XML parsing error.");
+            expect(new VastError(100).message).to.contain('XML parsing error.');
         });
 
         it('should be wrapper error for 300', function () {
-            expect(new VastError(300).message).to.contain("General Wrapper error.");
+            expect(new VastError(300).message).to.contain('General Wrapper error.');
         });
 
         it('should be unknown error code for 999999', function () {
-            expect(new VastError(999999).message).to.contain("Unknown error code");
+            expect(new VastError(999999).message).to.contain('Unknown error code');
         });
 
         it('should be our own error message when supplied to VastError', function () {
             var vastError = new VastError(300, new VastResponse(), 'My Error Message');
-            expect(vastError.message).to.contain("My Error Message");
-            expect(vastError.message).to.contain("300");
+            expect(vastError.message).to.contain('My Error Message');
+            expect(vastError.message).to.contain('300');
         });
     });
 
@@ -55,21 +55,21 @@ describe('VAST Error', function() {
         });
 
         it('should return any error pixels from a wrapper', function() {
-            var errorPixel = "http://example.com/error/ERRORCODE";
+            var errorPixel = 'http://example.com/error/ERRORCODE';
             var vastResponse = new VastResponse({
                 wrappers: [
                     {
-                        "VAST": {
-                            "Ad": {
-                                "Wrapper": {
-                                    "Error": [{
-                                        "nodeValue": errorPixel
+                        'VAST': {
+                            'Ad': {
+                                'Wrapper': {
+                                    'Error': [{
+                                        'nodeValue': errorPixel
                                     }]
                                 }
                             }
                         }
                     }
-                    ]
+                ]
             });
 
             var vastError = new VastError(101, vastResponse, 'Some message about errors');
@@ -78,20 +78,20 @@ describe('VAST Error', function() {
         });
 
         it('should return any error pixels from the VAST element when on a wrapper', function() {
-            var errorPixel = "http://example.com/error/ERRORCODE";
+            var errorPixel = 'http://example.com/error/ERRORCODE';
             var vastResponse = new VastResponse({
                 wrappers: [
                     {
-                        "VAST": {
-                            "Error": [{
-                                "nodeValue": errorPixel
+                        'VAST': {
+                            'Error': [{
+                                'nodeValue': errorPixel
                             }],
-                            "Ad": {
-                                "Wrapper": {}
+                            'Ad': {
+                                'Wrapper': {}
                             }
                         }
                     }
-                    ]
+                ]
             });
 
             var vastError = new VastError(101, vastResponse, 'Some message about errors');
@@ -100,14 +100,14 @@ describe('VAST Error', function() {
         });
 
         it('should return any error pixel from the inline Ad element', function() {
-            var errorPixel = "http://example.com/error/ERRORCODE";
+            var errorPixel = 'http://example.com/error/ERRORCODE';
             var vastResponse = new VastResponse({
                 inline: {
-                    "VAST": {
-                        "Ad": {
-                            "InLine": {
-                                "Error": [{
-                                    "nodeValue": errorPixel
+                    'VAST': {
+                        'Ad': {
+                            'InLine': {
+                                'Error': [{
+                                    'nodeValue': errorPixel
                                 }]
                             }
                         }
@@ -121,15 +121,15 @@ describe('VAST Error', function() {
         });
 
         it('should return any error pixels from the VAST element when on the inline file', function() {
-            var errorPixel = "http://example.com/error/ERRORCODE";
+            var errorPixel = 'http://example.com/error/ERRORCODE';
             var vastResponse = new VastResponse({
                 inline: {
-                    "VAST": {
-                        "Error": [{
-                            "nodeValue": errorPixel
+                    'VAST': {
+                        'Error': [{
+                            'nodeValue': errorPixel
                         }],
-                        "Ad": {
-                            "InLine": {
+                        'Ad': {
+                            'InLine': {
                             }
                         }
                     }
@@ -142,33 +142,33 @@ describe('VAST Error', function() {
         });
 
         it('should return any error pixels from both wrappers and the inline', function() {
-            var errorPixel1 = "http://example.com/error/ERRORCODE",
-                errorPixel2 = "http://example.com/error/ERRORCODE2",
-                errorPixel3 = "http://example.com/error/ERRORCODE3";
+            var errorPixel1 = 'http://example.com/error/ERRORCODE',
+                errorPixel2 = 'http://example.com/error/ERRORCODE2',
+                errorPixel3 = 'http://example.com/error/ERRORCODE3';
 
             var vastResponse = new VastResponse({
                 wrappers: [
                     {
-                        "VAST": {
-                            "Ad": {
-                                "Wrapper": {
-                                    "Error": [{
-                                        "nodeValue": errorPixel1
+                        'VAST': {
+                            'Ad': {
+                                'Wrapper': {
+                                    'Error': [{
+                                        'nodeValue': errorPixel1
                                     },
-                                    {
-                                        "nodeValue": errorPixel2
-                                    }]
+                                        {
+                                            'nodeValue': errorPixel2
+                                        }]
                                 }
                             }
                         }
                     }
                 ],
                 inline: {
-                    "VAST": {
-                        "Ad": {
-                            "InLine": {
-                                "Error": [{
-                                    "nodeValue": errorPixel3
+                    'VAST': {
+                        'Ad': {
+                            'InLine': {
+                                'Error': [{
+                                    'nodeValue': errorPixel3
                                 }]
                             }
                         }
@@ -188,10 +188,10 @@ describe('VAST Error', function() {
             var vastResponse = new VastResponse({
                 wrappers: [
                     {
-                        "VAST": {
-                            "Ad": {
-                                "Wrapper": {
-                                    "Error": [{}]
+                        'VAST': {
+                            'Ad': {
+                                'Wrapper': {
+                                    'Error': [{}]
                                 }
                             }
                         }
@@ -209,9 +209,9 @@ describe('VAST Error', function() {
             var vastResponse = new VastResponse({
                 wrappers: [
                     {
-                        "VAST": {
-                            "Ad": {
-                                "Wrapper": {}
+                        'VAST': {
+                            'Ad': {
+                                'Wrapper': {}
                             }
                         }
                     }

@@ -12,3 +12,6 @@ vast-parser.iml
 
 # OSX file jazz
 .DS_Store
+
+npm-debug.log
+*.sw?

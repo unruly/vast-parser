@@ -16,7 +16,7 @@
     "vast"
   ],
   "author": "marmalade@unrulymedia.com",
-  "license": "BSD",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/devunrulymedia/vast-parser/issues"
   },

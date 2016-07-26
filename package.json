@@ -6,7 +6,7 @@
   "scripts": {
     "start": "python -m SimpleHTTPServer",
     "test": "npm run lint && google-chrome http://localhost:8000/test/phantom/testrunner.html",
-    "lint": "./node_modules/.bin/eslint -c .eslintrc.src.json src/* && ./node_modules/.bin/eslint -c .eslintrc.test.json test/*"
+    "lint": "./node_modules/.bin/eslint src/* && ./node_modules/.bin/eslint -c test/.eslintrc test/*"
   },
   "repository": {
     "type": "git",

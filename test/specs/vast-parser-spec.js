@@ -172,7 +172,20 @@ describe('VAST Parser', function(){
                     done();
                 });
             });
+        });
 
+        describe('with Multiple Ads', function() {
+            var inlineURL = 'inlines/test_vast_inline_with-multiple-ads.xml';
+
+            it('stores one Ad and does not throw an exception', function(done) {
+                loadTestXML(inlineURL, function(vastDocument) {
+                    var obj = vastParser.parse(vastDocument);
+
+                    expect(obj.VAST.Ad.InLine).to.not.be.undefined;
+
+                    done();
+                });
+            });
         });
     });
 
@@ -426,6 +439,20 @@ describe('VAST Parser', function(){
                 expect(obj.VAST.Ad.Wrapper.Creatives.Creative.length).to.equal(1);
 
                 done();
+            });
+        });
+
+        describe('with Multiple Ads', function() {
+            var wrapperURL = 'wrappers/vast_wrapper_with-multiple-ads.xml';
+
+            it('stores one Ad and does not throw an exception', function(done) {
+                loadTestXML(wrapperURL, function(vastDocument) {
+                    var obj = vastParser.parse(vastDocument);
+
+                    expect(obj.VAST.Ad.Wrapper).to.not.be.undefined;
+
+                    done();
+                });
             });
         });
     });

@@ -50,6 +50,10 @@ define(['./xml-parser'], function(xmlParser) {
             return parsedXml;
         }
 
+        if(Array.isArray(parsedXml.VAST.Ad)) {
+            parsedXml.VAST.Ad = parsedXml.VAST.Ad[0];
+        }
+
         if (parsedXml.VAST.Ad.Wrapper) {
             ensureArrays(parsedXml.VAST.Ad.Wrapper);
             if (parsedXml.VAST.Ad.Wrapper.Creatives) {

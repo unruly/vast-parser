@@ -1,6 +1,6 @@
 {
   "name": "vast-parser",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "description": "Parses VAST files into plain javascript objects",
   "main": "index.js",
   "scripts": {

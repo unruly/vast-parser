@@ -454,6 +454,45 @@ describe('VAST Response', function() {
 
             expect(vastResponse._raw[0]).to.deep.equal(data);
         });
+
+        it('should get last VAST url after adding raw response', function() {
+            var vastResponse = new VastResponse(mockVastTags),
+                data = {
+                    url: 'http://example.com/firstVast.xml',
+                    data: '<faketag></faketag>'
+                };
+            vastResponse.addRawResponse(data);
+
+            expect(vastResponse.getLastVASTURL()).to.equal(data.url);
+        });
+
+        it('should get last VAST url after adding multiple raw response', function() {
+            var vastResponse = new VastResponse(mockVastTags),
+                lastRawData;
+
+            vastResponse.addRawResponse({
+                url: 'http://example.com/firstVast.xml'
+            });
+
+            vastResponse.addRawResponse({
+                url: 'http://example.com/secondVast.xml'
+            });
+
+            lastRawData = {
+                url: 'http://example.com/thirdVast.xml',
+                data: '<faketag></faketag>'
+            };
+            vastResponse.addRawResponse(lastRawData);
+
+            expect(vastResponse.getLastVASTURL()).to.equal(lastRawData.url);
+        });
+
+        it('should return undefined when no raw responses added ', function() {
+            var vastResponse = new VastResponse(mockVastTags);
+            vastResponse._raw = [];
+
+            expect(vastResponse.getLastVASTURL()).to.be.undefined;
+        });
     });
 
     describe('extensions', function() {

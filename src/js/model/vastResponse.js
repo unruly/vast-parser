@@ -64,6 +64,15 @@ define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vast
         });
     };
 
+    VastResponse.prototype.getLastVASTURL = function() {
+        if(this._raw.length === 0) {
+            return undefined;
+        }
+
+        var lastVAST = this._raw[this._raw.length - 1];
+        return lastVAST.url;
+    };
+
     return VastResponse;
 
 });

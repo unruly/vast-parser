@@ -435,7 +435,7 @@ describe('VAST Response', function() {
         it('getRawResponse should return an array of response objects', function() {
             var vastResponse = new VastResponse(mockVastTags),
                 data = {
-                    url: 'foo',
+                    uri: 'foo',
                     data: '<faketag></faketag>'
                 };
 
@@ -447,7 +447,7 @@ describe('VAST Response', function() {
         it('addRawResponse should add a response object', function() {
             var vastResponse = new VastResponse(mockVastTags),
                 data = {
-                    url: 'foo',
+                    uri: 'foo',
                     data: '<faketag></faketag>'
                 };
             vastResponse.addRawResponse(data);
@@ -458,12 +458,12 @@ describe('VAST Response', function() {
         it('should get last VAST url after adding raw response', function() {
             var vastResponse = new VastResponse(mockVastTags),
                 data = {
-                    url: 'http://example.com/firstVast.xml',
+                    uri: 'http://example.com/firstVast.xml',
                     data: '<faketag></faketag>'
                 };
             vastResponse.addRawResponse(data);
 
-            expect(vastResponse.getLastVASTURL()).to.equal(data.url);
+            expect(vastResponse.getLastVASTURL()).to.equal(data.uri);
         });
 
         it('should get last VAST url after adding multiple raw response', function() {
@@ -471,20 +471,20 @@ describe('VAST Response', function() {
                 lastRawData;
 
             vastResponse.addRawResponse({
-                url: 'http://example.com/firstVast.xml'
+                uri: 'http://example.com/firstVast.xml'
             });
 
             vastResponse.addRawResponse({
-                url: 'http://example.com/secondVast.xml'
+                uri: 'http://example.com/secondVast.xml'
             });
 
             lastRawData = {
-                url: 'http://example.com/thirdVast.xml',
+                uri: 'http://example.com/thirdVast.xml',
                 data: '<faketag></faketag>'
             };
             vastResponse.addRawResponse(lastRawData);
 
-            expect(vastResponse.getLastVASTURL()).to.equal(lastRawData.url);
+            expect(vastResponse.getLastVASTURL()).to.equal(lastRawData.uri);
         });
 
         it('should return undefined when no raw responses added ', function() {

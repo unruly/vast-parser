@@ -70,7 +70,7 @@ define(['../util/helpers', '../util/objectUtil', './vastLinearCreative', './vast
         }
 
         var lastVAST = this._raw[this._raw.length - 1];
-        return lastVAST.url;
+        return lastVAST.uri;
     };
 
     return VastResponse;

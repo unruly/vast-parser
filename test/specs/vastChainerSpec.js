@@ -520,6 +520,40 @@ describe('VAST Chainer', function(){
             });
         });
 
+        it('should only fire request start stop once when retrying without cookies', function(){
+            wrapperConfig.url = 'http://targeting.acooladcompany.com/i/am/a/cool/targeting/server?abc=123';
+
+            // Fake out a CORS issue with status 0 for now :~(
+            mockServer.respondWith('GET', wrapperConfig.url, [0, {
+                "Content-Type": "application/xml",
+                "Access-Control-Allow-Origin": "http://noncorsdomain.com/"
+            }, mockWrapperString]);
+
+            mockServer.respondWith('GET', wrapperConfig.url, [200, {}, mockWrapperString]);
+
+            sinon.spy(jQuery, 'ajax');
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+            mockServer.respond();
+
+            expect(beginVastDownload).to.have.been.calledWithMatch({
+                type: 'requestStart',
+                requestNumber: 0,
+                uri: wrapperConfig.url,
+                vastResponse: {}
+            });
+            expect(finishVastDownload).to.have.been.calledWithMatch({
+                type: 'requestEnd',
+                requestNumber: 0,
+                uri: wrapperConfig.url,
+                vastResponse: {}
+            });
+
+            jQuery.ajax.restore();
+        });
+
         it('should fire request start and stop on download of VAST Wrapper and Inline', function(){
             mockServer.respondWith('GET', firstWrapperUrl, [200, {}, mockWrapperString]);
             var inlineUrl = mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;

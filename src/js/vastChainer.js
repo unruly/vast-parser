@@ -26,7 +26,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                     resolve = _resolve;
                     reject = _reject;
                 }),
-                currentRequestNumber = vastRequestCounter++,
+                currentRequestNumber = vastRequestCounter,
                 requestStartEvent,
                 settings;
 
@@ -45,6 +45,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
             };
 
             if (sendCookies) {
+                vastRequestCounter++;
                 settings.xhrFields = {
                     withCredentials: true
                 };

@@ -150,15 +150,15 @@ describe('VAST Chainer', function(){
         };
 
         mockServer = sinon.fakeServer.create();
-    });
-
-    beforeEach(function() {
         mockClock = sinon.useFakeTimers(now);
+
+        sinon.spy(console, 'log');
     });
 
     afterEach(function () {
         mockServer.restore();
         mockClock.restore();
+        console.log.restore();
     });
 
     function vastError(error, message) {
@@ -308,53 +308,6 @@ describe('VAST Chainer', function(){
             jQuery.ajax.restore();
         });
 
-        it('should only set xhrFields.withCredentials to true for requests that match CORS cookies', function() {
-            wrapperConfig.url = 'http://targeting.acooladcompany.com/i/am/a/cool/targeting/server?abc=123';
-
-            mockServer.respondWith('GET', wrapperConfig.url, [200, {}, mockWrapperString]);
-
-            sinon.spy(jQuery, 'ajax');
-
-            wrapperConfig.corsCookieDomains = ['targeting.acooladcompany.com'];
-            vastChainer.getVastChain(wrapperConfig);
-
-            mockServer.respond();
-
-            expect(jQuery.ajax.calledTwice).to.equal(true);
-
-            expect(jQuery.ajax.firstCall.args[0].xhrFields.withCredentials).to.be.true;
-
-            var inlineRequest = jQuery.ajax.secondCall;
-            expect(inlineRequest.args[0].url).to.equal('inlineVASTUrl');
-            expect(inlineRequest.args[0].xhrFields).to.not.be.defined;
-
-            jQuery.ajax.restore();
-        });
-
-        it('should set xhrFields.withCredentials to true for multiple requests that match CORS cookies', function() {
-            wrapperConfig.url = 'http://targeting.acooladcompany.com/i/am/a/cool/targeting/server?abc=123';
-            mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue = 'http://second.com/?hey=there%20buddy';
-
-            mockServer.respondWith('GET', wrapperConfig.url, [200, {}, mockWrapperString]);
-
-            sinon.spy(jQuery, 'ajax');
-
-            wrapperConfig.corsCookieDomains = [
-                'targeting.acooladcompany.com',
-                'second.com'
-            ];
-            vastChainer.getVastChain(wrapperConfig);
-
-            mockServer.respond();
-
-            expect(jQuery.ajax.calledTwice).to.equal(true);
-
-            expect(jQuery.ajax.firstCall.args[0].xhrFields.withCredentials).to.be.true;
-            expect(jQuery.ajax.secondCall.args[0].xhrFields.withCredentials).to.be.true;
-
-            jQuery.ajax.restore();
-        });
-
         it('rejects promise when inline VAST request from parsed VAST wrapper fails', function(){
             mockServer.respondWith('GET', firstWrapperUrl, [200, {}, mockWrapperString]);
             mockServer.respondWith('GET', mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue, [404, {}, 'Not Found']);
@@ -368,6 +321,37 @@ describe('VAST Chainer', function(){
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
         });
 
+        it('send cookies on first request, which fails, then retry without cookies', function(){
+            wrapperConfig.url = 'http://targeting.acooladcompany.com/i/am/a/cool/targeting/server?abc=123';
+
+            // Fake out a CORS issue with status 0 for now :~(
+            mockServer.respondWith('GET', wrapperConfig.url, [0, {
+                "Content-Type": "application/xml",
+                "Access-Control-Allow-Origin": "http://noncorsdomain.com/"
+            }, mockWrapperString]);
+
+            sinon.spy(jQuery, 'ajax');
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(jQuery.ajax.calledTwice).to.equal(true);
+
+            var wrapperRequest = jQuery.ajax.firstCall.args[0];
+            expect(wrapperRequest.url).to.equal(wrapperConfig.url);
+            expect(wrapperRequest.xhrFields.withCredentials).to.be.true;
+
+            var consoleLog = console.log.firstCall;
+            expect(consoleLog.args[0]).to.equal('Retrying request without cookies:');
+            expect(consoleLog.args[1]).to.equal(wrapperConfig.url);
+
+            var inlineRequest = jQuery.ajax.secondCall.args[0];
+            expect(inlineRequest.url).to.equal(wrapperConfig.url);
+            expect(inlineRequest.xhrFields).to.not.be.defined;
+
+            jQuery.ajax.restore();
+        });
 
         it('fulfills promise with array of VAST tags', function() {
             mockServer.respondWith('GET', firstWrapperUrl, [200, {}, mockWrapperString]);

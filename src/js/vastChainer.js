@@ -1,3 +1,5 @@
+/*global console:true*/
+
 define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastError', './model/vastResponse', './util/helpers'],
     function($, vastParser, promiseShim, vastErrorCodes, VastError, VastResponse, helpers) {
 
@@ -15,7 +17,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
             return a.hostname;
         }
 
-        function getVast(vastResponse, vastConfig) {
+        function getVast(vastResponse, vastConfig, sendCookies) {
 
             var url = vastConfig.url,
                 resolve,
@@ -42,10 +44,12 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                 dataType: 'xml'
             };
 
-            if ((vastConfig.corsCookieDomains instanceof Array) && vastConfig.corsCookieDomains.indexOf(getDomainFromURL(url)) !== -1) {
+            if (sendCookies) {
                 settings.xhrFields = {
                     withCredentials: true
                 };
+            } else {
+                console.log('Retrying request without cookies:', url);
             }
 
             settings.timeout = AJAX_TIMEOUT;
@@ -104,7 +108,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                         corsCookieDomains: vastConfig.corsCookieDomains
                     };
 
-                    getVast(vastResponse, nextRequestConfig)
+                    getVast(vastResponse, nextRequestConfig, true)
                         .then(resolve)
                         ['catch'](reject);      // eslint-disable-line no-unexpected-multiline
                 }
@@ -114,6 +118,13 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                 var code,
                     requestEndEvent,
                     statusText;
+
+                if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
+                    getVast(vastResponse, vastConfig, false)
+                        .then(resolve)
+                        ['catch'](reject);      // eslint-disable-line no-unexpected-multiline
+                    return
+                }
 
                 if (jqXHR.status === 200 && !jqXHR.responseXML) {
                     code = vastErrorCodes.XML_PARSE_ERROR.code;
@@ -159,7 +170,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
         function getVastChain(vastConfig) {
             var vastResponse = new VastResponse();
 
-            return getVast(vastResponse, vastConfig);
+            return getVast(vastResponse, vastConfig, true);
         }
 
         return {

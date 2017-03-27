@@ -45,7 +45,6 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
             };
 
             if (sendCookies) {
-                vastRequestCounter++;
                 settings.xhrFields = {
                     withCredentials: true
                 };
@@ -109,6 +108,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                         corsCookieDomains: vastConfig.corsCookieDomains
                     };
 
+                    vastRequestCounter++;
                     getVast(vastResponse, nextRequestConfig, true)
                         .then(resolve)
                         ['catch'](reject);      // eslint-disable-line no-unexpected-multiline

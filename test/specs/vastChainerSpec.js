@@ -92,7 +92,7 @@ describe('VAST Chainer', function(){
                 'Ad': {
                     'Wrapper': {
                         'VASTAdTagURI': {
-                            'nodeValue': 'inlineVASTUrl'
+                            'nodeValue': 'http://inlineVASTUrlDomain.com/'
                         }
                     }
                 }
@@ -283,7 +283,7 @@ describe('VAST Chainer', function(){
             expect(jQuery.ajax.calledTwice).to.equal(true);
 
             var inlineRequest = jQuery.ajax.secondCall;
-            expect(inlineRequest.args[0].url).to.equal('inlineVASTUrl');
+            expect(inlineRequest.args[0].url).to.equal('http://inlineVASTUrlDomain.com/');
 
             jQuery.ajax.restore();
         });
@@ -348,7 +348,65 @@ describe('VAST Chainer', function(){
 
             var inlineRequest = jQuery.ajax.secondCall.args[0];
             expect(inlineRequest.url).to.equal(wrapperConfig.url);
-            expect(inlineRequest.xhrFields).to.not.be.defined;
+            expect(inlineRequest.xhrFields).to.equal(undefined);
+
+            jQuery.ajax.restore();
+        });
+
+        it('do not send cookies on first request if domain in blacklist', function(){
+            wrapperConfig.url = 'http://targeting.acooladcompany.com/i/am/a/cool/targeting/server?abc=123';
+
+            wrapperConfig.corsCookieDomainBlacklist = ['targeting.acooladcompany.com'];
+
+            mockServer.respondWith('GET', wrapperConfig.url, [200, {
+                "Content-Type": "application/xml",
+                "Access-Control-Allow-Origin": "http://noncorsdomain.com/"
+            }, mockWrapperString]);
+
+            sinon.spy(jQuery, 'ajax');
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(jQuery.ajax.calledTwice).to.equal(true);
+
+            var wrapperRequest = jQuery.ajax.firstCall.args[0];
+            expect(wrapperRequest.url).to.equal(wrapperConfig.url);
+            expect(wrapperRequest.xhrFields).to.equal(undefined);
+
+            expect(console.log).to.not.have.been.called;
+
+            jQuery.ajax.restore();
+        });
+
+        it('do not send cookies on first and second request if domain in blacklist', function(){
+            wrapperConfig.url = 'http://targeting.acooladcompany.com/i/am/a/cool/targeting/server?abc=123';
+
+            wrapperConfig.corsCookieDomainBlacklist = ['targeting.acooladcompany.com', 'inlinevasturldomain.com'];
+
+            mockServer.respondWith('GET', wrapperConfig.url, [200, {
+                "Content-Type": "application/xml",
+                "Access-Control-Allow-Origin": "http://targeting.acooladcompany.com/"
+            }, mockWrapperString]);
+
+            sinon.spy(jQuery, 'ajax');
+
+            vastChainer.getVastChain(wrapperConfig);
+
+            mockServer.respond();
+
+            expect(jQuery.ajax.calledTwice).to.equal(true);
+
+            var wrapperRequest = jQuery.ajax.firstCall.args[0];
+            expect(wrapperRequest.url).to.equal(wrapperConfig.url);
+            expect(wrapperRequest.xhrFields).to.equal(undefined);
+
+            var inlineRequest = jQuery.ajax.secondCall.args[0];
+            expect(inlineRequest.url).to.equal('http://inlineVASTUrlDomain.com/');
+            expect(inlineRequest.xhrFields).to.equal(undefined);
+
+            expect(console.log).to.not.have.been.called;
 
             jQuery.ajax.restore();
         });
@@ -461,13 +519,13 @@ describe('VAST Chainer', function(){
                 expect(jQuery.ajax.calledTwice).to.equal(true);
 
                 var inlineRequest = jQuery.ajax.secondCall;
-                expect(inlineRequest.args[0].url).to.equal('inlineVASTUrl' + '?' + wrapperConfig.extraParams);
+                expect(inlineRequest.args[0].url).to.equal('http://inlineVASTUrlDomain.com/' + '?' + wrapperConfig.extraParams);
 
                 jQuery.ajax.restore();
             });
 
             it('requests inline VAST if parsed VAST tag is a wrapper - with existing query string', function(){
-                var expectedUrl = 'inlineVASTUrl?hey=there%20buddy';
+                var expectedUrl = 'http://inlineVASTUrlDomain.com/?hey=there%20buddy';
                 mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue = expectedUrl;
 
                 mockServer.respondWith('GET', firstWrapperUrl + '&' + wrapperConfig.extraParams, [200, {}, mockWrapperString]);

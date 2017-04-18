@@ -17,6 +17,14 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
             return a.hostname;
         }
 
+        function domainAllowsCorsCookies(vastConfig, url) {
+            if(!(vastConfig.corsCookieDomainBlacklist instanceof Array)) {
+                return true;
+            }
+
+            return vastConfig.corsCookieDomainBlacklist.indexOf(getDomainFromURL(url)) === -1;
+        }
+
         function getVast(vastResponse, vastConfig, sendCookies) {
 
             var url = vastConfig.url,
@@ -44,12 +52,10 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                 dataType: 'xml'
             };
 
-            if (sendCookies) {
+            if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
                 settings.xhrFields = {
                     withCredentials: true
                 };
-            } else {
-                console.log('Retrying request without cookies:', url);
             }
 
             settings.timeout = AJAX_TIMEOUT;
@@ -105,7 +111,7 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                     nextRequestConfig = {
                         url: helpers.convertProtocol(childTagUri),
                         extraParams: vastConfig.extraParams,
-                        corsCookieDomains: vastConfig.corsCookieDomains
+                        corsCookieDomainBlacklist: vastConfig.corsCookieDomainBlacklist
                     };
 
                     vastRequestCounter++;
@@ -121,6 +127,8 @@ define(['jquery', './vast-parser', 'es6promise', './vastErrorCodes', './vastErro
                     statusText;
 
                 if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
+                    console.log('Retrying request without cookies:', url);
+
                     getVast(vastResponse, vastConfig, false)
                         .then(resolve)
                         ['catch'](reject);      // eslint-disable-line no-unexpected-multiline

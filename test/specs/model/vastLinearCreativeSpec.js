@@ -1,7 +1,8 @@
+const VastLinearCreative = require('../../../src/js/model/vastLinearCreative');
+
 describe('VAST Linear Creative', function() {
 
-    var VastLinearCreative,
-        mockVastResponse,
+    var mockVastResponse,
         helpers;
 
     function getVastResponse() {
@@ -329,22 +330,8 @@ describe('VAST Linear Creative', function() {
         });
     }
 
-    beforeEach(function (done) {
+    beforeEach(function () {
         mockVastResponse = getVastResponse();
-
-        requirejs(['Squire'], function (Squire) {
-            var injector = new Squire();
-
-            injector
-                .store(['util/helpers'])
-                .require(['model/vastLinearCreative', 'mocks'], function (module, mocks) {
-                    VastLinearCreative = module.VastLinearCreative;
-                    helpers = mocks.store['util/helpers'];
-                    sinon.stub(helpers, 'getSecondsFromTimeString');
-
-                    done();
-                });
-        });
     });
 
     describe('getDuration', function () {
@@ -353,10 +340,11 @@ describe('VAST Linear Creative', function() {
                 expectedResult = 40,
                 linearCreative = new VastLinearCreative(mockVastResponse);
 
-            helpers.getSecondsFromTimeString.withArgs(mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Duration.nodeValue)
+            const getSecondsFromTimeString = sinon.stub()
+                .withArgs(mockVastResponse.inline.VAST.Ad.InLine.Creatives.Creative[1].Linear.Duration.nodeValue)
                 .returns(expectedResult);
 
-            result = linearCreative.getDuration();
+            result = linearCreative.getDuration(getSecondsFromTimeString);
 
             expect(result).to.equal(expectedResult);
         });

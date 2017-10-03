@@ -1,16 +1,6 @@
+const helpers = require('../../../src/js/util/helpers');
+
 describe('Helpers Util', function() {
-
-    var helpers;
-
-    beforeEach(function(done) {
-        requirejs(['Squire'], function(Squire) {
-            var injector = new Squire();
-            injector.require(['util/helpers'], function(module) {
-                helpers = module;
-                done();
-            });
-        });
-    });
 
     describe('time converter', function() {
         it('should convert 00:00:00 time into seconds', function() {

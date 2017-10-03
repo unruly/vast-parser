@@ -1,15 +1,6 @@
+const VastMediaFile = require('../../../src/js/model/vastMediaFile');
+
 describe('VAST Media File', function() {
-
-    var VastMediaFile;
-
-    beforeEach(function(done) {
-        requirejs(['model/vastMediaFile'], function(VastMediaFileClass) {
-            VastMediaFile = VastMediaFileClass;
-
-            done();
-        });
-    });
-
     describe('url property', function() {
         it('should return URL from MediaFile as it was if it had https:// protocol in the XML', function() {
             var mediaFile,

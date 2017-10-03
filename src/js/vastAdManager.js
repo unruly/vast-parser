@@ -1,7 +1,6 @@
-define(['./vastChainer'], function(vastChainer) {
+const vastChainer = require('./vastChainer');
 
-    return {
-        requestVastChain: vastChainer.getVastChain,
-        addEventListener: vastChainer.addEventListener
-    };
+module.exports = (chainer = vastChainer) => ({
+    requestVastChain: chainer.getVastChain,
+    addEventListener: chainer.addEventListener
 });

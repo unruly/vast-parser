@@ -1,6 +1,7 @@
+const VastNonLinearCreative = require('../../../src/js/model/vastNonLinearCreative');
+
 describe('VAST Non Linear Creative', function() {
-    var VastNonLinearCreative,
-        mockVastResponse,
+    var mockVastResponse,
         helpers;
 
     function getVastResponse() {
@@ -212,21 +213,8 @@ describe('VAST Non Linear Creative', function() {
         };
     }
 
-    beforeEach(function(done) {
+    beforeEach(function() {
         mockVastResponse = getVastResponse();
-
-        requirejs(['Squire'], function(Squire) {
-            var injector = new Squire();
-
-            injector
-                .store(['util/helpers'])
-                .require(['model/vastNonLinearCreative', 'mocks'], function(module, mocks) {
-                    VastNonLinearCreative = module.VastNonLinearCreative;
-                    helpers = mocks.store['util/helpers'];
-
-                    done();
-                });
-        });
     });
 
     describe('getStaticResource', function() {
@@ -246,9 +234,9 @@ describe('VAST Non Linear Creative', function() {
                 convertedUrl = '//example.com/thumb.jpg',
                 staticResource;
 
-            sinon.stub(helpers, 'convertProtocol').returns(convertedUrl);
+            const convertProtocol = sinon.stub().returns(convertedUrl);
 
-            staticResource = nonLinearCreative.getStaticResource();
+            staticResource = nonLinearCreative.getStaticResource(convertProtocol);
 
             expect(staticResource).to.equal(convertedUrl);
         });

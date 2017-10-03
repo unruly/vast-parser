@@ -1,3 +1,1 @@
-define([], function() {
-    return window;
-});
+module.exports = window || global;

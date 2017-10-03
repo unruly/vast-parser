@@ -1,37 +1,34 @@
+const VastIcon = require('../../../src/js/model/vastIcon');
+
 describe('VAST Icon', function() {
 
-    var VastIcon,
-        iconXMLJson;
+    var iconXMLJson;
 
-    beforeEach(function(done) {
-        requirejs(['model/vastIcon'], function(VastIconClass) {
-            VastIcon = VastIconClass;
-            iconXMLJson = {
-                '@program': 'AdChoices',
-                '@width': '60',
-                '@height': '20',
-                '@xPosition': 'right',
-                '@yPosition': 'top',
-                'StaticResource': {
-                    '@creativeType': 'image/jpeg',
-                    'nodeValue': 'http://example.com/inline/icon.jpeg'
+    beforeEach(function() {
+        iconXMLJson = {
+            '@program': 'AdChoices',
+            '@width': '60',
+            '@height': '20',
+            '@xPosition': 'right',
+            '@yPosition': 'top',
+            'StaticResource': {
+                '@creativeType': 'image/jpeg',
+                'nodeValue': 'http://example.com/inline/icon.jpeg'
+            },
+            'IconClicks': {
+                'IconClickThrough': {
+                    'nodeValue': 'http://example.com/inline/icon-click-through'
                 },
-                'IconClicks': {
-                    'IconClickThrough': {
-                        'nodeValue': 'http://example.com/inline/icon-click-through'
+                'IconClickTracking': [
+                    {
+                        'nodeValue': '//example.com/inline/icon-click-tracking-1'
                     },
-                    'IconClickTracking': [
-                        {
-                            'nodeValue': '//example.com/inline/icon-click-tracking-1'
-                        },
-                        {
-                            'nodeValue': 'http://example.com/inline/icon-click-tracking-2'
-                        }
-                    ]
-                }
-            };
-            done();
-        });
+                    {
+                        'nodeValue': 'http://example.com/inline/icon-click-tracking-2'
+                    }
+                ]
+            }
+        };
     });
 
     describe('when elements are missing', function() {

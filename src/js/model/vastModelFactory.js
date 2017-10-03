@@ -1,7 +1,7 @@
-define(['./vastExtension'], function(VastExtension) {
-    return {
-        createVastExtension: function(extensionNodes) {
-            return new VastExtension(extensionNodes);
-        }
-    };
-});
+const VastExtension = require('./vastExtension');
+
+module.exports = {
+    createVastExtension: function(extensionNodes) {
+        return new VastExtension(extensionNodes);
+    }
+};

@@ -1,19 +1,7 @@
+const VastError = require('../../src/js/vastError');
+const VastResponse = require('../../src/js/model/vastResponse');
+
 describe('VAST Error', function() {
-    var VastError,
-        VastResponse;
-
-    beforeEach(function(done) {
-        requirejs(['Squire'], function(Squire) {
-            var injector = new Squire();
-
-            injector.require(['vastError', 'model/vastResponse'], function(vastErrorClass, VastResponseClass) {
-                VastError = vastErrorClass;
-                VastResponse = VastResponseClass;
-
-                done();
-            });
-        });
-    });
 
     it('should be possible to get the code', function () {
         expect(new VastError(101).code).to.equal(101);

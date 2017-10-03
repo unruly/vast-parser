@@ -1,73 +1,72 @@
-define(['./xml-parser'], function(xmlParser) {
+const xmlParser = require('./xml-parser');
 
-    function mustBeArray(item) {
-        if(
-            item === undefined ||
-            // Because Object.keys(new Date()).length === 0 we have to do some additional check
-            (typeof item === 'object' && Object.keys(item).length === 0 && item.constructor === Object) ||
-            item === null ||
-            (typeof item === 'number' && item !== 0 && !item)
-        )
-        {
-            return [];
-        }
-
-        return Array.isArray(item) ? item : [item];
+function mustBeArray(item) {
+    if(
+        item === undefined ||
+        // Because Object.keys(new Date()).length === 0 we have to do some additional check
+        (typeof item === 'object' && Object.keys(item).length === 0 && item.constructor === Object) ||
+        item === null ||
+        (typeof item === 'number' && item !== 0 && !item)
+    )
+    {
+        return [];
     }
 
-    function ensureArrays(vastInnerObject) {
-        if(vastInnerObject.Creatives) {
-            vastInnerObject.Creatives.Creative   = mustBeArray(vastInnerObject.Creatives.Creative);
-        }
+    return Array.isArray(item) ? item : [item];
+}
 
-        if(vastInnerObject.Extensions) {
-            vastInnerObject.Extensions.Extension = mustBeArray(vastInnerObject.Extensions.Extension);
-        }
-
-        vastInnerObject.Impression = mustBeArray(vastInnerObject.Impression);
+function ensureArrays(vastInnerObject) {
+    if(vastInnerObject.Creatives) {
+        vastInnerObject.Creatives.Creative   = mustBeArray(vastInnerObject.Creatives.Creative);
     }
 
-    function ensureArraysOnCreatives(vastInnerObject) {
-        var creative = vastInnerObject.Creatives.Creative,
-            nonLinearCreatives = creative.filter(function(item) { return item.NonLinearAds && item.NonLinearAds.NonLinear; }),
-            linearCreatives = creative.filter(function(item) { return item.Linear; });
-
-        nonLinearCreatives.forEach(function(creative) {
-            creative.NonLinearAds.NonLinear.NonLinearClickTracking = mustBeArray(creative.NonLinearAds.NonLinear.NonLinearClickTracking);
-        });
-
-        linearCreatives.forEach(function(creative) {
-            if (creative.Linear.MediaFiles) {
-                creative.Linear.MediaFiles.MediaFile = mustBeArray(creative.Linear.MediaFiles.MediaFile);
-            }
-        });
+    if(vastInnerObject.Extensions) {
+        vastInnerObject.Extensions.Extension = mustBeArray(vastInnerObject.Extensions.Extension);
     }
 
-    function parse(xmlDocument) {
-        var parsedXml = xmlParser.parse(xmlDocument);
+    vastInnerObject.Impression = mustBeArray(vastInnerObject.Impression);
+}
 
-        if(!parsedXml.VAST || parsedXml.VAST.Error || !parsedXml.VAST.Ad) {
-            return parsedXml;
+function ensureArraysOnCreatives(vastInnerObject) {
+    var creative = vastInnerObject.Creatives.Creative,
+        nonLinearCreatives = creative.filter(function(item) { return item.NonLinearAds && item.NonLinearAds.NonLinear; }),
+        linearCreatives = creative.filter(function(item) { return item.Linear; });
+
+    nonLinearCreatives.forEach(function(creative) {
+        creative.NonLinearAds.NonLinear.NonLinearClickTracking = mustBeArray(creative.NonLinearAds.NonLinear.NonLinearClickTracking);
+    });
+
+    linearCreatives.forEach(function(creative) {
+        if (creative.Linear.MediaFiles) {
+            creative.Linear.MediaFiles.MediaFile = mustBeArray(creative.Linear.MediaFiles.MediaFile);
         }
+    });
+}
 
-        if(Array.isArray(parsedXml.VAST.Ad)) {
-            parsedXml.VAST.Ad = parsedXml.VAST.Ad[0];
-        }
+function parse(xmlDocument) {
+    var parsedXml = xmlParser.parse(xmlDocument);
 
-        if (parsedXml.VAST.Ad.Wrapper) {
-            ensureArrays(parsedXml.VAST.Ad.Wrapper);
-            if (parsedXml.VAST.Ad.Wrapper.Creatives) {
-                ensureArraysOnCreatives(parsedXml.VAST.Ad.Wrapper);
-            }
-        } else if (parsedXml.VAST.Ad.InLine) {
-            ensureArrays(parsedXml.VAST.Ad.InLine);
-            ensureArraysOnCreatives(parsedXml.VAST.Ad.InLine);
-        }
-
+    if(!parsedXml.VAST || parsedXml.VAST.Error || !parsedXml.VAST.Ad) {
         return parsedXml;
     }
 
-    return {
-        parse: parse
-    };
-});
+    if(Array.isArray(parsedXml.VAST.Ad)) {
+        parsedXml.VAST.Ad = parsedXml.VAST.Ad[0];
+    }
+
+    if (parsedXml.VAST.Ad.Wrapper) {
+        ensureArrays(parsedXml.VAST.Ad.Wrapper);
+        if (parsedXml.VAST.Ad.Wrapper.Creatives) {
+            ensureArraysOnCreatives(parsedXml.VAST.Ad.Wrapper);
+        }
+    } else if (parsedXml.VAST.Ad.InLine) {
+        ensureArrays(parsedXml.VAST.Ad.InLine);
+        ensureArraysOnCreatives(parsedXml.VAST.Ad.InLine);
+    }
+
+    return parsedXml;
+}
+
+module.exports = {
+    parse: parse
+};

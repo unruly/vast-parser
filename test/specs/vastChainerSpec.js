@@ -1,4 +1,4 @@
-describe('VAST Chainer', function(){
+describe.skip('VAST Chainer', function(){
     var vastChainer,
         vastParser,
         jQuery,

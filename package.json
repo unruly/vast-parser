@@ -5,8 +5,9 @@
   "main": "src/js/vast-parser.js",
   "scripts": {
     "start": "python -m SimpleHTTPServer",
-    "test": "npm run lint && google-chrome http://localhost:8000/test/phantom/testrunner.html",
-    "lint": "./node_modules/.bin/eslint src/* && ./node_modules/.bin/eslint -c test/.eslintrc test/*"
+    "lint": "./node_modules/.bin/eslint src/* && ./node_modules/.bin/eslint -c test/.eslintrc test/*",
+    "test": "mocha --recursive --reporter list test/mocha.conf.js test/specs/**/*.js",
+    "testWatch": "npm run lint && npm run testMocha -- --watch"
   },
   "repository": {
     "type": "git",
@@ -24,15 +25,19 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "eslint": "^3.1.1",
+    "jsdom": "^11.3.0",
     "mocha": "^2.5.3",
+    "node-fetch": "^1.7.3",
     "requirejs": "^2.2.0",
     "requirejs-text": "^2.0.12",
     "sinon": "^1.17.4",
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0",
-    "squirejs": "^0.2.1"
+    "squirejs": "^0.2.1",
+    "xmldom": "^0.1.27"
   },
   "dependencies": {
+    "dom-parser": "^0.1.5",
     "es6-promise": "^3.2.1",
     "jquery": "^1.11.2"
   }

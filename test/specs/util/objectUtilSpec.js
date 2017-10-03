@@ -1,16 +1,6 @@
+const objectUtil = require('../../../src/js/util/objectUtil');
+
 describe('Object Util', function() {
-
-    var objectUtil;
-
-    beforeEach(function(done) {
-        requirejs(['Squire'], function(Squire) {
-            var injector = new Squire();
-            injector.require(['util/objectUtil'], function(module) {
-                objectUtil = module;
-                done();
-            });
-        });
-    });
 
     describe('getFromObjectPath', function() {
         it('fetches a value from inside the nested object', function() {

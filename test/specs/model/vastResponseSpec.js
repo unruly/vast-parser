@@ -1,10 +1,8 @@
+const VastResponse =  require('../../../src/js/model/vastResponse');
+
 describe('VAST Response', function() {
 
-    var VastResponse,
-        mockVastTags,
-        mockVastLinearCreative,
-        mockVastNonLinearCreative,
-        mockVastModelFactory;
+    var mockVastTags;
 
     function getValidVastTags() {
         return {
@@ -252,30 +250,8 @@ describe('VAST Response', function() {
         };
     }
 
-    beforeEach(function(done) {
+    beforeEach(function() {
         mockVastTags = getValidVastTags();
-
-        requirejs(['Squire'], function(Squire) {
-            var injector = new Squire();
-
-            mockVastModelFactory = {
-                createVastExtension: sinon.stub()
-            };
-
-            injector
-                .store('model/vastLinearCreative')
-                .store('model/vastNonLinearCreative')
-                .store('model/vastExtension')
-                .mock('model/vastModelFactory', mockVastModelFactory)
-                .require(['model/vastResponse', 'mocks'], function(module, mocks) {
-                    var mockVastLinearCreativeModule =  mocks.store['model/vastLinearCreative'];
-                    var mockVastNonLinearCreativeModule =  mocks.store['model/vastNonLinearCreative'];
-                    VastResponse = module;
-                    mockVastLinearCreative = sinon.stub(mockVastLinearCreativeModule, 'VastLinearCreative');
-                    mockVastNonLinearCreative = sinon.stub(mockVastNonLinearCreativeModule, 'VastNonLinearCreative');
-                    done();
-                });
-        });
     });
 
     it('creates a new object with wrappers and inline properties', function() {
@@ -381,18 +357,20 @@ describe('VAST Response', function() {
         it('should get the linear creative using the Vast Response', function() {
             var vastResponse = new VastResponse(mockVastTags);
 
-            expect(vastResponse.getLinearCreative()).to.be.an.instanceOf(mockVastLinearCreative);
-            expect(mockVastLinearCreative).to.be.calledWithNew;
-            expect(mockVastLinearCreative).to.be.calledWith(vastResponse);
+            const LinearCreative = sinon.stub();
+            expect(vastResponse.getLinearCreative(LinearCreative)).to.be.an.instanceOf(LinearCreative);
+            expect(LinearCreative).to.be.calledWithNew;
+            expect(LinearCreative).to.be.calledWith(vastResponse);
         });
 
         it('should not instantiate VastLinearCreative multiple times even if getLinearCreative called multiple times', function() {
             var vastResponse = new VastResponse(mockVastTags);
 
-            vastResponse.getLinearCreative();
-            vastResponse.getLinearCreative();
+            const LinearCreative = sinon.stub();
+            vastResponse.getLinearCreative(LinearCreative);
+            vastResponse.getLinearCreative(LinearCreative);
 
-            expect(mockVastLinearCreative).to.be.calledOnce;
+            expect(LinearCreative).to.be.calledOnce;
         });
 
         it('should return undefined when no linear creative defined in the Vast Response', function() {
@@ -400,7 +378,8 @@ describe('VAST Response', function() {
 
             var vastResponse = new VastResponse(mockVastTags);
 
-            expect(vastResponse.getLinearCreative()).to.be.undefined;
+            const LinearCreative = sinon.stub();
+            expect(vastResponse.getLinearCreative(LinearCreative)).to.be.undefined;
         });
     });
 
@@ -408,18 +387,20 @@ describe('VAST Response', function() {
         it('should get the nonlinear creative using the Vast Response', function() {
             var vastResponse = new VastResponse(mockVastTags);
 
-            expect(vastResponse.getNonLinearCreative()).to.be.an.instanceOf(mockVastNonLinearCreative);
-            expect(mockVastNonLinearCreative).to.be.calledWithNew;
-            expect(mockVastNonLinearCreative).to.be.calledWith(vastResponse);
+            const NonLinearCreative = sinon.stub();
+            expect(vastResponse.getNonLinearCreative(NonLinearCreative)).to.be.an.instanceOf(NonLinearCreative);
+            expect(NonLinearCreative).to.be.calledWithNew;
+            expect(NonLinearCreative).to.be.calledWith(vastResponse);
         });
 
         it('should not instantiate VastNonLinearCreative multiple times even if getNonLinearCreative called multiple times', function() {
             var vastResponse = new VastResponse(mockVastTags);
 
-            vastResponse.getNonLinearCreative();
-            vastResponse.getNonLinearCreative();
+            const NonLinearCreative = sinon.stub();
+            vastResponse.getNonLinearCreative(NonLinearCreative);
+            vastResponse.getNonLinearCreative(NonLinearCreative);
 
-            expect(mockVastNonLinearCreative).to.be.calledOnce;
+            expect(NonLinearCreative).to.be.calledOnce;
         });
 
         it('should return undefined when no nonLinear creative defined in the Vast Response', function() {
@@ -427,7 +408,8 @@ describe('VAST Response', function() {
 
             var vastResponse = new VastResponse(mockVastTags);
 
-            expect(vastResponse.getNonLinearCreative()).to.be.undefined;
+            const NonLinearCreative = sinon.stub();
+            expect(vastResponse.getNonLinearCreative(NonLinearCreative)).to.be.undefined;
         });
     });
 
@@ -500,15 +482,16 @@ describe('VAST Response', function() {
             var vastResponse = new VastResponse(mockVastTags),
                 extensions;
 
+            const createVastExtension = sinon.stub();
 
-            extensions = vastResponse.getExtensions();
+            extensions = vastResponse.getExtensions(createVastExtension);
 
             expect(extensions.length).to.equal(4);
 
-            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.inline.VAST.Ad.InLine.Extensions.Extension[0]);
-            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[0].VAST.Ad.Wrapper.Extensions.Extension[0]);
-            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[1].VAST.Ad.Wrapper.Extensions.Extension[0]);
-            expect(mockVastModelFactory.createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[1].VAST.Ad.Wrapper.Extensions.Extension[1]);
+            expect(createVastExtension).to.have.been.calledWith(mockVastTags.inline.VAST.Ad.InLine.Extensions.Extension[0]);
+            expect(createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[0].VAST.Ad.Wrapper.Extensions.Extension[0]);
+            expect(createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[1].VAST.Ad.Wrapper.Extensions.Extension[0]);
+            expect(createVastExtension).to.have.been.calledWith(mockVastTags.wrappers[1].VAST.Ad.Wrapper.Extensions.Extension[1]);
         });
     });
 });

@@ -1,33 +1,23 @@
+const vastParser = require('../../src/js/vast-parser');
+const fs = require('fs');
+const DOMParser = require('xmldom').DOMParser;
+
 describe('VAST Parser', function(){
 
-    var vastParser,
-        targetingUUID = 'with-non-linear-ad-only';
+    var targetingUUID = 'with-non-linear-ad-only';
 
     function loadTestXML(filename, test) {
-        requirejs(['text!../../test/resources/vast/' + filename], function(xmlString) {
-            var parser = new DOMParser(),
-                xmlDocument = parser.parseFromString(xmlString, 'application/xml');
+        fs.readFile('test/resources/vast/' + filename, 'utf8', function (err,xmlString) {
+          if (err) {
+            throw err;
+          }
 
-            if (typeof xmlDocument.evaluate !== 'function') {
-                xmlDocument = new ActiveXObject('msxml2.DOMDocument');
-                xmlDocument.loadXML(xmlString);
-                xmlDocument.setProperty('SelectionLanguage', 'XPath');
-            }
+          var parser = new DOMParser(),
+              xmlDocument = parser.parseFromString(xmlString, 'text/xml');
 
-            test(xmlDocument);
+          test(xmlDocument);
         });
     }
-
-    before(function(done) {
-        requirejs(['Squire'], function(Squire) {
-            new Squire()
-                .require(['vast-parser'], function(vastParserModule) {
-                    vastParser = vastParserModule;
-                    done();
-                });
-
-        });
-    });
 
     describe('parses VAST Inline', function() {
         var inlineURL = 'inlines/test_vast_inline_123.xml';

@@ -1,7 +1,7 @@
-describe('VAST Extension', function() {
+const VastExtension = require('../../../src/js/model/vastExtension');
 
-    var VastExtension,
-        mockExtensionNodes = {
+describe('VAST Extension', function() {
+    var mockExtensionNodes = {
             'Property': [
                 {
                     'nodeValue': 1234,
@@ -29,18 +29,6 @@ describe('VAST Extension', function() {
                 ]
             }
         };
-
-    beforeEach(function(done) {
-        requirejs(['Squire'], function(Squire) {
-            var injector = new Squire();
-
-            injector
-                .require(['model/vastExtension'], function(module) {
-                    VastExtension = module;
-                    done();
-                });
-        });
-    });
 
     describe('extensions', function() {
         it('stores the extension nodes on construction and returns them when called getExtension()', function() {

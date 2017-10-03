@@ -1,32 +1,21 @@
+const xmlParser = require('../../src/js/xml-parser');
+const fs = require('fs');
+const DOMParser = require('xmldom').DOMParser;
+
 describe('XML Parser', function(){
 
-    var xmlParser;
-
     function loadTestXML(filename, test) {
-        requirejs(['text!../../test/resources/xml/' + filename], function(xmlString) {
-            var parser = new DOMParser(),
-                xmlDocument = parser.parseFromString(xmlString, 'application/xml');
+        fs.readFile('test/resources/xml/' + filename, 'utf8', function (err,xmlString) {
+          if (err) {
+            throw err;
+          }
 
-            if (typeof xmlDocument.evaluate !== 'function') {
-                xmlDocument = new ActiveXObject('msxml2.DOMDocument');
-                xmlDocument.loadXML(xmlString);
-                xmlDocument.setProperty('SelectionLanguage', 'XPath');
-            }
+          var parser = new DOMParser(),
+              xmlDocument = parser.parseFromString(xmlString, 'text/xml');
 
-            test(xmlDocument);
+          test(xmlDocument);
         });
     }
-
-    before(function(done) {
-        requirejs(['Squire'], function(Squire) {
-            new Squire()
-                .require(['xml-parser'], function(xmlParserModule) {
-                    xmlParser = xmlParserModule;
-                    done();
-                });
-
-        });
-    });
 
     describe('Basic XML parsing', function() {
 

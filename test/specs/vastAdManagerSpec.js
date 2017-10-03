@@ -1,36 +1,24 @@
+const vastAdManager = require('../../src/js/vastAdManager');
+const VastResponse = require('../../src/js/model/vastResponse');
+const VastError = require('../../src/js/vastError');
+
 describe('VAST Ad Manager', function() {
-    var vastAdManager,
-        mockVastChainer,
-        VastResponse,
-        VastError,
+    var mockVastChainer,
         successResponse;
 
 
-    beforeEach(function(done) {
-        requirejs(['Squire'], function(Squire) {
-            var injector = new Squire();
+    beforeEach(function() {
 
-            mockVastChainer = {
-                getVastChain: sinon.stub(),
-                addEventListener: sinon.stub()
-            };
-
-            injector
-                .mock('vastChainer', mockVastChainer)
-                .require(['vastAdManager', 'mocks', 'model/vastResponse', 'vastError'], function(module, mocks, _VastResponse, _VastError) {
-                    vastAdManager = module;
-                    mockVastChainer.getVastChain.resolves(successResponse);
-                    VastError = _VastError;
-                    VastResponse = _VastResponse;
-
-                    successResponse = new VastResponse({
-                        wrappers: [{some:'ignoredForNow'}],
-                        inline: {complicated: 'stuff'}
-                    });
-
-                    done();
-                });
+        successResponse = new VastResponse({
+            wrappers: [{some:'ignoredForNow'}],
+            inline: {complicated: 'stuff'}
         });
+
+        mockVastChainer = {
+            getVastChain: sinon.stub().returns(Promise.resolve(successResponse)),
+            addEventListener: sinon.stub()
+        };
+
     });
 
     describe('getVastChain', function() {
@@ -44,7 +32,7 @@ describe('VAST Ad Manager', function() {
             it('and calls the vastChainer with VAST URL', function() {
                 var vastUrl = 'http://example.com/vast.xml';
 
-                vastAdManager.requestVastChain(vastUrl);
+                vastAdManager(mockVastChainer).requestVastChain(vastUrl);
 
                 expect(mockVastChainer.getVastChain).to.have.been.calledWith(vastUrl);
             });
@@ -52,7 +40,7 @@ describe('VAST Ad Manager', function() {
             it('with the vastChainer result', function() {
                 var promise;
 
-                promise = vastAdManager.requestVastChain('http://example.com/vast.xml');
+                promise = vastAdManager(mockVastChainer).requestVastChain('http://example.com/vast.xml');
 
                 return promise.then(function(result) {
                     expect(result).to.be.an.instanceof(VastResponse);
@@ -70,7 +58,7 @@ describe('VAST Ad Manager', function() {
 
                 mockVastChainer.getVastChain.rejects(new VastError(100));
 
-                promise = vastAdManager.requestVastChain('http://example.com/vast.xml');
+                promise = vastAdManager(mockVastChainer).requestVastChain('http://example.com/vast.xml');
 
                 return expect(promise).to.be.eventually.rejectedWith(VastError, '100');
             });
@@ -82,7 +70,7 @@ describe('VAST Ad Manager', function() {
         it('to the vastChainer', function() {
             var eventCallback = sinon.stub();
 
-            vastAdManager.addEventListener('someEvent', eventCallback);
+            vastAdManager(mockVastChainer).addEventListener('someEvent', eventCallback);
 
             expect(mockVastChainer.addEventListener).to.have.been.calledWith('someEvent', eventCallback);
         });

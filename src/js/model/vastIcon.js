@@ -13,9 +13,9 @@ function VastIcon(iconXMLJson) {
         url: helpers.convertProtocol(objectUtil.getFromObjectPath(iconXMLJson, 'StaticResource.nodeValue', ''))
     };
     this.clickTracking = objectUtil.getArrayFromObjectPath(iconXMLJson, 'IconClicks.IconClickTracking')
-                            .map(function(trackingObject) {
-                                return helpers.convertProtocol(trackingObject.nodeValue);
-                            });
+        .map(function(trackingObject) {
+            return helpers.convertProtocol(trackingObject.nodeValue);
+        });
 }
 
 module.exports = VastIcon;

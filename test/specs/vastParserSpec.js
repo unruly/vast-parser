@@ -1,4 +1,4 @@
-const vastParser = require('../../src/js/vast-parser');
+const vastParser = require('../../src/js/vastParser');
 const fs = require('fs');
 const DOMParser = require('xmldom').DOMParser;
 

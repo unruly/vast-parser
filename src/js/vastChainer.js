@@ -1,161 +1,201 @@
 /*global console:true*/
-const { EventEmitter } = require('events');
-const vastParser = require('./vast-parser');
+
+const vastParser = require('./vastParser');
 const vastErrorCodes = require('./vastErrorCodes');
 const VastError = require('./vastError');
 const VastResponse = require('./model/vastResponse');
 const helpers = require('./util/helpers');
+const jQuery = require('jquery');
 
 var AJAX_TIMEOUT = 10000;
-var vastRequestCounter = 0;
-var dispatcher = new EventEmitter();
-
-function addEventListener(eventName, handler) {
-    dispatcher.on(eventName, handler);
-}
 
 function getDomainFromURL(url) {
-    var a = window.document.createElement('a');
-    a.href = url;
-    return a.hostname;
+    return new URL(helpers.ensureProtocol(url)).hostname;
 }
 
 function domainAllowsCorsCookies(vastConfig, url) {
     if(!(vastConfig.corsCookieDomainBlacklist instanceof Array)) {
         return true;
     }
-
     return vastConfig.corsCookieDomainBlacklist.indexOf(getDomainFromURL(url)) === -1;
 }
 
-function getVast(
-    vastResponse, vastConfig, sendCookies,
+module.exports = function(
     {
-        parseVast = vastParser.parse
-    } = {}
-) {
+        promiseModule = promiseShim,
+        $ = jQuery,
+        parseVast = vastParser.parse,
+        Response = VastResponse
+    }) {
 
-    var url = vastConfig.url,
-        currentRequestNumber = vastRequestCounter;
+    var vastRequestCounter = 0,
+        dispatcher = $({});
 
-    if (vastConfig.extraParams && vastConfig.extraParams.length > 0) {
-        if (vastConfig.url.indexOf('?') !== -1) {
-            url += '&' + vastConfig.extraParams;
-        } else {
-            url += '?' + vastConfig.extraParams;
-        }
+    function addEventListener(eventName, handler) {
+        dispatcher.on(eventName, handler);
     }
 
-    const settings = {
-        headers: vastConfig.headers || {},
-        dataType: 'xml'
-    };
+    function getVast(vastResponse, vastConfig, sendCookies) {
 
-    if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
-        Object.assign(settings, {
-            credentials: 'include'
-        });
-    }
+        var url = vastConfig.url,
+            resolve,
+            reject,
+            promise = new promiseModule.Promise(function(_resolve, _reject) {
 
-    dispatcher.trigger('requestStart', {
-        requestNumber: currentRequestNumber,
-        uri: url,
-        vastResponse: vastResponse
-    });
+                resolve = _resolve;
+                reject = _reject;
+            }),
+            currentRequestNumber = vastRequestCounter,
+            requestStartEvent,
+            settings;
 
-    return fetch(url)
-        .catch(function(error) {
-            var code,
-                requestEndEvent,
-                statusText;
-
-            if (sendCookies) {
-                console.log('Retrying request without cookies:', url);
-                return getVast(vastResponse, vastConfig, false)
+        if (vastConfig.extraParams && vastConfig.extraParams.length > 0) {
+            if (vastConfig.url.indexOf('?') !== -1) {
+                url += '&' + vastConfig.extraParams;
+            } else {
+                url += '?' + vastConfig.extraParams;
             }
+        }
 
-            vastResponse.addRawResponse({
-                requestNumber: currentRequestNumber,
-                uri: url,
-                response: '',
-                headers: ''
-            });
+        settings = {
+            url: url,
+            headers: vastConfig.headers || {},
+            dataType: 'xml'
+        };
 
-            dispatcher.trigger('requestEnd', {
-                requestNumber: currentRequestNumber,
-                uri: url,
-                vastResponse: vastResponse,
-                error: {
-                    statusText: error.message
-                }
-            });
-            return Promise.reject(new VastError(vastErrorCodes.WRAPPER_URI_TIMEOUT.code, vastResponse, 'VAST Request Failed (' + error.message + ') for ' + url));
-        })
-        .then(function(response) {
+        if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
+            settings.xhrFields = {
+                withCredentials: true
+            };
+        }
+
+        settings.timeout = AJAX_TIMEOUT;
+
+        settings.success = function(data, status, jqXHR) {
             var vastTag,
                 childTagUri,
-                nextRequestConfig;
-    
-            const requestEndEvent = () => dispatcher.trigger('requestEnd', {
+                nextRequestConfig,
+                requestEndEvent;
+
+            requestEndEvent = $.Event('requestEnd', {
                 requestNumber: currentRequestNumber,
                 uri: url,
                 vastResponse: vastResponse
             });
 
-            if (!response.ok) {
-                requestEndEvent();
-                return Promise.reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse));
+            vastResponse.addRawResponse({
+                requestNumber: currentRequestNumber,
+                uri: url,
+                response: jqXHR.responseText,
+                headers: jqXHR.getAllResponseHeaders().trim()
+            });
+
+            if (!data) {
+                dispatcher.trigger(requestEndEvent);
+                reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse));
+                return;
             }
-            return response.text()
-                .then(responseText => {
-                    vastResponse.addRawResponse({
-                        requestNumber: currentRequestNumber,
-                        uri: url,
-                        response: responseText,
-                        headers: response.headers
-                    });
 
-                    vastTag = parseVAST(responseText);
-                    if (vastTag.VAST.Error) {
-                        requestEndEvent();
-                        return Promise.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'));
-                    }
-            
-                    if (!vastTag.VAST.Ad) {
-                        requestEndEvent();
-                        return Promise.reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads'));
-                    }
-            
-                    if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
-                        vastResponse.inline = vastTag;
-                        requestEndEvent();
-                        return vastResponse;
-                    } else {
-                        vastResponse.wrappers.push(vastTag);
-                        requestEndEvent();
-            
-                        childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
-                        nextRequestConfig = {
-                            url: helpers.convertProtocol(childTagUri),
-                            extraParams: vastConfig.extraParams,
-                            corsCookieDomainBlacklist: vastConfig.corsCookieDomainBlacklist
-                        };
-            
-                        vastRequestCounter++;
-                        return getVast(vastResponse, nextRequestConfig, true)
-                    }
-                })
+            vastTag = parseVast(data);
+
+            if (vastTag.VAST.Error) {
+                dispatcher.trigger(requestEndEvent);
+                reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'));
+                return;
+            }
+
+            if (!vastTag.VAST.Ad) {
+                dispatcher.trigger(requestEndEvent);
+                reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads'));
+                return;
+            }
+
+            if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
+                vastResponse.inline = vastTag;
+                dispatcher.trigger(requestEndEvent);
+                resolve(vastResponse);
+            } else {
+                vastResponse.wrappers.push(vastTag);
+                dispatcher.trigger(requestEndEvent);
+
+                childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue;
+                nextRequestConfig = {
+                    url: helpers.convertProtocol(childTagUri),
+                    extraParams: vastConfig.extraParams,
+                    corsCookieDomainBlacklist: vastConfig.corsCookieDomainBlacklist
+                };
+
+                vastRequestCounter++;
+                getVast(vastResponse, nextRequestConfig, true)
+                    .then(resolve)
+                    ['catch'](reject);      // eslint-disable-line no-unexpected-multiline
+            }
+        };
+
+        settings.error = function(jqXHR, textStatus, errorThrown) {
+            var code,
+                requestEndEvent,
+                statusText;
+
+            if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
+                console.log('Retrying request without cookies:', url);
+
+                getVast(vastResponse, vastConfig, false)
+                    .then(resolve)
+                    ['catch'](reject);      // eslint-disable-line no-unexpected-multiline
+                return
+            }
+
+            if (jqXHR.status === 200 && !jqXHR.responseXML) {
+                code = vastErrorCodes.XML_PARSE_ERROR.code;
+                statusText = vastErrorCodes.XML_PARSE_ERROR.message;
+            } else {
+                code = vastErrorCodes.WRAPPER_URI_TIMEOUT.code;
+                statusText = jqXHR.statusText;
+            }
+
+            requestEndEvent = $.Event('requestEnd', {
+                requestNumber: currentRequestNumber,
+                uri: url,
+                vastResponse: vastResponse,
+                error: {
+                    status: jqXHR.status,
+                    statusText: statusText
+                }
+            });
+
+            vastResponse.addRawResponse({
+                requestNumber: currentRequestNumber,
+                uri: url,
+                response: jqXHR.responseText,
+                headers: jqXHR.getAllResponseHeaders().trim()
+            });
+
+            dispatcher.trigger(requestEndEvent);
+            reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url));
+        };
+
+        requestStartEvent = $.Event('requestStart', {
+            requestNumber: currentRequestNumber,
+            uri: url,
+            vastResponse: vastResponse
         });
+        dispatcher.trigger(requestStartEvent);
+
+        $.ajax(settings);
+
+        return promise;
+    }
+
+    function getVastChain(vastConfig) {
+        var vastResponse = new Response();
+
+        return getVast(vastResponse, vastConfig, true);
+    }
+
+    return {
+        getVastChain: getVastChain,
+        addEventListener: addEventListener,
+        on: addEventListener
+    };
 }
-
-function getVastChain(vastConfig) {
-    var vastResponse = new VastResponse();
-
-    return getVast(vastResponse, vastConfig, true);
-}
-
-module.exports = {
-    getVastChain: getVastChain,
-    addEventListener: addEventListener,
-    on: addEventListener
-};

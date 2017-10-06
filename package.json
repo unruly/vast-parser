@@ -2,11 +2,11 @@
   "name": "vast-parser",
   "version": "0.7.1",
   "description": "Parses VAST files into plain javascript objects",
-  "main": "src/js/vast-parser.js",
+  "main": "src/js/index.js",
   "scripts": {
     "start": "python -m SimpleHTTPServer",
     "lint": "./node_modules/.bin/eslint src/* && ./node_modules/.bin/eslint -c test/.eslintrc test/*",
-    "test": "mocha --recursive --reporter list test/mocha.conf.js test/specs/**/*.js",
+    "test": "mocha --recursive --reporter list test/mocha.conf.js ./test/*Spec.js",
     "testWatch": "npm run lint && npm run testMocha -- --watch"
   },
   "repository": {
@@ -34,6 +34,7 @@
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0",
     "squirejs": "^0.2.1",
+    "url": "^0.11.0",
     "xmldom": "^0.1.27"
   },
   "dependencies": {

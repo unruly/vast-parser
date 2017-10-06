@@ -1,6 +1,7 @@
 const chai = require('chai');
 const sinonChai = require("sinon-chai");
 const chaiAsPromised = require('chai-as-promised');
+const url = require('url');
 
 global.sinon = require('sinon');
 global.expect = chai.expect;
@@ -11,6 +12,10 @@ const { JSDOM } = jsdom;
 
 global.document = new JSDOM('<!doctype html><html><body></body></html>');
 global.window = document.defaultView;
+
+global.URL = function(href) {
+    return url.parse(href);
+}
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);

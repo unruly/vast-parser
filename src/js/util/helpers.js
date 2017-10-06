@@ -37,6 +37,16 @@ function convertProtocol(url) {
     }
 }
 
+function ensureProtocol(url) {
+    if(url.indexOf('https') === 0 || url.indexOf('http') === 0) {
+        return url
+    } else if(url.indexOf('//') === 0) {
+        return `https:${url}`;
+    } else {
+        return url;
+    }
+}
+
 function isNonEmptyString(string) {
     return !!string && string.trim().length > 0;
 }
@@ -44,6 +54,7 @@ function isNonEmptyString(string) {
 module.exports = {
     getSecondsFromTimeString: getSecondsFromTimeString,
     decodeXML: decodeXML,
+    ensureProtocol: ensureProtocol,
     convertProtocol: convertProtocol,
     isNonEmptyString: isNonEmptyString
 };

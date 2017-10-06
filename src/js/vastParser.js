@@ -1,4 +1,4 @@
-const xmlParser = require('./xml-parser');
+const xmlParser = require('./xmlParser');
 
 function mustBeArray(item) {
     if(

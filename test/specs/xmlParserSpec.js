@@ -1,4 +1,4 @@
-const xmlParser = require('../../src/js/xml-parser');
+const xmlParser = require('../../src/js/xmlParser');
 const fs = require('fs');
 const DOMParser = require('xmldom').DOMParser;
 

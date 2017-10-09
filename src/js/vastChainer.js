@@ -22,11 +22,11 @@ function domainAllowsCorsCookies(vastConfig, url) {
 
 module.exports = function(
     {
-        promiseModule = promiseShim,
+        PromiseModule = Promise,
         $ = jQuery,
         parseVast = vastParser.parse,
         Response = VastResponse
-    }) {
+    } = {}) {
 
     var vastRequestCounter = 0,
         dispatcher = $({});
@@ -40,7 +40,7 @@ module.exports = function(
         var url = vastConfig.url,
             resolve,
             reject,
-            promise = new promiseModule.Promise(function(_resolve, _reject) {
+            promise = new PromiseModule(function(_resolve, _reject) {
 
                 resolve = _resolve;
                 reject = _reject;

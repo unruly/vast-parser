@@ -40,11 +40,9 @@ describe('VAST Chainer', function(){
             resolve: sinon.stub()
         };
 
-        let promiseModule = {
-            Promise: function(callback) {
-                callback(mockDeferred.resolve, mockDeferred.reject);
-                return mockPromise;
-            }
+        let PromiseModule = function(callback) {
+            callback(mockDeferred.resolve, mockDeferred.reject);
+            return mockPromise;
         };
 
         mockDispatcher = {
@@ -98,7 +96,7 @@ describe('VAST Chainer', function(){
         };
 
         mockDeps = {
-            promiseModule,
+            PromiseModule,
             $,
             parseVast
         };

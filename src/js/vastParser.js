@@ -1,4 +1,4 @@
-const xmlParser = require('./xmlParser');
+import xmlParser from './xmlParser';
 
 function mustBeArray(item) {
     if(
@@ -67,6 +67,6 @@ function parse(xmlDocument) {
     return parsedXml;
 }
 
-module.exports = {
+export default {
     parse: parse
 };

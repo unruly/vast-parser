@@ -1,6 +1,6 @@
-const VastExtension = require('./vastExtension');
+import VastExtension from './vastExtension';
 
-module.exports = {
+export default {
     createVastExtension: function(extensionNodes) {
         return new VastExtension(extensionNodes);
     }

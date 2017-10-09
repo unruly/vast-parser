@@ -1,4 +1,4 @@
-const VastResponse =  require('../../../src/js/model/vastResponse');
+import VastResponse from '../../../src/js/model/vastResponse';
 
 describe('VAST Response', function() {
 

@@ -1,4 +1,4 @@
-function getSecondsFromTimeString(timeString) {
+export function getSecondsFromTimeString(timeString) {
     var durationInSeconds = 0,
         timeSegments;
 
@@ -19,7 +19,7 @@ function getSecondsFromTimeString(timeString) {
     return durationInSeconds;
 }
 
-function decodeXML(encodedXMLString) {
+export function decodeXML(encodedXMLString) {
     return encodedXMLString.replace(/&apos;/g, '\'')
                             .replace(/&quot;/g, '"')
                             .replace(/&gt;/g, '>')
@@ -27,7 +27,7 @@ function decodeXML(encodedXMLString) {
                             .replace(/&amp;/g, '&');
 }
 
-function convertProtocol(url) {
+export function convertProtocol(url) {
     if(url.indexOf('https') === 0) {
         return url;
     } else if(url.indexOf('http') === 0) {
@@ -37,7 +37,7 @@ function convertProtocol(url) {
     }
 }
 
-function ensureProtocol(url) {
+export function ensureProtocol(url) {
     if(url.indexOf('https') === 0 || url.indexOf('http') === 0) {
         return url
     } else if(url.indexOf('//') === 0) {
@@ -47,11 +47,11 @@ function ensureProtocol(url) {
     }
 }
 
-function isNonEmptyString(string) {
+export function isNonEmptyString(string) {
     return !!string && string.trim().length > 0;
 }
 
-module.exports = {
+export default {
     getSecondsFromTimeString: getSecondsFromTimeString,
     decodeXML: decodeXML,
     ensureProtocol: ensureProtocol,

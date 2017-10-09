@@ -1,6 +1,6 @@
-const objectUtil = require('../util/objectUtil');
+import { getArrayFromObjectPath } from '../util/objectUtil';
 
-function VastExtension(extensionNodes) {
+export default function VastExtension(extensionNodes) {
     this.extension = extensionNodes;
 }
 
@@ -9,7 +9,5 @@ VastExtension.prototype.getExtensionNodes = function() {
 };
 
 VastExtension.prototype.getDetailsByPath = function (path) {
-    return objectUtil.getArrayFromObjectPath(this.extension, path);
+    return getArrayFromObjectPath(this.extension, path);
 };
-
-module.exports = VastExtension;

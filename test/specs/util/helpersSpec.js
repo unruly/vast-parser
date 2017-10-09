@@ -1,4 +1,4 @@
-const helpers = require('../../../src/js/util/helpers');
+import helpers from '../../../src/js/util/helpers';
 
 describe('Helpers Util', function() {
 

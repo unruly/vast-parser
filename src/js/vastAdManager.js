@@ -1,6 +1,6 @@
-const vastChainer = require('./vastChainer');
+import vastChainer from './vastChainer';
 
-module.exports = function(chainer = vastChainer()) {
+export default function(chainer = vastChainer()) {
     return {
         requestVastChain: chainer.getVastChain,
         addEventListener: chainer.addEventListener

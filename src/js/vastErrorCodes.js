@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     XML_PARSE_ERROR: {
         code: 100,
         message: 'XML parsing error.'

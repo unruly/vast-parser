@@ -1,4 +1,4 @@
-const VastExtension = require('../../../src/js/model/vastExtension');
+import VastExtension from '../../../src/js/model/vastExtension';
 
 describe('VAST Extension', function() {
     var mockExtensionNodes = {

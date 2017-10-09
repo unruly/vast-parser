@@ -1,11 +1,11 @@
 /*global console:true*/
 
-const vastParser = require('./vastParser');
-const vastErrorCodes = require('./vastErrorCodes');
-const VastError = require('./vastError');
-const VastResponse = require('./model/vastResponse');
-const helpers = require('./util/helpers');
-const jQuery = require('jquery');
+import vastParser from './vastParser';
+import vastErrorCodes from './vastErrorCodes';
+import VastError from './vastError';
+import VastResponse from './model/vastResponse';
+import helpers from './util/helpers';
+import jQuery from 'jquery';
 
 var AJAX_TIMEOUT = 10000;
 
@@ -20,7 +20,7 @@ function domainAllowsCorsCookies(vastConfig, url) {
     return vastConfig.corsCookieDomainBlacklist.indexOf(getDomainFromURL(url)) === -1;
 }
 
-module.exports = function(
+export default function(
     {
         PromiseModule = Promise,
         $ = jQuery,

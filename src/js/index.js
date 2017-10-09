@@ -1,12 +1,12 @@
-const VastParser = require('./vastParser');
-const VastErrorCodes = require('./vastErrorCodes');
-const VastError = require('./vastError');
-const VastResponse = require('./model/vastResponse');
-const VastIcon = require('./model/vastIcon');
-const VastAdManager= require('./vastAdManager');
-const helpers = require('./util/helpers');
+import VastParser from './vastParser';
+import VastErrorCodes from './vastErrorCodes';
+import VastError from './vastError';
+import VastResponse from './model/vastResponse';
+import VastIcon from './model/vastIcon';
+import VastAdManager from './vastAdManager';
+import helpers from './util/helpers';
 
-module.exports = {
+export default {
     VastParser,
     VastErrorCodes,
     VastResponse,

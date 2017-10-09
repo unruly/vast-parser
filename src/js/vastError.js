@@ -1,10 +1,5 @@
-const vastErrorCodes = require('./vastErrorCodes');
-const objectUtil = require('./util/objectUtil');
-
-var read = objectUtil.getArrayFromObjectPath;
-var pluckNodeValue = objectUtil.pluckNodeValue;
-var isDefined = objectUtil.isDefined;
-var flatten = objectUtil.flatten;
+import vastErrorCodes from './vastErrorCodes';
+import { getArrayFromObjectPath as read, pluckNodeValue, isDefined, flatten } from './util/objectUtil';
 
 function getErrorMessageFromCode(code) {
     var errorName,
@@ -44,7 +39,7 @@ function extractErrorURIs(vastResponse) {
     return errorURIs;
 }
 
-function VastError(code, vastResponse, message) {
+export default function VastError(code, vastResponse, message) {
     this.name = 'VastError';
     this.code = code;
     this.message = 'VAST Error: [' + code + '] - ' + (message || getErrorMessageFromCode(code));
@@ -59,5 +54,3 @@ function VastError(code, vastResponse, message) {
     VastError.prototype.getErrorURIs = function() {
     return this.errorURIs;
 };
-
-module.exports = VastError;

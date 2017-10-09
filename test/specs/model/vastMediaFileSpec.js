@@ -1,4 +1,4 @@
-const VastMediaFile = require('../../../src/js/model/vastMediaFile');
+import VastMediaFile from '../../../src/js/model/vastMediaFile';
 
 describe('VAST Media File', function() {
     describe('url property', function() {

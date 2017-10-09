@@ -1,11 +1,11 @@
-const helpers = require('../util/helpers');
-const objectUtil = require('../util/objectUtil');
-const VastLinearCreative = require('./vastLinearCreative');
-const VastNonLinearCreative = require('./vastNonLinearCreative');
-const VastExtension = require('./vastExtension');
-const vastModelFactory = require('./vastModelFactory');
+import helpers from '../util/helpers';
+import { getArrayFromObjectPath, getFromObjectPath } from '../util/objectUtil';
+import VastLinearCreative from './vastLinearCreative';
+import VastNonLinearCreative from './vastNonLinearCreative';
+import VastExtension from './vastExtension';
+import vastModelFactory from './vastModelFactory';
 
-function VastResponse(vastChain) {
+export default function VastResponse(vastChain) {
     this.wrappers = [];
     this.inline = undefined;
     this._raw = [];
@@ -19,8 +19,8 @@ function VastResponse(vastChain) {
 }
 
 VastResponse.prototype.getImpressions = function() {
-    var inlineImps = objectUtil.getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Impression.nodeValue'),
-        wrapperImps = objectUtil.getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Impression.nodeValue');
+    var inlineImps = getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Impression.nodeValue'),
+        wrapperImps = getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Impression.nodeValue');
 
     return inlineImps.concat(wrapperImps).filter(helpers.isNonEmptyString);
 };
@@ -31,7 +31,7 @@ VastResponse.prototype.getAdTitle = function() {
 
 VastResponse.prototype.getLinearCreative = function(LinearCreative = VastLinearCreative) {
     if (!this.linearCreative) {
-        var hasLinearCreative = objectUtil.getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.Linear');
+        var hasLinearCreative = getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.Linear');
 
         if (hasLinearCreative) {
             this.linearCreative = new LinearCreative(this);
@@ -42,7 +42,7 @@ VastResponse.prototype.getLinearCreative = function(LinearCreative = VastLinearC
 
 VastResponse.prototype.getNonLinearCreative = function(NonLinearCreative = VastNonLinearCreative) {
     if (!this.nonLinearCreative) {
-        var hasNonLinearCreative = objectUtil.getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.NonLinearAds');
+        var hasNonLinearCreative = getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.NonLinearAds');
 
         if (hasNonLinearCreative) {
             this.nonLinearCreative = new NonLinearCreative(this);
@@ -60,8 +60,8 @@ VastResponse.prototype.addRawResponse = function(data) {
 };
 
 VastResponse.prototype.getExtensions = function(createVastExtension = vastModelFactory.createVastExtension) {
-    var inlineExtensions = objectUtil.getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Extensions.Extension'),
-        wrapperExtensions = objectUtil.getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Extensions.Extension'),
+    var inlineExtensions = getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Extensions.Extension'),
+        wrapperExtensions = getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Extensions.Extension'),
         allExtensions = inlineExtensions.concat(wrapperExtensions);
 
     return allExtensions.map(function(ext) {
@@ -77,5 +77,3 @@ VastResponse.prototype.getLastVASTURL = function() {
     var lastVAST = this._raw[this._raw.length - 1];
     return lastVAST.uri;
 };
-
-module.exports =  VastResponse;

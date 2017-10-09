@@ -1,5 +1,5 @@
+import window from './util/window';
 
-const window = require('./util/window');
 var Node = Node || {};
 var XML_NODE_TYPE = {
     ELEMENT: Node.ELEMENT_NODE || 1,
@@ -66,7 +66,7 @@ function JSXMLNode(node) {
     }
 }
 
-module.exports = {
+export default {
     parse : function(doc) {
         var parser;
 

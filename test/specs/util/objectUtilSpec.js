@@ -1,4 +1,11 @@
-const objectUtil = require('../../../src/js/util/objectUtil');
+import {
+    getFromObjectPath,
+    getIntegerFromObjectPath,
+    getArrayFromObjectPath,
+    pluckNodeValue,
+    isDefined,
+    flatten
+} from '../../../src/js/util/objectUtil';
 
 describe('Object Util', function() {
 
@@ -12,7 +19,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getFromObjectPath(obj, 'foo.bar.minky');
+            var result = getFromObjectPath(obj, 'foo.bar.minky');
 
             expect(result).to.deep.equal(obj.foo.bar.minky);
         });
@@ -26,7 +33,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getFromObjectPath(obj, 'foo.bar.falsy');
+            var result = getFromObjectPath(obj, 'foo.bar.falsy');
 
             expect(result).to.deep.equal(obj.foo.bar.falsy);
         });
@@ -34,7 +41,7 @@ describe('Object Util', function() {
         it('returns the supplied argument if the object has no properties', function() {
             var obj = {};
 
-            var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
+            var result = getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
 
             expect(result).to.deep.equal('it\'s missing!');
         });
@@ -44,7 +51,7 @@ describe('Object Util', function() {
                 foo: {}
             };
 
-            var result = objectUtil.getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
+            var result = getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
 
             expect(result).to.deep.equal('it\'s missing!');
         });
@@ -61,7 +68,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getIntegerFromObjectPath(obj, 'foo.bar.number');
+            var result = getIntegerFromObjectPath(obj, 'foo.bar.number');
 
             expect(result).to.equal(123);
         });
@@ -75,7 +82,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getIntegerFromObjectPath(obj, 'foo.bar.string');
+            var result = getIntegerFromObjectPath(obj, 'foo.bar.string');
 
             expect(result).to.be.undefined;
         });
@@ -90,7 +97,7 @@ describe('Object Util', function() {
                     }
                 };
 
-            var result = objectUtil.getIntegerFromObjectPath(obj, 'foo.bar.string', defaultValue);
+            var result = getIntegerFromObjectPath(obj, 'foo.bar.string', defaultValue);
 
             expect(result).to.equal(defaultValue);
         });
@@ -106,7 +113,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky');
+            var result = getArrayFromObjectPath(obj, 'foo.bar.minky');
 
             expect(result).to.deep.equal(obj.foo.bar.minky);
         });
@@ -116,7 +123,7 @@ describe('Object Util', function() {
 
             };
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.does.not.exist');
+            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
 
             expect(result).to.deep.equal([]);
         });
@@ -128,7 +135,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.does.not.exist');
+            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
 
             expect(result).to.deep.equal([]);
         });
@@ -136,7 +143,7 @@ describe('Object Util', function() {
         it('returns an empty array if object is an array', function() {
             var obj = [];
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.does.not.exist');
+            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
 
             expect(result).to.deep.equal([]);
         });
@@ -144,7 +151,7 @@ describe('Object Util', function() {
         it('returns an empty array if object is null', function() {
             var obj = null;
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.does.not.exist');
+            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
 
             expect(result).to.deep.equal([]);
         });
@@ -152,7 +159,7 @@ describe('Object Util', function() {
         it('returns an empty array if object is undefined', function() {
             var obj = undefined;
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.does.not.exist');
+            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
 
             expect(result).to.deep.equal([]);
         });
@@ -171,7 +178,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky');
+            var result = getArrayFromObjectPath(obj, 'foo.bar.minky');
 
             expect(result).to.deep.equal(['binky', 'stinky']);
         });
@@ -192,7 +199,7 @@ describe('Object Util', function() {
                 }
             ];
 
-            var result = objectUtil.getArrayFromObjectPath(array, 'foo.bar.minky');
+            var result = getArrayFromObjectPath(array, 'foo.bar.minky');
 
             expect(result).to.deep.equal(['binky', 'stinky']);
         });
@@ -220,7 +227,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+            var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name');
 
             expect(result).to.deep.equal(['binky', 'stinky']);
         });
@@ -263,7 +270,7 @@ describe('Object Util', function() {
                 }
             };
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+            var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name');
 
             expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky']);
         });
@@ -332,7 +339,7 @@ describe('Object Util', function() {
                 ]
             };
 
-            var result = objectUtil.getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+            var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name');
 
             expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky']);
         });
@@ -345,7 +352,7 @@ describe('Object Util', function() {
                     nodeValue: expectedValue
                 };
 
-            var result = objectUtil.pluckNodeValue(obj);
+            var result = pluckNodeValue(obj);
 
             expect(result).to.equal(expectedValue);
         });
@@ -353,7 +360,7 @@ describe('Object Util', function() {
         it('returns undefined if no nodevalue on object', function() {
             var obj = {};
 
-            var result = objectUtil.pluckNodeValue(obj);
+            var result = pluckNodeValue(obj);
 
             expect(result).to.be.undefined;
         });
@@ -361,7 +368,7 @@ describe('Object Util', function() {
         it('returns undefined if object is undefined', function() {
             var obj = undefined;
 
-            var result = objectUtil.pluckNodeValue(obj);
+            var result = pluckNodeValue(obj);
 
             expect(result).to.be.undefined;
         });
@@ -369,19 +376,19 @@ describe('Object Util', function() {
 
     describe('isDefined', function() {
         it('should return true if defined', function() {
-            var result = objectUtil.isDefined('working');
+            var result = isDefined('working');
 
             expect(result).to.be.true;
         });
 
         it('should return false if not defined', function() {
-            var result = objectUtil.isDefined(undefined);
+            var result = isDefined(undefined);
 
             expect(result).to.be.false;
         });
 
         it('should return false if not defined', function() {
-            var result = objectUtil.isDefined(null);
+            var result = isDefined(null);
 
             expect(result).to.be.false;
         });
@@ -394,7 +401,7 @@ describe('Object Util', function() {
                 ['inky']
             ];
 
-            expect(objectUtil.flatten(arrays)).to.deep.equal(['binky', 'inky']);
+            expect(flatten(arrays)).to.deep.equal(['binky', 'inky']);
         });
 
         it('should flatten two arrays into one when one is empty', function() {
@@ -403,7 +410,7 @@ describe('Object Util', function() {
                 ['inky']
             ];
 
-            expect(objectUtil.flatten(arrays)).to.deep.equal(['inky']);
+            expect(flatten(arrays)).to.deep.equal(['inky']);
         });
 
         it('should return array when single array passed', function() {
@@ -412,7 +419,7 @@ describe('Object Util', function() {
                 'inky'
             ];
 
-            expect(objectUtil.flatten(arrays)).to.deep.equal(['binky', 'inky']);
+            expect(flatten(arrays)).to.deep.equal(['binky', 'inky']);
         });
     });
 });

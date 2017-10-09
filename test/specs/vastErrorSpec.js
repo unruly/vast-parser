@@ -1,5 +1,5 @@
-const VastError = require('../../src/js/vastError');
-const VastResponse = require('../../src/js/model/vastResponse');
+import VastError from '../../src/js/vastError';
+import VastResponse from '../../src/js/model/vastResponse';
 
 describe('VAST Error', function() {
 

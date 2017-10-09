@@ -1,6 +1,6 @@
-const vastAdManager = require('../../src/js/vastAdManager');
-const VastResponse = require('../../src/js/model/vastResponse');
-const VastError = require('../../src/js/vastError');
+import vastAdManager from '../../src/js/vastAdManager';
+import VastResponse from '../../src/js/model/vastResponse';
+import VastError from '../../src/js/vastError';
 
 describe('VAST Ad Manager', function() {
     var mockVastChainer,

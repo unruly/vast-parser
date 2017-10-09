@@ -1,9 +1,9 @@
-const vastChainer = require('../../src/js/vastChainer');
-const vastErrorCodes = require('../../src/js/vastErrorCodes');
-const VastError = require('../../src/js/vastError');
-const vastParser = require('../../src/js/vastParser');
-const VastResponse = require('../../src/js/model/vastResponse');
-const helpers = require('../../src/js/util/helpers');
+import vastChainer from '../../src/js/vastChainer';
+import vastErrorCodes from '../../src/js/vastErrorCodes';
+import VastError from '../../src/js/vastError';
+import vastParser from '../../src/js/vastParser';
+import VastResponse from '../../src/js/model/vastResponse';
+import helpers from '../../src/js/util/helpers';
 
 describe('VAST Chainer', function(){
     var jQuery,
@@ -75,19 +75,6 @@ describe('VAST Chainer', function(){
                 case vastErrorString:
                     return mockError;
             }
-            // if(document.childNodes) {
-            //     if(document.childNodes[0].nodeName === 'NOADS') {
-            //         return mockNoAds;
-            //     } else if(document.childNodes[0].nodeName === 'INLINE') {
-            //         return mockInline;
-            //     } else if(document.childNodes[0].nodeName === 'ERROR') {
-            //         return mockError;
-            //     } else if(document.childNodes[0].nodeName === 'TWO_WRAPPER_TEST') {
-            //         return mockTwoWrapperWrapper;
-            //     } else if(document.childNodes[0].nodeName === 'HTTPS_WRAPPER') {
-            //         return mockHttpsWrapper;
-            //     }
-            // }
             return mockWrapper;
         });
 

@@ -1,26 +1,26 @@
-const objectUtil = require('../util/objectUtil');
-const helpers = require('../util/helpers');
-const VastMediaFile = require('../model/vastMediaFile');
-const VastIcon = require('../model/vastIcon');
+import { getArrayFromObjectPath, getFromObjectPath } from '../util/objectUtil';
+import helpers from '../util/helpers';
+import VastMediaFile from '../model/vastMediaFile';
+import VastIcon from '../model/vastIcon';
 
 function nonEmptyString(trackingObject) {
     return helpers.isNonEmptyString(trackingObject.nodeValue);
 }
 
-function VastLinearCreative(vastResponse) {
+export default function VastLinearCreative(vastResponse) {
     this.vastResponse = vastResponse;
-    this.linearInline =  objectUtil.getFromObjectPath(this.vastResponse, 'inline.VAST.Ad.InLine.Creatives.Creative.Linear');
-    this.linearWrappers =  objectUtil.getArrayFromObjectPath(this.vastResponse, 'wrappers.VAST.Ad.Wrapper.Creatives.Creative.Linear');
+    this.linearInline =  getFromObjectPath(this.vastResponse, 'inline.VAST.Ad.InLine.Creatives.Creative.Linear');
+    this.linearWrappers =  getArrayFromObjectPath(this.vastResponse, 'wrappers.VAST.Ad.Wrapper.Creatives.Creative.Linear');
 }
 
 VastLinearCreative.prototype.getDuration = function getDuration(getSecondsFromTimeString = helpers.getSecondsFromTimeString) {
-    var stringTime = objectUtil.getFromObjectPath(this.linearInline, 'Duration.nodeValue');
+    var stringTime = getFromObjectPath(this.linearInline, 'Duration.nodeValue');
     return getSecondsFromTimeString(stringTime);
 };
 
 VastLinearCreative.prototype.getClickTrackers = function getClickTrackers(clickTrackerId) {
-    var wrapperClickTracking = objectUtil.getArrayFromObjectPath(this.linearWrappers, 'VideoClicks.ClickTracking'),
-        inlineClickTracking = objectUtil.getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking'),
+    var wrapperClickTracking = getArrayFromObjectPath(this.linearWrappers, 'VideoClicks.ClickTracking'),
+        inlineClickTracking = getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking'),
         allClickTracking = inlineClickTracking.concat(wrapperClickTracking);
 
     return allClickTracking
@@ -38,8 +38,8 @@ VastLinearCreative.prototype.getClickTrackers = function getClickTrackers(clickT
 };
 
 VastLinearCreative.prototype.getAllClickTrackersAsMap = function getAllClickTrackersAsMap() {
-    var wrapperClickTracking = objectUtil.getArrayFromObjectPath(this.linearWrappers, 'VideoClicks.ClickTracking'),
-        inlineClickTracking = objectUtil.getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking'),
+    var wrapperClickTracking = getArrayFromObjectPath(this.linearWrappers, 'VideoClicks.ClickTracking'),
+        inlineClickTracking = getArrayFromObjectPath(this.linearInline, 'VideoClicks.ClickTracking'),
         allClickTracking = inlineClickTracking.concat(wrapperClickTracking);
 
     var defaultID = 'unknown';
@@ -60,14 +60,14 @@ VastLinearCreative.prototype.getAllClickTrackersAsMap = function getAllClickTrac
 };
 
 VastLinearCreative.prototype.getClickThrough = function getClickThrough() {
-    return objectUtil.getFromObjectPath(this.linearInline, 'VideoClicks.ClickThrough.nodeValue');
+    return getFromObjectPath(this.linearInline, 'VideoClicks.ClickThrough.nodeValue');
 };
 
 VastLinearCreative.prototype.getTrackingEvents = function getTrackingEvents(eventName) {
 
     function getAllTrackingEvents() {
-        return objectUtil.getArrayFromObjectPath(this.linearInline, 'TrackingEvents.Tracking')
-            .concat(objectUtil.getArrayFromObjectPath(this.linearWrappers, 'TrackingEvents.Tracking'));
+        return getArrayFromObjectPath(this.linearInline, 'TrackingEvents.Tracking')
+            .concat(getArrayFromObjectPath(this.linearWrappers, 'TrackingEvents.Tracking'));
     }
 
     this.trackingEvents = this.trackingEvents || getAllTrackingEvents.call(this);
@@ -82,8 +82,8 @@ VastLinearCreative.prototype.getTrackingEvents = function getTrackingEvents(even
 };
 
 VastLinearCreative.prototype.getAdParameters = function getAdParameters() {
-    var adParameters = objectUtil.getFromObjectPath(this.linearInline, 'AdParameters.nodeValue'),
-        xmlEncoded = objectUtil.getFromObjectPath(this.linearInline, 'AdParameters.@xmlEncoded');
+    var adParameters = getFromObjectPath(this.linearInline, 'AdParameters.nodeValue'),
+        xmlEncoded = getFromObjectPath(this.linearInline, 'AdParameters.@xmlEncoded');
 
     if(xmlEncoded === 'true' && typeof adParameters === 'string') {
         adParameters = helpers.decodeXML(adParameters);
@@ -105,15 +105,15 @@ VastLinearCreative.prototype.getIcons = function getIcons() {
             return programDict;
         };
 
-    return objectUtil.getArrayFromObjectPath(this.linearWrappers, 'Icons.Icon')
-                        .concat(objectUtil.getArrayFromObjectPath(this.linearInline, 'Icons.Icon'))
+    return getArrayFromObjectPath(this.linearWrappers, 'Icons.Icon')
+                        .concat(getArrayFromObjectPath(this.linearInline, 'Icons.Icon'))
                         .map(createIcon)
                         .filter(hasValidProgram)
                         .reduce(chooseClosestProgram, {});
 };
 
 VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {
-    var mediaFiles =  objectUtil.getArrayFromObjectPath(this.linearInline, 'MediaFiles.MediaFile');
+    var mediaFiles = getArrayFromObjectPath(this.linearInline, 'MediaFiles.MediaFile');
 
     filter = filter || {};
 
@@ -169,5 +169,3 @@ VastLinearCreative.prototype.hasJavascriptVPAID = function hasJavascriptVPAID() 
 VastLinearCreative.prototype.hasMp4 = function hasMp4() {
     return this.getMp4MediaFiles().length > 0;
 };
-
-module.exports = VastLinearCreative;

@@ -1,1 +1,1 @@
-module.exports = window || global;
+export default window || global;

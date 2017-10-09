@@ -1,12 +1,12 @@
-function isDefined(element) {
+export function isDefined(element) {
     return typeof element !== 'undefined' && element !== null;
 }
 
-function flatten(array) {
+export function flatten(array) {
     return [].concat.apply([], array);
 }
 
-function getArrayFromObjectPath(object, path) {
+export function getArrayFromObjectPath(object, path) {
     var pathSections = path.split('.'),
         head,
         tail,
@@ -46,7 +46,7 @@ function getArrayFromObjectPath(object, path) {
     return getArrayFromObjectPath(next, tail);
 }
 
-function getFromObjectPath(object, path, defaultValue) {
+export function getFromObjectPath(object, path, defaultValue) {
     var results = getArrayFromObjectPath(object, path);
 
     if (!isDefined(results[0])) {
@@ -56,7 +56,7 @@ function getFromObjectPath(object, path, defaultValue) {
     return results[0];
 }
 
-function getIntegerFromObjectPath(object, path, defaultValue) {
+export function getIntegerFromObjectPath(object, path, defaultValue) {
     var value = getFromObjectPath(object, path, defaultValue);
 
     value = parseInt(value, 10);
@@ -68,18 +68,9 @@ function getIntegerFromObjectPath(object, path, defaultValue) {
     }
 }
 
-function pluckNodeValue(element) {
+export function pluckNodeValue(element) {
     if(!element) {
         return;
     }
     return element.nodeValue;
 }
-
-module.exports = {
-    getArrayFromObjectPath: getArrayFromObjectPath,
-    getIntegerFromObjectPath: getIntegerFromObjectPath,
-    getFromObjectPath: getFromObjectPath,
-    pluckNodeValue: pluckNodeValue,
-    isDefined: isDefined,
-    flatten: flatten
-};

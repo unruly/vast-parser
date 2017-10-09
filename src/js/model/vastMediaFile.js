@@ -1,14 +1,14 @@
-const objectUtil = require('../util/objectUtil');
-const helpers = require('../util/helpers');
+import { getArrayFromObjectPath, getFromObjectPath, getIntegerFromObjectPath } from '../util/objectUtil';
+import helpers from '../util/helpers';
 
 function VastMediaFile(mediaFileXml) {
-    this.url = helpers.convertProtocol(objectUtil.getFromObjectPath(mediaFileXml, 'nodeValue'));
-    this.apiFramework = objectUtil.getFromObjectPath(mediaFileXml, '@apiFramework');
-    this.type = objectUtil.getFromObjectPath(mediaFileXml, '@type');
-    this.width = objectUtil.getIntegerFromObjectPath(mediaFileXml, '@width');
-    this.height = objectUtil.getIntegerFromObjectPath(mediaFileXml, '@height');
-    this.delivery = objectUtil.getFromObjectPath(mediaFileXml, '@delivery');
-    this.bitrate = objectUtil.getIntegerFromObjectPath(mediaFileXml, '@bitrate');
+    this.url = helpers.convertProtocol(getFromObjectPath(mediaFileXml, 'nodeValue'));
+    this.apiFramework = getFromObjectPath(mediaFileXml, '@apiFramework');
+    this.type = getFromObjectPath(mediaFileXml, '@type');
+    this.width = getIntegerFromObjectPath(mediaFileXml, '@width');
+    this.height = getIntegerFromObjectPath(mediaFileXml, '@height');
+    this.delivery = getFromObjectPath(mediaFileXml, '@delivery');
+    this.bitrate = getIntegerFromObjectPath(mediaFileXml, '@bitrate');
 }
 
 VastMediaFile.prototype.isMP4 = function() {
@@ -23,5 +23,5 @@ VastMediaFile.prototype.isJavascriptVPAID = function() {
     return this.apiFramework === 'VPAID' && this.type === 'application/javascript';
 };
 
-module.exports = VastMediaFile;
+export default VastMediaFile;
 

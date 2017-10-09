@@ -1,4 +1,4 @@
-const VastLinearCreative = require('../../../src/js/model/vastLinearCreative');
+import VastLinearCreative from '../../../src/js/model/vastLinearCreative';
 
 describe('VAST Linear Creative', function() {
 

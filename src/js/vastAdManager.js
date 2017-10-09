@@ -1,6 +1,8 @@
 const vastChainer = require('./vastChainer');
 
-module.exports = (chainer = vastChainer) => ({
-    requestVastChain: chainer.getVastChain,
-    addEventListener: chainer.addEventListener
-});
+module.exports = function(chainer = vastChainer()) {
+    return {
+        requestVastChain: chainer.getVastChain,
+        addEventListener: chainer.addEventListener
+    }
+}

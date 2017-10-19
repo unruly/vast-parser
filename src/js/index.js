@@ -6,7 +6,7 @@ import VastIcon from './model/vastIcon';
 import VastAdManager from './vastAdManager';
 import helpers from './util/helpers';
 
-export default {
+export {
     VastParser,
     VastErrorCodes,
     VastResponse,

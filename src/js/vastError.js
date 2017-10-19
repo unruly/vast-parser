@@ -46,11 +46,11 @@ export default function VastError(code, vastResponse, message) {
     this.stack = (new Error()).stack;
     this.errorURIs = extractErrorURIs(vastResponse);
     this.vastResponse = vastResponse;
-    }
+}
 
-    VastError.prototype = new Error();
-    VastError.prototype.constructor = VastError;
+VastError.prototype = new Error();
+VastError.prototype.constructor = VastError;
 
-    VastError.prototype.getErrorURIs = function() {
+VastError.prototype.getErrorURIs = function() {
     return this.errorURIs;
 };

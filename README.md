@@ -1,4 +1,5 @@
 # vast-parser
+[![Build Status](https://travis-ci.org/unruly/vast-parser.svg?branch=master)](https://travis-ci.org/unruly/vast-parser)
 [![Dependency Status](https://dependencyci.com/github/unruly/vast-parser/badge)](https://dependencyci.com/github/unruly/vast-parser)
 
 Parses VAST files into plain javascript objects

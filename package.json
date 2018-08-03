@@ -11,7 +11,8 @@
   "scripts": {
     "build": "yarn rimraf lib && yarn babel --out-dir lib src",
     "lint": "yarn eslint '**/*.js'",
-    "test": "yarn mocha --opts test/mocha.opts './test/**/*Spec.js'"
+    "test": "yarn mocha --opts test/mocha.opts './test/**/*Spec.js'",
+    "prepublish": "yarn lint && yarn test && yarn build"
   },
   "repository": {
     "type": "git",

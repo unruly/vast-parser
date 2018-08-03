@@ -1,5 +1,5 @@
 {
-  "name": "vast-parser",
+  "name": "@unruly/vast-parser",
   "version": "1.4.0",
   "description": "Parses VAST files into plain javascript objects",
   "main": "lib/index.js",
@@ -22,9 +22,6 @@
   ],
   "author": "oss@unrulygroup.com",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/devunrulymedia/vast-parser/issues"
-  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

@@ -7,12 +7,13 @@ Parses VAST files into plain javascript objects
 
 ## Requirements
 
-The library currently makes use of the current projects and is dependent on them:
+- [jQuery](https://jquery.com/) for requesting VAST.
 
-- [RequireJS](http://requirejs.org/)
-- [jQuery](https://jquery.com/)
-- [Q](https://github.com/kriskowal/q)
-- [Validator](https://github.com/chriso/validator.js)
+### Polyfills
+
+You made need to include polyfills depending on your target environments:
+
+- Promise
 
 ## Usage
 

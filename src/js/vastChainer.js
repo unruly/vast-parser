@@ -1,5 +1,3 @@
-/*global console:true*/
-
 import vastParser from './vastParser';
 import vastErrorCodes from './vastErrorCodes';
 import VastError from './vastError';
@@ -7,7 +5,7 @@ import VastResponse from './model/vastResponse';
 import helpers from './util/helpers';
 import jQuery from 'jquery';
 
-var AJAX_TIMEOUT = 10000;
+const AJAX_TIMEOUT = 10000;
 
 function getDomainFromURL(url) {
     return new URL(helpers.ensureProtocol(url)).hostname;
@@ -28,7 +26,7 @@ export default function(
         Response = VastResponse
     } = {}) {
 
-    var vastRequestCounter = 0,
+    let vastRequestCounter = 0,
         dispatcher = $({});
 
     function addEventListener(eventName, handler) {
@@ -37,7 +35,7 @@ export default function(
 
     function getVast(vastResponse, vastConfig, sendCookies) {
 
-        var url = vastConfig.url,
+        let url = vastConfig.url,
             resolve,
             reject,
             promise = new PromiseModule(function(_resolve, _reject) {
@@ -72,7 +70,7 @@ export default function(
         settings.timeout = AJAX_TIMEOUT;
 
         settings.success = function(data, status, jqXHR) {
-            var vastTag,
+            let vastTag,
                 childTagUri,
                 nextRequestConfig,
                 requestEndEvent;
@@ -128,22 +126,20 @@ export default function(
                 vastRequestCounter++;
                 getVast(vastResponse, nextRequestConfig, true)
                     .then(resolve)
-                    ['catch'](reject);      // eslint-disable-line no-unexpected-multiline
+                    .catch(reject);
             }
         };
 
         settings.error = function(jqXHR, textStatus, errorThrown) {
-            var code,
+            let code,
                 requestEndEvent,
                 statusText;
 
             if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
-                console.log('Retrying request without cookies:', url);
-
                 getVast(vastResponse, vastConfig, false)
                     .then(resolve)
-                    ['catch'](reject);      // eslint-disable-line no-unexpected-multiline
-                return
+                    .catch(reject);
+                return;
             }
 
             if (jqXHR.status === 200 && !jqXHR.responseXML) {
@@ -188,8 +184,7 @@ export default function(
     }
 
     function getVastChain(vastConfig) {
-        var vastResponse = new Response();
-
+        let vastResponse = new Response();
         return getVast(vastResponse, vastConfig, true);
     }
 

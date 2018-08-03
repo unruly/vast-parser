@@ -2,7 +2,6 @@ import helpers from '../util/helpers';
 import { getArrayFromObjectPath, getFromObjectPath } from '../util/objectUtil';
 import VastLinearCreative from './vastLinearCreative';
 import VastNonLinearCreative from './vastNonLinearCreative';
-import VastExtension from './vastExtension';
 import vastModelFactory from './vastModelFactory';
 
 export default function VastResponse(vastChain) {

@@ -21,10 +21,10 @@ export function getSecondsFromTimeString(timeString) {
 
 export function decodeXML(encodedXMLString) {
     return encodedXMLString.replace(/&apos;/g, '\'')
-                            .replace(/&quot;/g, '"')
-                            .replace(/&gt;/g, '>')
-                            .replace(/&lt;/g, '<')
-                            .replace(/&amp;/g, '&');
+        .replace(/&quot;/g, '"')
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<')
+        .replace(/&amp;/g, '&');
 }
 
 export function convertProtocol(url) {
@@ -39,7 +39,7 @@ export function convertProtocol(url) {
 
 export function ensureProtocol(url) {
     if(url.indexOf('https') === 0 || url.indexOf('http') === 0) {
-        return url
+        return url;
     } else if(url.indexOf('//') === 0) {
         return `https:${url}`;
     } else {

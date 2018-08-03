@@ -1,7 +1,6 @@
 import vastChainer from '../../src/js/vastChainer';
 import vastErrorCodes from '../../src/js/vastErrorCodes';
 import VastError from '../../src/js/vastError';
-import vastParser from '../../src/js/vastParser';
 import VastResponse from '../../src/js/model/vastResponse';
 import helpers from '../../src/js/util/helpers';
 
@@ -26,8 +25,6 @@ describe('VAST Chainer', function(){
         now = 100,
         wrapperConfig,
         mockClock,
-        mockHttpsWrapper,
-        mockHttpsEndpoint,
         mockDeps;
 
     beforeEach(function() {
@@ -51,7 +48,7 @@ describe('VAST Chainer', function(){
         };
 
         let $ = function () {
-            return mockDispatcher
+            return mockDispatcher;
         };
         $.support = {
             cors: true
@@ -66,21 +63,17 @@ describe('VAST Chainer', function(){
 
         let parseVast = sinon.spy(function(document) {
             switch(document) {
-                case mockNoAdsString:
-                    return mockNoAds;
-                case mockInlineString:
-                    return mockInline;
-                case mockTwoWrapperString:
-                    return mockTwoWrapperWrapper;
-                case vastErrorString:
-                    return mockError;
+            case mockNoAdsString:
+                return mockNoAds;
+            case mockInlineString:
+                return mockInline;
+            case mockTwoWrapperString:
+                return mockTwoWrapperWrapper;
+            case vastErrorString:
+                return mockError;
             }
             return mockWrapper;
         });
-
-        let VastResponse = {
-            addRawResponse: sinon.spy()
-        };
 
         mockDeps = {
             PromiseModule,
@@ -114,20 +107,6 @@ describe('VAST Chainer', function(){
             }
         };
 
-        mockHttpsEndpoint = 'https://example.com';
-
-        mockHttpsWrapper = {
-            'VAST': {
-                'Ad': {
-                    'Wrapper': {
-                        'VASTAdTagURI': {
-                            'nodeValue': mockHttpsEndpoint
-                        }
-                    }
-                }
-            }
-        };
-
         mockInline = {
             VAST: {
                 Ad: {
@@ -154,14 +133,11 @@ describe('VAST Chainer', function(){
 
         mockServer = sinon.fakeServer.create();
         mockClock = sinon.useFakeTimers(now);
-
-        sinon.spy(console, 'log');
     });
 
     afterEach(function () {
         mockServer.restore();
         mockClock.restore();
-        console.log.restore();
     });
 
     function vastError(error, message) {
@@ -245,7 +221,7 @@ describe('VAST Chainer', function(){
             ).to.have.been.calledOnce;
 
             const settings = jQuery.ajax.firstCall.args[0];
-            settings.error({ status:200, getAllResponseHeaders(){ return ''; }, responseXML: undefined }, 'parsererror', new Error("Invalid XML: This is not XML"));
+            settings.error({ status:200, getAllResponseHeaders(){ return ''; }, responseXML: undefined }, 'parsererror', new Error('Invalid XML: This is not XML'));
 
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.XML_PARSE_ERROR, 'VAST Request Failed (parsererror 200) with message [Error: Invalid XML: This is not XML] for ' + firstWrapperUrl));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
@@ -266,7 +242,6 @@ describe('VAST Chainer', function(){
         });
 
         it('rejects promise when VAST tag is empty', function() {
-            const parseVast = sinon.spy(() => mockNoAds);
             vastChainer(mockDeps).getVastChain(wrapperConfig);
 
             expect(
@@ -276,7 +251,6 @@ describe('VAST Chainer', function(){
             const settings = jQuery.ajax.firstCall.args[0];
             settings.success(mockNoAdsString, undefined, { status:200, getAllResponseHeaders(){ return ''; }});
 
-            // console.log(parseVast);
             expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.NO_ADS, 'VAST request returned no ads'));
             expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty());
 
@@ -313,7 +287,7 @@ describe('VAST Chainer', function(){
             expect(jQuery.ajax.calledTwice).to.equal(true);
 
             var inlineRequest = jQuery.ajax.secondCall;
-           expect(inlineRequest.args[0].url).to.equal('//inlineVASTUrlDomain.com/');
+            expect(inlineRequest.args[0].url).to.equal('//inlineVASTUrlDomain.com/');
         });
 
         it('should set headers from vastConfig on first ajax call', function() {
@@ -338,15 +312,14 @@ describe('VAST Chainer', function(){
 
             jQuery.ajax = (settings) => {
                 switch(settings.url) {
-                    case successfulWrapperCall:
-                        settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
-                        break;
-                    case failedInlineCall:
-                        settings.error({ status:404, getAllResponseHeaders(){ return ''; }}, 'error');
-                        break;
-                    default:
-                        throw new Error(`shouldn't happen`);
-                        break;
+                case successfulWrapperCall:
+                    settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    break;
+                case failedInlineCall:
+                    settings.error({ status:404, getAllResponseHeaders(){ return ''; }}, 'error');
+                    break;
+                default:
+                    throw new Error('shouldn\'t happen');
                 }
             };
 
@@ -381,10 +354,6 @@ describe('VAST Chainer', function(){
             expect(wrapperRequest.url).to.equal(wrapperConfig.url);
             expect(wrapperRequest.xhrFields.withCredentials).to.be.true;
 
-            var consoleLog = console.log.firstCall;
-            expect(consoleLog.args[0]).to.equal('Retrying request without cookies:');
-            expect(consoleLog.args[1]).to.equal(wrapperConfig.url);
-
             var inlineRequest = jQuery.ajax.secondCall.args[0];
             expect(inlineRequest.url).to.equal(wrapperConfig.url);
             expect(inlineRequest.xhrFields).to.equal(undefined);
@@ -408,9 +377,6 @@ describe('VAST Chainer', function(){
             var wrapperRequest = jQuery.ajax.firstCall.args[0];
             expect(wrapperRequest.url).to.equal(wrapperConfig.url);
             expect(wrapperRequest.xhrFields).to.equal(undefined);
-
-            expect(console.log).to.not.have.been.called;
-
         });
 
         it('do not send cookies on first and second request if domain in blacklist', function(){
@@ -435,23 +401,19 @@ describe('VAST Chainer', function(){
             var inlineRequest = jQuery.ajax.secondCall.args[0];
             expect(inlineRequest.url).to.equal('//inlineVASTUrlDomain.com/');
             expect(inlineRequest.xhrFields).to.equal(undefined);
-
-            expect(console.log).to.not.have.been.called;
-
         });
 
         it('fulfills promise with array of VAST tags', function() {
             jQuery.ajax = (settings) => {
                 switch(settings.url) {
-                    case firstWrapperUrl:
-                        settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
-                        break;
-                    case helpers.convertProtocol(mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue):
-                        settings.success(mockInlineString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
-                        break;
-                    default:
-                        throw new Error(`shouldn't happen`);
-                        break;
+                case firstWrapperUrl:
+                    settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    break;
+                case helpers.convertProtocol(mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue):
+                    settings.success(mockInlineString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    break;
+                default:
+                    throw new Error('shouldn\'t happen');
                 }
             };
 
@@ -478,18 +440,17 @@ describe('VAST Chainer', function(){
 
             jQuery.ajax = (settings) => {
                 switch(helpers.convertProtocol(settings.url)) {
-                    case helpers.convertProtocol(firstWrapperUrl):
-                        settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
-                        break;
-                    case helpers.convertProtocol(twoWrapperRequestUrl):
-                        settings.success(mockTwoWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
-                        break;
-                    case helpers.convertProtocol(mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue):
-                        settings.success(mockInlineString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
-                        break;
-                    default:
-                        throw new Error(`shouldn't happen`);
-                        break;
+                case helpers.convertProtocol(firstWrapperUrl):
+                    settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    break;
+                case helpers.convertProtocol(twoWrapperRequestUrl):
+                    settings.success(mockTwoWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    break;
+                case helpers.convertProtocol(mockWrapper.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue):
+                    settings.success(mockInlineString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    break;
+                default:
+                    throw new Error('shouldn\'t happen');
                 }
             };
 
@@ -586,7 +547,7 @@ describe('VAST Chainer', function(){
             const vastChainerInstance = vastChainer(mockDeps);
 
             expect(
-              mockDispatcher.on
+                mockDispatcher.on
             ).to.not.have.been.called;
 
             vastChainerInstance.addEventListener('requestStart', beginVastDownload);
@@ -618,14 +579,13 @@ describe('VAST Chainer', function(){
 
             vastChainerInstance.getVastChain(wrapperConfig);
 
-            const vastResponse= new VastResponse()
             expect(
                 mockDispatcher.trigger
             ).to.have.been.calledWith(
                 jQueryEvents.Start
             );
             expect(
-              jQuery.Event
+                jQuery.Event
             ).to.have.been.calledWithMatch(
                 'requestStart',
                 {
@@ -660,7 +620,7 @@ describe('VAST Chainer', function(){
             jQuery.ajax = sinon.spy((settings) => {
                 if (isFirstCall) {
                     settings.error({ status:0, getAllResponseHeaders(){ return ''; }}, 'error');
-                    isFirstCall = false
+                    isFirstCall = false;
                 } else {
                     settings.success(null, undefined, { status:200, getAllResponseHeaders(){ return ''; }});
                 }
@@ -725,65 +685,64 @@ describe('VAST Chainer', function(){
 
             jQuery.ajax = sinon.spy((settings) => {
                 switch(helpers.convertProtocol(settings.url)) {
-                    case wrapperUrl:
+                case wrapperUrl:
 
-                        expect(
-                            mockDispatcher.trigger
-                        ).to.have.been.calledWithMatch(
-                            {
-                                event: 'requestStart',
-                                data: {
-                                    requestNumber: 0,
-                                    uri: firstWrapperUrl
-                                }
+                    expect(
+                        mockDispatcher.trigger
+                    ).to.have.been.calledWithMatch(
+                        {
+                            event: 'requestStart',
+                            data: {
+                                requestNumber: 0,
+                                uri: firstWrapperUrl
                             }
-                        );
+                        }
+                    );
 
-                        settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
 
-                        expect(
-                            mockDispatcher.trigger
-                        ).to.have.been.calledWithMatch(
-                            {
-                                event: 'requestEnd',
-                                data: {
-                                    requestNumber: 0,
-                                    uri: firstWrapperUrl
-                                }
+                    expect(
+                        mockDispatcher.trigger
+                    ).to.have.been.calledWithMatch(
+                        {
+                            event: 'requestEnd',
+                            data: {
+                                requestNumber: 0,
+                                uri: firstWrapperUrl
                             }
-                        );
-                        break;
-                    case inlineUrl:
+                        }
+                    );
+                    break;
+                case inlineUrl:
 
-                        expect(
-                            mockDispatcher.trigger
-                        ).to.have.been.calledWithMatch(
-                            {
-                                event: 'requestStart',
-                                data: {
-                                    requestNumber: 1,
-                                    uri: inlineUrl
-                                }
+                    expect(
+                        mockDispatcher.trigger
+                    ).to.have.been.calledWithMatch(
+                        {
+                            event: 'requestStart',
+                            data: {
+                                requestNumber: 1,
+                                uri: inlineUrl
                             }
-                        );
+                        }
+                    );
 
-                        settings.success(mockInlineString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
+                    settings.success(mockInlineString, {}, { status:200, getAllResponseHeaders(){ return ''; }});
 
-                        expect(
-                            mockDispatcher.trigger
-                        ).to.have.been.calledWithMatch(
-                            {
-                                event: 'requestEnd',
-                                data: {
-                                    requestNumber: 1,
-                                    uri: inlineUrl
-                                }
+                    expect(
+                        mockDispatcher.trigger
+                    ).to.have.been.calledWithMatch(
+                        {
+                            event: 'requestEnd',
+                            data: {
+                                requestNumber: 1,
+                                uri: inlineUrl
                             }
-                        );
-                        break;
-                    default:
-                        throw new Error(`shouldn't happen`);
-                        break;
+                        }
+                    );
+                    break;
+                default:
+                    throw new Error('shouldn\'t happen');
                 }
             });
 
@@ -1045,19 +1004,14 @@ describe('VAST Chainer', function(){
 
             jQuery.ajax = sinon.spy((settings) => {
                 switch(helpers.convertProtocol(settings.url)) {
-                    case helpers.convertProtocol(firstWrapperUrl):
-
-                        settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return 'Content-Type: application/json'; }, responseText: mockWrapperString});
-
-                       break;
-                    case helpers.convertProtocol(inlineUrl):
-
-                        settings.success('', {}, { status:400, getAllResponseHeaders(){ return 'Content-Type: application/json'; }, responseText: ''});
-
-                       break;
-                    default:
-                        throw new Error(`shouldn't happen`);
-                        break;
+                case helpers.convertProtocol(firstWrapperUrl):
+                    settings.success(mockWrapperString, {}, { status:200, getAllResponseHeaders(){ return 'Content-Type: application/json'; }, responseText: mockWrapperString});
+                    break;
+                case helpers.convertProtocol(inlineUrl):
+                    settings.success('', {}, { status:400, getAllResponseHeaders(){ return 'Content-Type: application/json'; }, responseText: ''});
+                    break;
+                default:
+                    throw new Error('shouldn\'t happen');
                 }
             });
 

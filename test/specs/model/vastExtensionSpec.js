@@ -2,33 +2,33 @@ import VastExtension from '../../../src/js/model/vastExtension';
 
 describe('VAST Extension', function() {
     var mockExtensionNodes = {
-            'Property': [
+        'Property': [
+            {
+                'nodeValue': 1234,
+                '@id': 'skid'
+            },
+            {
+                'nodeValue': 5678,
+                '@id': 'apid'
+            }
+        ],
+        'CustomTrackingEvents': {
+            'CustomTracking': [
                 {
-                    'nodeValue': 1234,
-                    '@id': 'skid'
+                    'nodeValue': 'http://example.com/viewable_imp',
+                    '@event': 'viewableImpression'
                 },
                 {
-                    'nodeValue': 5678,
-                    '@id': 'apid'
+                    'nodeValue': 'http://example.com/pp_imp1',
+                    '@event': 'pp_imp'
+                },
+                {
+                    'nodeValue': 'http://example.com/pp_lb_play',
+                    '@event': 'pp_lb_play'
                 }
-            ],
-            'CustomTrackingEvents': {
-                'CustomTracking': [
-                    {
-                        'nodeValue': 'http://example.com/viewable_imp',
-                        '@event': 'viewableImpression'
-                    },
-                    {
-                        'nodeValue': 'http://example.com/pp_imp1',
-                        '@event': 'pp_imp'
-                    },
-                    {
-                        'nodeValue': 'http://example.com/pp_lb_play',
-                        '@event': 'pp_lb_play'
-                    }
-                ]
-            }
-        };
+            ]
+        }
+    };
 
     describe('extensions', function() {
         it('stores the extension nodes on construction and returns them when called getExtension()', function() {

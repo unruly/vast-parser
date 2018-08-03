@@ -106,10 +106,10 @@ VastLinearCreative.prototype.getIcons = function getIcons() {
         };
 
     return getArrayFromObjectPath(this.linearWrappers, 'Icons.Icon')
-                        .concat(getArrayFromObjectPath(this.linearInline, 'Icons.Icon'))
-                        .map(createIcon)
-                        .filter(hasValidProgram)
-                        .reduce(chooseClosestProgram, {});
+        .concat(getArrayFromObjectPath(this.linearInline, 'Icons.Icon'))
+        .map(createIcon)
+        .filter(hasValidProgram)
+        .reduce(chooseClosestProgram, {});
 };
 
 VastLinearCreative.prototype.getMediaFiles = function getMediaFiles(filter) {

@@ -1,19 +1,19 @@
 import xmlParser from '../../src/js/xmlParser';
 import fs from 'fs';
-const DOMParser = require('xmldom').DOMParser;
+import { DOMParser } from 'xmldom';
 
 describe('XML Parser', function(){
 
     function loadTestXML(filename, test) {
         fs.readFile('test/resources/xml/' + filename, 'utf8', function (err,xmlString) {
-          if (err) {
-            throw err;
-          }
+            if (err) {
+                throw err;
+            }
 
-          var parser = new DOMParser(),
-              xmlDocument = parser.parseFromString(xmlString, 'text/xml');
+            var parser = new DOMParser(),
+                xmlDocument = parser.parseFromString(xmlString, 'text/xml');
 
-          test(xmlDocument);
+            test(xmlDocument);
         });
     }
 

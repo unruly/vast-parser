@@ -143,9 +143,9 @@ describe('VAST Error', function() {
                                     'Error': [{
                                         'nodeValue': errorPixel1
                                     },
-                                        {
-                                            'nodeValue': errorPixel2
-                                        }]
+                                    {
+                                        'nodeValue': errorPixel2
+                                    }]
                                 }
                             }
                         }

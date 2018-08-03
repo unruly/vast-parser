@@ -1,7 +1,6 @@
 import vastParser from '../../src/js/vastParser';
-
-const fs = require('fs');
-const DOMParser = require('xmldom').DOMParser;
+import fs  from 'fs';
+import { DOMParser } from 'xmldom';
 
 describe('VAST Parser', function(){
 
@@ -9,14 +8,14 @@ describe('VAST Parser', function(){
 
     function loadTestXML(filename, test) {
         fs.readFile('test/resources/vast/' + filename, 'utf8', function (err,xmlString) {
-          if (err) {
-            throw err;
-          }
+            if (err) {
+                throw err;
+            }
 
-          var parser = new DOMParser(),
-              xmlDocument = parser.parseFromString(xmlString, 'text/xml');
+            var parser = new DOMParser(),
+                xmlDocument = parser.parseFromString(xmlString, 'text/xml');
 
-          test(xmlDocument);
+            test(xmlDocument);
         });
     }
 

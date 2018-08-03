@@ -2,8 +2,7 @@ import VastLinearCreative from '../../../src/js/model/vastLinearCreative';
 
 describe('VAST Linear Creative', function() {
 
-    var mockVastResponse,
-        helpers;
+    var mockVastResponse;
 
     function getVastResponse() {
         return {

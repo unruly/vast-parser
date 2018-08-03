@@ -1,4 +1,4 @@
-import { getArrayFromObjectPath, getFromObjectPath, getIntegerFromObjectPath } from '../util/objectUtil';
+import { getFromObjectPath, getIntegerFromObjectPath } from '../util/objectUtil';
 import helpers from '../util/helpers';
 
 function VastMediaFile(mediaFileXml) {

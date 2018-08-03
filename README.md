@@ -1,4 +1,5 @@
 # vast-parser
+
 [![Build Status](https://travis-ci.org/unruly/vast-parser.svg?branch=master)](https://travis-ci.org/unruly/vast-parser)
 [![Dependency Status](https://dependencyci.com/github/unruly/vast-parser/badge)](https://dependencyci.com/github/unruly/vast-parser)
 
@@ -26,7 +27,7 @@ The `requestVastChain` returns a promise and will resolve once it has finished d
 It returns a `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/js/model/vastResponse.js).
 
 
-```
+```js
 vastAdManager.requestVastChain('http://example.com/vast-file.xml')
     .fail(function(vastError) {
         // handle any errors that may have occurred such as an HTTP 404.
@@ -34,7 +35,6 @@ vastAdManager.requestVastChain('http://example.com/vast-file.xml')
     .then(function(vastResponse) {
         // use the vastResponse
     });
-
 ```
 
 ### addEventListener
@@ -52,14 +52,6 @@ Each event passes has the following properties available:
 - `uri` - the URI for the request
 - `vastResponse` - the `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/js/model/vastResponse.js) that is being added to while following a chain of VAST files.
 
-## Running Tests
-
-In one terminal run
-
-    npm start
-    
-Then go to [http://localhost:8000/test/phantom/testrunner.html](http://localhost:8000/test/phantom/testrunner.html) in your browser.
-Or run `npm test`
 
 ## License
 

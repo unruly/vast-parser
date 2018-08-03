@@ -4,19 +4,17 @@
   "description": "Parses VAST files into plain javascript objects",
   "main": "src/js/index.js",
   "scripts": {
-    "start": "python -m SimpleHTTPServer",
-    "lint": "./node_modules/.bin/eslint src/* && ./node_modules/.bin/eslint -c test/.eslintrc test/*",
-    "test": "mocha --compilers js:babel-core/register --recursive --reporter list test/mocha.conf.js ./test",
-    "testWatch": "npm run lint && npm run testMocha -- --watch"
+    "lint": "yarn eslint src/* && yarn eslint -c test/.eslintrc test/*",
+    "test": "yarn mocha --compilers js:babel-core/register --recursive --reporter list test/mocha.conf.js ./test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/devunrulymedia/vast-parser.git"
+    "url": "https://github.com/unruly/vast-parser.git"
   },
   "keywords": [
     "vast"
   ],
-  "author": "marmalade@unrulymedia.com",
+  "author": "oss@unrulygroup.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/devunrulymedia/vast-parser/issues"
@@ -37,8 +35,6 @@
     "xmldom": "^0.1.27"
   },
   "dependencies": {
-    "dom-parser": "^0.1.5",
-    "es6-promise": "^3.2.1",
     "jquery": "^1.11.2"
   }
 }

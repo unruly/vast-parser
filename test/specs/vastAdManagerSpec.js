@@ -1,6 +1,6 @@
-import vastAdManager from '../../src/js/vastAdManager';
-import VastResponse from '../../src/js/model/vastResponse';
-import VastError from '../../src/js/vastError';
+import vastAdManager from '../../src/vastAdManager';
+import VastResponse from '../../src/model/vastResponse';
+import VastError from '../../src/vastError';
 
 describe('VAST Ad Manager', function() {
     var mockVastChainer,

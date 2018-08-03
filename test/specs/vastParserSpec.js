@@ -1,4 +1,4 @@
-import vastParser from '../../src/js/vastParser';
+import vastParser from '../../src/vastParser';
 import fs  from 'fs';
 import { DOMParser } from 'xmldom';
 

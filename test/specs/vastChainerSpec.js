@@ -1,8 +1,8 @@
-import vastChainer from '../../src/js/vastChainer';
-import vastErrorCodes from '../../src/js/vastErrorCodes';
-import VastError from '../../src/js/vastError';
-import VastResponse from '../../src/js/model/vastResponse';
-import helpers from '../../src/js/util/helpers';
+import vastChainer from '../../src/vastChainer';
+import vastErrorCodes from '../../src/vastErrorCodes';
+import VastError from '../../src/vastError';
+import VastResponse from '../../src/model/vastResponse';
+import helpers from '../../src/util/helpers';
 
 describe('VAST Chainer', function(){
     var jQuery,

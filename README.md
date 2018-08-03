@@ -24,7 +24,7 @@ The main module to use is `vastAdManager` which exposes two functions:
 ### requestVastChain
 
 The `requestVastChain` returns a promise and will resolve once it has finished downloading all of the VAST files in the chain.
-It returns a `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/js/model/vastResponse.js).
+It returns a `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/model/vastResponse.js).
 
 
 ```js
@@ -50,7 +50,7 @@ Each event passes has the following properties available:
 
 - `requestNumber` - the current request number, which can be more than one when VAST wrapper files are used
 - `uri` - the URI for the request
-- `vastResponse` - the `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/js/model/vastResponse.js) that is being added to while following a chain of VAST files.
+- `vastResponse` - the `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/model/vastResponse.js) that is being added to while following a chain of VAST files.
 
 
 ## License

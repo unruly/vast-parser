@@ -1,5 +1,5 @@
-import VastError from '../../src/js/vastError';
-import VastResponse from '../../src/js/model/vastResponse';
+import VastError from '../../src/vastError';
+import VastResponse from '../../src/model/vastResponse';
 
 describe('VAST Error', function() {
 

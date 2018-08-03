@@ -2,14 +2,14 @@
 import amd from 'rollup-plugin-amd';
 
 export default {
-    input: './src/js/index.js',
+    input: './src/index.js',
     output: {
         file: 'vast-parser.amd.js',
         format: 'amd'
     },
     plugins: [
         amd({
-            include: 'src/js/**' // Optional, Default: undefined (everything)
+            include: 'src/**' // Optional, Default: undefined (everything)
         })
     ]
 };

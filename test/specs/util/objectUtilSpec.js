@@ -5,7 +5,7 @@ import {
     pluckNodeValue,
     isDefined,
     flatten
-} from '../../../src/js/util/objectUtil';
+} from '../../../src/util/objectUtil';
 
 describe('Object Util', function() {
 
@@ -57,7 +57,7 @@ describe('Object Util', function() {
         });
 
     });
-    
+
     describe('getIntegerFromObjectPath', function() {
         it('fetches a value from inside the nested object and converts it to an integer', function() {
             var obj = {

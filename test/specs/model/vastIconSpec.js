@@ -1,4 +1,4 @@
-import VastIcon from '../../../src/js/model/vastIcon';
+import VastIcon from '../../../src/model/vastIcon';
 
 describe('VAST Icon', function() {
 

@@ -1,4 +1,4 @@
-import VastResponse from '../../../src/js/model/vastResponse';
+import VastResponse from '../../../src/model/vastResponse';
 
 describe('VAST Response', function() {
 

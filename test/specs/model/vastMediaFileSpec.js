@@ -1,4 +1,4 @@
-import VastMediaFile from '../../../src/js/model/vastMediaFile';
+import VastMediaFile from '../../../src/model/vastMediaFile';
 
 describe('VAST Media File', function() {
     describe('url property', function() {

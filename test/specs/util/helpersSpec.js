@@ -1,4 +1,4 @@
-import helpers from '../../../src/js/util/helpers';
+import helpers from '../../../src/util/helpers';
 
 describe('Helpers Util', function() {
 

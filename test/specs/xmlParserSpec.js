@@ -1,4 +1,4 @@
-import xmlParser from '../../src/js/xmlParser';
+import xmlParser from '../../src/xmlParser';
 import fs from 'fs';
 import { DOMParser } from 'xmldom';
 

@@ -1,4 +1,4 @@
-import VastNonLinearCreative from '../../../src/js/model/vastNonLinearCreative';
+import VastNonLinearCreative from '../../../src/model/vastNonLinearCreative';
 
 describe('VAST Non Linear Creative', function() {
     var mockVastResponse;

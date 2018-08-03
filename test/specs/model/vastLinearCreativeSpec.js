@@ -1,4 +1,4 @@
-import VastLinearCreative from '../../../src/js/model/vastLinearCreative';
+import VastLinearCreative from '../../../src/model/vastLinearCreative';
 
 describe('VAST Linear Creative', function() {
 

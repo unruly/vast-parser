@@ -1,7 +1,7 @@
-import VastExtension from './vastExtension';
+import VastExtension from './vastExtension'
 
 export default {
-    createVastExtension: function(extensionNodes) {
-        return new VastExtension(extensionNodes);
-    }
-};
+  createVastExtension: function (extensionNodes) {
+    return new VastExtension(extensionNodes)
+  }
+}

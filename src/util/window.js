@@ -1,2 +1,2 @@
 /* globals global */
-export default window || global;
+export default window || global

@@ -1,425 +1,420 @@
 import {
-    getFromObjectPath,
-    getIntegerFromObjectPath,
-    getArrayFromObjectPath,
-    pluckNodeValue,
-    isDefined,
-    flatten
-} from '../../../src/util/objectUtil';
+  getFromObjectPath,
+  getIntegerFromObjectPath,
+  getArrayFromObjectPath,
+  pluckNodeValue,
+  isDefined,
+  flatten
+} from '../../../src/util/objectUtil'
 
-describe('Object Util', function() {
+describe('Object Util', function () {
+  describe('getFromObjectPath', function () {
+    it('fetches a value from inside the nested object', function () {
+      var obj = {
+        foo: {
+          bar: {
+            minky: 'binky'
+          }
+        }
+      }
 
-    describe('getFromObjectPath', function() {
-        it('fetches a value from inside the nested object', function() {
-            var obj = {
-                foo: {
-                    bar: {
-                        minky: 'binky'
-                    }
-                }
-            };
+      var result = getFromObjectPath(obj, 'foo.bar.minky')
 
-            var result = getFromObjectPath(obj, 'foo.bar.minky');
+      expect(result).to.deep.equal(obj.foo.bar.minky)
+    })
 
-            expect(result).to.deep.equal(obj.foo.bar.minky);
-        });
+    it('fetches a value from inside the nested object which is falsy', function () {
+      var obj = {
+        foo: {
+          bar: {
+            falsy: 0
+          }
+        }
+      }
 
-        it('fetches a value from inside the nested object which is falsy', function() {
-            var obj = {
-                foo: {
-                    bar: {
-                        falsy: 0
-                    }
-                }
-            };
+      var result = getFromObjectPath(obj, 'foo.bar.falsy')
 
-            var result = getFromObjectPath(obj, 'foo.bar.falsy');
+      expect(result).to.deep.equal(obj.foo.bar.falsy)
+    })
 
-            expect(result).to.deep.equal(obj.foo.bar.falsy);
-        });
+    it('returns the supplied argument if the object has no properties', function () {
+      var obj = {}
 
-        it('returns the supplied argument if the object has no properties', function() {
-            var obj = {};
+      var result = getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!')
 
-            var result = getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
+      expect(result).to.deep.equal('it\'s missing!')
+    })
 
-            expect(result).to.deep.equal('it\'s missing!');
-        });
+    it('returns the supplied argument if the path inside the nested objects does not exist', function () {
+      var obj = {
+        foo: {}
+      }
 
-        it('returns the supplied argument if the path inside the nested objects does not exist', function() {
-            var obj = {
-                foo: {}
-            };
+      var result = getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!')
 
-            var result = getFromObjectPath(obj, 'foo.does.not.exist', 'it\'s missing!');
+      expect(result).to.deep.equal('it\'s missing!')
+    })
+  })
 
-            expect(result).to.deep.equal('it\'s missing!');
-        });
+  describe('getIntegerFromObjectPath', function () {
+    it('fetches a value from inside the nested object and converts it to an integer', function () {
+      var obj = {
+        foo: {
+          bar: {
+            number: '123'
+          }
+        }
+      }
 
-    });
+      var result = getIntegerFromObjectPath(obj, 'foo.bar.number')
 
-    describe('getIntegerFromObjectPath', function() {
-        it('fetches a value from inside the nested object and converts it to an integer', function() {
-            var obj = {
-                foo: {
-                    bar: {
-                        number: '123'
-                    }
-                }
-            };
+      expect(result).to.equal(123)
+    })
 
-            var result = getIntegerFromObjectPath(obj, 'foo.bar.number');
+    it('fetches a value from inside the nested object and converts it to an integer', function () {
+      var obj = {
+        foo: {
+          bar: {
+            string: 'abc'
+          }
+        }
+      }
 
-            expect(result).to.equal(123);
-        });
+      var result = getIntegerFromObjectPath(obj, 'foo.bar.string')
 
-        it('fetches a value from inside the nested object and converts it to an integer', function() {
-            var obj = {
-                foo: {
-                    bar: {
-                        string: 'abc'
-                    }
-                }
-            };
+      expect(result).to.be.undefined
+    })
 
-            var result = getIntegerFromObjectPath(obj, 'foo.bar.string');
+    it('returns default value when it fails to convert returned value to integer', function () {
+      var defaultValue = 789
 
-            expect(result).to.be.undefined;
-        });
+      var obj = {
+        foo: {
+          bar: {
+            string: 'abc'
+          }
+        }
+      }
 
-        it('returns default value when it fails to convert returned value to integer', function() {
-            var defaultValue = 789,
-                obj = {
-                    foo: {
-                        bar: {
-                            string: 'abc'
-                        }
-                    }
-                };
+      var result = getIntegerFromObjectPath(obj, 'foo.bar.string', defaultValue)
 
-            var result = getIntegerFromObjectPath(obj, 'foo.bar.string', defaultValue);
+      expect(result).to.equal(defaultValue)
+    })
+  })
 
-            expect(result).to.equal(defaultValue);
-        });
-    });
+  describe('getArrayFromObjectPath', function () {
+    it('extracts arrays from inside a nested object', function () {
+      var obj = {
+        foo: {
+          bar: {
+            minky: ['binky']
+          }
+        }
+      }
 
-    describe('getArrayFromObjectPath', function() {
-        it('extracts arrays from inside a nested object', function() {
-            var obj = {
-                foo: {
-                    bar: {
-                        minky: ['binky']
-                    }
-                }
-            };
+      var result = getArrayFromObjectPath(obj, 'foo.bar.minky')
 
-            var result = getArrayFromObjectPath(obj, 'foo.bar.minky');
+      expect(result).to.deep.equal(obj.foo.bar.minky)
+    })
 
-            expect(result).to.deep.equal(obj.foo.bar.minky);
-        });
+    it('returns an empty array if the path inside the nested objects does not exist', function () {
+      var obj = {
 
-        it('returns an empty array if the path inside the nested objects does not exist', function() {
-            var obj = {
+      }
 
-            };
+      var result = getArrayFromObjectPath(obj, 'foo.does.not.exist')
 
-            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
+      expect(result).to.deep.equal([])
+    })
 
-            expect(result).to.deep.equal([]);
-        });
+    it('returns an empty array if only some of path inside the nested objects does not exist', function () {
+      var obj = {
+        foo: {
+        }
+      }
 
+      var result = getArrayFromObjectPath(obj, 'foo.does.not.exist')
 
-        it('returns an empty array if only some of path inside the nested objects does not exist', function() {
-            var obj = {
-                foo: {
-                }
-            };
+      expect(result).to.deep.equal([])
+    })
 
-            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
+    it('returns an empty array if object is an array', function () {
+      var obj = []
 
-            expect(result).to.deep.equal([]);
-        });
+      var result = getArrayFromObjectPath(obj, 'foo.does.not.exist')
 
-        it('returns an empty array if object is an array', function() {
-            var obj = [];
+      expect(result).to.deep.equal([])
+    })
 
-            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
+    it('returns an empty array if object is null', function () {
+      var obj = null
 
-            expect(result).to.deep.equal([]);
-        });
+      var result = getArrayFromObjectPath(obj, 'foo.does.not.exist')
 
-        it('returns an empty array if object is null', function() {
-            var obj = null;
+      expect(result).to.deep.equal([])
+    })
 
-            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
+    it('returns an empty array if object is undefined', function () {
+      var result = getArrayFromObjectPath(undefined, 'foo.does.not.exist')
 
-            expect(result).to.deep.equal([]);
-        });
+      expect(result).to.deep.equal([])
+    })
 
-        it('returns an empty array if object is undefined', function() {
-            var obj = undefined;
+    it('extracts multiple values from the same object in an array', function () {
+      var obj = {
+        foo: {
+          bar: [
+            {
+              minky: ['binky']
+            },
+            {
+              minky: ['stinky']
+            }
+          ]
+        }
+      }
 
-            var result = getArrayFromObjectPath(obj, 'foo.does.not.exist');
+      var result = getArrayFromObjectPath(obj, 'foo.bar.minky')
 
-            expect(result).to.deep.equal([]);
-        });
+      expect(result).to.deep.equal(['binky', 'stinky'])
+    })
 
-        it('extracts multiple values from the same object in an array', function() {
-            var obj = {
-                foo: {
-                    bar: [
-                        {
-                            minky: ['binky']
-                        },
-                        {
-                            minky: ['stinky']
-                        }
-                    ]
-                }
-            };
+    it('extracts multiple values from the same object when the lead object is an array', function () {
+      var array = [
+        {
+          foo: {
+            bar: [
+              {
+                minky: ['binky']
+              },
+              {
+                minky: ['stinky']
+              }
+            ]
+          }
+        }
+      ]
 
-            var result = getArrayFromObjectPath(obj, 'foo.bar.minky');
+      var result = getArrayFromObjectPath(array, 'foo.bar.minky')
 
-            expect(result).to.deep.equal(['binky', 'stinky']);
-        });
+      expect(result).to.deep.equal(['binky', 'stinky'])
+    })
 
-        it('extracts multiple values from the same object when the lead object is an array', function() {
-            var array = [
+    it('extracts multiple values from the same object in an array, ignoring non matching objects', function () {
+      var obj = {
+        foo: {
+          bar: [
+            {
+              minky: {
+                name: 'binky'
+              }
+            },
+            {
+              nonMatching: {
+                name: 'linky'
+              }
+            },
+            {
+              minky: {
+                name: 'stinky'
+              }
+            }
+          ]
+        }
+      }
+
+      var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name')
+
+      expect(result).to.deep.equal(['binky', 'stinky'])
+    })
+
+    it('extracts multiple values from the same object in an array, ignoring non matching objects containing arrays', function () {
+      var obj = {
+        foo: {
+          bar: [
+            {
+              minky: [
                 {
-                    foo: {
-                        bar: [
-                            {
-                                minky: ['binky']
-                            },
-                            {
-                                minky: ['stinky']
-                            }
-                        ]
-                    }
+                  name: 'binky'
+                },
+                {
+                  name: 'inky'
                 }
-            ];
-
-            var result = getArrayFromObjectPath(array, 'foo.bar.minky');
-
-            expect(result).to.deep.equal(['binky', 'stinky']);
-        });
-
-        it('extracts multiple values from the same object in an array, ignoring non matching objects', function() {
-            var obj = {
-                foo: {
-                    bar: [
-                        {
-                            minky: {
-                                name: 'binky'
-                            }
-                        },
-                        {
-                            nonMatching: {
-                                name: 'linky'
-                            }
-                        },
-                        {
-                            minky: {
-                                name: 'stinky'
-                            }
-                        }
-                    ]
+              ]
+            },
+            {
+              nonMatching: [
+                {
+                  name: 'bob'
+                },
+                {
+                  name: 'sue'
                 }
-            };
-
-            var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name');
-
-            expect(result).to.deep.equal(['binky', 'stinky']);
-        });
-
-        it('extracts multiple values from the same object in an array, ignoring non matching objects containing arrays', function() {
-            var obj = {
-                foo: {
-                    bar: [
-                        {
-                            minky: [
-                                {
-                                    name: 'binky'
-                                },
-                                {
-                                    name: 'inky'
-                                }
-                            ]
-                        },
-                        {
-                            nonMatching: [
-                                {
-                                    name: 'bob'
-                                },
-                                {
-                                    name: 'sue'
-                                }
-                            ]
-                        },
-                        {
-                            minky: [
-                                {
-                                    name: 'stinky'
-                                },
-                                {
-                                    name: 'linky'
-                                }
-                            ]
-                        }
-                    ]
+              ]
+            },
+            {
+              minky: [
+                {
+                  name: 'stinky'
+                },
+                {
+                  name: 'linky'
                 }
-            };
+              ]
+            }
+          ]
+        }
+      }
 
-            var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+      var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name')
 
-            expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky']);
-        });
+      expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky'])
+    })
 
-        it('extracts multiple values from the same object in an array, ignoring non matching objects containing arrays', function() {
-            var obj = {
-                foo: [
-                    {
-                        bar: [
-                            {
-                                minky: [
-                                    {
-                                        name: 'binky'
-                                    },
-                                    {
-                                        name: 'inky'
-                                    }
-                                ]
-                            },
-                            {
-                                nonMatching: [
-                                    {
-                                        name: 'bob'
-                                    },
-                                    {
-                                        name: 'sue'
-                                    }
-                                ]
-                            },
-                            {
-                                minky: [
-                                    {
-                                        name: 'stinky'
-                                    },
-                                    {
-                                        name: 'linky'
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        baz: [
-                            {
-                                minky: [
-                                    {
-                                        name: 'pinky'
-                                    },
-                                    {
-                                        name: 'tinky'
-                                    }
-                                ]
-                            },
-                            {
-                                nonMatching: [
-                                    {
-                                        name: 'bob'
-                                    },
-                                    {
-                                        name: 'sue'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+    it('extracts multiple values from the same object in an array, ignoring non matching objects containing arrays', function () {
+      var obj = {
+        foo: [
+          {
+            bar: [
+              {
+                minky: [
+                  {
+                    name: 'binky'
+                  },
+                  {
+                    name: 'inky'
+                  }
                 ]
-            };
+              },
+              {
+                nonMatching: [
+                  {
+                    name: 'bob'
+                  },
+                  {
+                    name: 'sue'
+                  }
+                ]
+              },
+              {
+                minky: [
+                  {
+                    name: 'stinky'
+                  },
+                  {
+                    name: 'linky'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            baz: [
+              {
+                minky: [
+                  {
+                    name: 'pinky'
+                  },
+                  {
+                    name: 'tinky'
+                  }
+                ]
+              },
+              {
+                nonMatching: [
+                  {
+                    name: 'bob'
+                  },
+                  {
+                    name: 'sue'
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
 
-            var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name');
+      var result = getArrayFromObjectPath(obj, 'foo.bar.minky.name')
 
-            expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky']);
-        });
-    });
+      expect(result).to.deep.equal(['binky', 'inky', 'stinky', 'linky'])
+    })
+  })
 
-    describe('pluckNodeValue', function() {
-        it('returns node value from object', function() {
-            var expectedValue = 'I am a value',
-                obj = {
-                    nodeValue: expectedValue
-                };
+  describe('pluckNodeValue', function () {
+    it('returns node value from object', function () {
+      var expectedValue = 'I am a value'
 
-            var result = pluckNodeValue(obj);
+      var obj = {
+        nodeValue: expectedValue
+      }
 
-            expect(result).to.equal(expectedValue);
-        });
+      var result = pluckNodeValue(obj)
 
-        it('returns undefined if no nodevalue on object', function() {
-            var obj = {};
+      expect(result).to.equal(expectedValue)
+    })
 
-            var result = pluckNodeValue(obj);
+    it('returns undefined if no nodevalue on object', function () {
+      var obj = {}
 
-            expect(result).to.be.undefined;
-        });
+      var result = pluckNodeValue(obj)
 
-        it('returns undefined if object is undefined', function() {
-            var obj = undefined;
+      expect(result).to.be.undefined
+    })
 
-            var result = pluckNodeValue(obj);
+    it('returns undefined if object is undefined', function () {
+      var result = pluckNodeValue(undefined)
 
-            expect(result).to.be.undefined;
-        });
-    });
+      expect(result).to.be.undefined
+    })
+  })
 
-    describe('isDefined', function() {
-        it('should return true if defined', function() {
-            var result = isDefined('working');
+  describe('isDefined', function () {
+    it('should return true if defined', function () {
+      var result = isDefined('working')
 
-            expect(result).to.be.true;
-        });
+      expect(result).to.be.true
+    })
 
-        it('should return false if not defined', function() {
-            var result = isDefined(undefined);
+    it('should return false if not defined', function () {
+      var result = isDefined(undefined)
 
-            expect(result).to.be.false;
-        });
+      expect(result).to.be.false
+    })
 
-        it('should return false if not defined', function() {
-            var result = isDefined(null);
+    it('should return false if not defined', function () {
+      var result = isDefined(null)
 
-            expect(result).to.be.false;
-        });
-    });
+      expect(result).to.be.false
+    })
+  })
 
-    describe('flatten', function() {
-        it('should flatten two arrays into one', function() {
-            var arrays = [
-                ['binky'],
-                ['inky']
-            ];
+  describe('flatten', function () {
+    it('should flatten two arrays into one', function () {
+      var arrays = [
+        ['binky'],
+        ['inky']
+      ]
 
-            expect(flatten(arrays)).to.deep.equal(['binky', 'inky']);
-        });
+      expect(flatten(arrays)).to.deep.equal(['binky', 'inky'])
+    })
 
-        it('should flatten two arrays into one when one is empty', function() {
-            var arrays = [
-                [],
-                ['inky']
-            ];
+    it('should flatten two arrays into one when one is empty', function () {
+      var arrays = [
+        [],
+        ['inky']
+      ]
 
-            expect(flatten(arrays)).to.deep.equal(['inky']);
-        });
+      expect(flatten(arrays)).to.deep.equal(['inky'])
+    })
 
-        it('should return array when single array passed', function() {
-            var arrays = [
-                'binky',
-                'inky'
-            ];
+    it('should return array when single array passed', function () {
+      var arrays = [
+        'binky',
+        'inky'
+      ]
 
-            expect(flatten(arrays)).to.deep.equal(['binky', 'inky']);
-        });
-    });
-});
+      expect(flatten(arrays)).to.deep.equal(['binky', 'inky'])
+    })
+  })
+})

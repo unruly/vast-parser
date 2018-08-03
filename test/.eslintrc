@@ -4,10 +4,10 @@
         "mocha": true
     },
     "globals": {
-        "expect": false,
-        "requirejs": false,
-        "sinon": false,
-        "ActiveXObject": false,
-        "mochaPhantomJS": false
+        "expect": true,
+        "sinon": true
+    },
+    "rules": {
+        "no-unused-expressions": "off"
     }
 }

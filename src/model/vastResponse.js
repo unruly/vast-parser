@@ -1,78 +1,81 @@
-import helpers from '../util/helpers';
-import { getArrayFromObjectPath, getFromObjectPath } from '../util/objectUtil';
-import VastLinearCreative from './vastLinearCreative';
-import VastNonLinearCreative from './vastNonLinearCreative';
-import vastModelFactory from './vastModelFactory';
+import helpers from '../util/helpers'
+import { getArrayFromObjectPath, getFromObjectPath } from '../util/objectUtil'
+import VastLinearCreative from './vastLinearCreative'
+import VastNonLinearCreative from './vastNonLinearCreative'
+import vastModelFactory from './vastModelFactory'
 
-export default function VastResponse(vastChain) {
-    this.wrappers = [];
-    this.inline = undefined;
-    this._raw = [];
+export default function VastResponse (vastChain) {
+  this.wrappers = []
+  this.inline = undefined
+  this._raw = []
 
-    if (vastChain) {
-        this.wrappers = vastChain.wrappers;
-        this.inline = vastChain.inline;
-    }
+  if (vastChain) {
+    this.wrappers = vastChain.wrappers
+    this.inline = vastChain.inline
+  }
 
-    this._vastChain = vastChain;
+  this._vastChain = vastChain
 }
 
-VastResponse.prototype.getImpressions = function() {
-    var inlineImps = getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Impression.nodeValue'),
-        wrapperImps = getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Impression.nodeValue');
+VastResponse.prototype.getImpressions = function () {
+  var inlineImps = getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Impression.nodeValue')
 
-    return inlineImps.concat(wrapperImps).filter(helpers.isNonEmptyString);
-};
+  var wrapperImps = getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Impression.nodeValue')
 
-VastResponse.prototype.getAdTitle = function() {
-    return this.inline.VAST.Ad.InLine.AdTitle.nodeValue;
-};
+  return inlineImps.concat(wrapperImps).filter(helpers.isNonEmptyString)
+}
 
-VastResponse.prototype.getLinearCreative = function(LinearCreative = VastLinearCreative) {
-    if (!this.linearCreative) {
-        var hasLinearCreative = getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.Linear');
+VastResponse.prototype.getAdTitle = function () {
+  return this.inline.VAST.Ad.InLine.AdTitle.nodeValue
+}
 
-        if (hasLinearCreative) {
-            this.linearCreative = new LinearCreative(this);
-        }
+VastResponse.prototype.getLinearCreative = function (LinearCreative = VastLinearCreative) {
+  if (!this.linearCreative) {
+    var hasLinearCreative = getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.Linear')
+
+    if (hasLinearCreative) {
+      this.linearCreative = new LinearCreative(this)
     }
-    return this.linearCreative;
-};
+  }
+  return this.linearCreative
+}
 
-VastResponse.prototype.getNonLinearCreative = function(NonLinearCreative = VastNonLinearCreative) {
-    if (!this.nonLinearCreative) {
-        var hasNonLinearCreative = getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.NonLinearAds');
+VastResponse.prototype.getNonLinearCreative = function (NonLinearCreative = VastNonLinearCreative) {
+  if (!this.nonLinearCreative) {
+    var hasNonLinearCreative = getFromObjectPath(this.inline, 'VAST.Ad.InLine.Creatives.Creative.NonLinearAds')
 
-        if (hasNonLinearCreative) {
-            this.nonLinearCreative = new NonLinearCreative(this);
-        }
+    if (hasNonLinearCreative) {
+      this.nonLinearCreative = new NonLinearCreative(this)
     }
-    return this.nonLinearCreative;
-};
+  }
+  return this.nonLinearCreative
+}
 
-VastResponse.prototype.getRawResponses = function() {
-    return this._raw;
-};
+VastResponse.prototype.getRawResponses = function () {
+  return this._raw
+}
 
-VastResponse.prototype.addRawResponse = function(data) {
-    this._raw.push(data);
-};
+VastResponse.prototype.addRawResponse = function (data) {
+  this._raw.push(data)
+}
 
-VastResponse.prototype.getExtensions = function(createVastExtension = vastModelFactory.createVastExtension) {
-    var inlineExtensions = getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Extensions.Extension'),
-        wrapperExtensions = getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Extensions.Extension'),
-        allExtensions = inlineExtensions.concat(wrapperExtensions);
+VastResponse.prototype.getExtensions = function (createVastExtension = vastModelFactory.createVastExtension) {
+  var inlineExtensions = getArrayFromObjectPath(this.inline, 'VAST.Ad.InLine.Extensions.Extension')
 
-    return allExtensions.map(function(ext) {
-        return createVastExtension(ext);
-    });
-};
+  var wrapperExtensions = getArrayFromObjectPath(this.wrappers, 'VAST.Ad.Wrapper.Extensions.Extension')
 
-VastResponse.prototype.getLastVASTURL = function() {
-    if(this._raw.length === 0) {
-        return undefined;
-    }
+  var allExtensions = inlineExtensions.concat(wrapperExtensions)
 
-    var lastVAST = this._raw[this._raw.length - 1];
-    return lastVAST.uri;
-};
+  return allExtensions.map(function (ext) {
+    return createVastExtension(ext)
+  })
+}
+
+VastResponse.prototype.getLastVASTURL = function () {
+  if (this._raw.length === 0) {
+    return undefined
+  }
+
+  var lastVAST = this._raw[this._raw.length - 1]
+  return lastVAST.uri
+}

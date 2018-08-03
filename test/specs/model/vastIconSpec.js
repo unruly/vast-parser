@@ -1,126 +1,117 @@
-import VastIcon from '../../../src/model/vastIcon';
+import VastIcon from '../../../src/model/vastIcon'
 
-describe('VAST Icon', function() {
+describe('VAST Icon', function () {
+  var iconXMLJson
 
-    var iconXMLJson;
+  beforeEach(function () {
+    iconXMLJson = {
+      '@program': 'AdChoices',
+      '@width': '60',
+      '@height': '20',
+      '@xPosition': 'right',
+      '@yPosition': 'top',
+      'StaticResource': {
+        '@creativeType': 'image/jpeg',
+        'nodeValue': 'http://example.com/inline/icon.jpeg'
+      },
+      'IconClicks': {
+        'IconClickThrough': {
+          'nodeValue': 'http://example.com/inline/icon-click-through'
+        },
+        'IconClickTracking': [
+          {
+            'nodeValue': '//example.com/inline/icon-click-tracking-1'
+          },
+          {
+            'nodeValue': 'http://example.com/inline/icon-click-tracking-2'
+          }
+        ]
+      }
+    }
+  })
 
-    beforeEach(function() {
-        iconXMLJson = {
-            '@program': 'AdChoices',
-            '@width': '60',
-            '@height': '20',
-            '@xPosition': 'right',
-            '@yPosition': 'top',
-            'StaticResource': {
-                '@creativeType': 'image/jpeg',
-                'nodeValue': 'http://example.com/inline/icon.jpeg'
-            },
-            'IconClicks': {
-                'IconClickThrough': {
-                    'nodeValue': 'http://example.com/inline/icon-click-through'
-                },
-                'IconClickTracking': [
-                    {
-                        'nodeValue': '//example.com/inline/icon-click-tracking-1'
-                    },
-                    {
-                        'nodeValue': 'http://example.com/inline/icon-click-tracking-2'
-                    }
-                ]
-            }
-        };
-    });
+  describe('when elements are missing', function () {
+    it('does not throw', function () {
+      expect(() => new VastIcon({})).to.not.throw()
+    })
 
-    describe('when elements are missing', function() {
-        it('does not throw', function() {
-            var iconCreate = function () {
-                new VastIcon({});
-            };
+    it('has sensible defaults', function () {
+      var icon = new VastIcon({})
 
-            expect(iconCreate).to.not.throw();
-        });
+      expect(icon.program).to.equal('unknown')
+      expect(icon.width).to.equal(0)
+      expect(icon.height).to.equal(0)
+      expect(icon.xPosition).to.equal('top')
+      expect(icon.yPosition).to.equal('right')
+      expect(icon.clickThrough).to.equal('')
+      expect(icon.resource).to.deep.equal({
+        type: '',
+        url: ''
+      })
+      expect(icon.clickTracking).to.have.length(0)
+    })
+  })
 
-        it('has sensible defaults', function() {
-            var icon = new VastIcon({});
+  describe('constructor', function () {
+    var icon
 
-            expect(icon.program).to.equal('unknown');
-            expect(icon.width).to.equal(0);
-            expect(icon.height).to.equal(0);
-            expect(icon.xPosition).to.equal('top');
-            expect(icon.yPosition).to.equal('right');
-            expect(icon.clickThrough).to.equal('');
-            expect(icon.resource).to.deep.equal({
-                type: '',
-                url: ''
-            });
-            expect(icon.clickTracking).to.have.length(0);
-        });
-    });
+    beforeEach(function () {
+      icon = new VastIcon(iconXMLJson)
+    })
 
-    describe('constructor', function() {
+    it('program property', function () {
+      expect(icon.program).to.equal('AdChoices')
+    })
 
-        var icon;
+    it('width property', function () {
+      expect(icon.width).to.equal(60)
+    })
 
-        beforeEach(function() {
-            icon = new VastIcon(iconXMLJson);
-        });
+    it('height property', function () {
+      expect(icon.height).to.equal(20)
+    })
 
-        it('program property', function() {
-            expect(icon.program).to.equal('AdChoices');
-        });
+    it('xPosition property', function () {
+      expect(icon.xPosition).to.equal('right')
+    })
 
-        it('width property', function() {
-            expect(icon.width).to.equal(60);
-        });
+    it('yPosition property', function () {
+      expect(icon.yPosition).to.equal('top')
+    })
 
-        it('height property', function() {
-            expect(icon.height).to.equal(20);
-        });
+    describe('resource property', function () {
+      it('type property', function () {
+        expect(icon.resource.type).to.equal('image/jpeg')
+      })
 
-        it('xPosition property', function() {
-            expect(icon.xPosition).to.equal('right');
-        });
+      it('url property', function () {
+        expect(icon.resource.url).to.equal('//example.com/inline/icon.jpeg')
+      })
+    })
 
-        it('yPosition property', function() {
-            expect(icon.yPosition).to.equal('top');
-        });
+    it('clickThrough property', function () {
+      expect(icon.clickThrough).to.equal('//example.com/inline/icon-click-through')
+    })
 
-        describe('resource property', function() {
+    describe('clickTracking property', function () {
+      it('should support a single value', function () {
+        iconXMLJson.IconClicks.IconClickTracking.splice(1, 1)
+        icon = new VastIcon(iconXMLJson)
+        expect(icon.clickTracking.length).to.equal(1)
+        expect(icon.clickTracking[0]).to.equal('//example.com/inline/icon-click-tracking-1')
+      })
 
-            it('type property', function() {
-                expect(icon.resource.type).to.equal('image/jpeg');
-            });
+      it('should support multiple values', function () {
+        expect(icon.clickTracking.length).to.equal(2)
+        expect(icon.clickTracking[0]).to.equal('//example.com/inline/icon-click-tracking-1')
+        expect(icon.clickTracking[1]).to.equal('//example.com/inline/icon-click-tracking-2')
+      })
 
-            it('url property', function() {
-                expect(icon.resource.url).to.equal('//example.com/inline/icon.jpeg');
-            });
-        });
-
-        it('clickThrough property', function() {
-            expect(icon.clickThrough).to.equal('//example.com/inline/icon-click-through');
-        });
-
-
-        describe('clickTracking property', function() {
-
-            it('should support a single value', function() {
-                iconXMLJson.IconClicks.IconClickTracking.splice(1, 1);
-                icon = new VastIcon(iconXMLJson);
-                expect(icon.clickTracking.length).to.equal(1);
-                expect(icon.clickTracking[0]).to.equal('//example.com/inline/icon-click-tracking-1');
-            });
-
-            it('should support multiple values', function() {
-                expect(icon.clickTracking.length).to.equal(2);
-                expect(icon.clickTracking[0]).to.equal('//example.com/inline/icon-click-tracking-1');
-                expect(icon.clickTracking[1]).to.equal('//example.com/inline/icon-click-tracking-2');
-            });
-
-            it('should support no values', function() {
-                iconXMLJson.IconClicks.IconClickTracking.splice(0, 2);
-                icon = new VastIcon(iconXMLJson);
-                expect(icon.clickTracking.length).to.equal(0);
-            });
-        });
-    });
-});
+      it('should support no values', function () {
+        iconXMLJson.IconClicks.IconClickTracking.splice(0, 2)
+        icon = new VastIcon(iconXMLJson)
+        expect(icon.clickTracking.length).to.equal(0)
+      })
+    })
+  })
+})

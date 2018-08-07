@@ -1,58 +1,114 @@
-# vast-parser
+# @unruly/vast-parser
 
-[![Build Status](https://travis-ci.org/unruly/vast-parser.svg?branch=master)](https://travis-ci.org/unruly/vast-parser)
-[![Dependency Status](https://dependencyci.com/github/unruly/vast-parser/badge)](https://dependencyci.com/github/unruly/vast-parser)
+[![Travis](https://img.shields.io/travis/unruly/vast-parser.svg)](https://travis-ci.org/unruly/vast-parser)
+[![npm](https://img.shields.io/npm/v/@unruly/vast-parser.svg)](https://www.npmjs.com/package/@unruly/vast-parser)
 
-Parses VAST files into plain javascript objects
+Recursively requests and parses VAST chains into a single JavaScript object.
 
-## Requirements
+VAST Chains are VAST Wrappers wrapped in more VAST Wrappers eventually resulting in a VAST Inline.
 
-- [jQuery](https://jquery.com/) for requesting VAST.
+## Example
+
+```js
+import { VastAdManager } from '@unruly/vast-parser'
+
+const vastAdManager = new VastAdManager()
+vastAdManager.requestVastChain({ url: 'http://example.com/vast-file.xml' })
+  .then(
+    vastResponse => {
+      // success
+    },
+    vastError => {
+      // failure
+    }
+  )
+```
+
+## Installation
+
+You'll need to use a package manager like npm to install this package.
+
+```bash
+# npm
+npm install @unruly/vast-parser
+
+# yarn
+yarn add @unruly/vast-parser
+```
+
+### Notable Dependencies
+
+- [jQuery](https://jquery.com/) for requesting nested VAST URIs. We hope to replace this in the future.
 
 ### Polyfills
 
-You made need to include polyfills depending on your target environments:
+You may need to include some polyfills depending on your target environment.
 
 - Promise
 
 ## Usage
 
-The main module to use is `vastAdManager` which exposes two functions:
-
-- `requestVastChain`
-- `addEventListener`
-
-### requestVastChain
-
-The `requestVastChain` returns a promise and will resolve once it has finished downloading all of the VAST files in the chain.
-It returns a `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/model/vastResponse.js).
-
+Use this package like a typical ES6 module. For detailed usage information on each export, see the subsections below.
 
 ```js
-vastAdManager.requestVastChain('http://example.com/vast-file.xml')
-    .fail(function(vastError) {
-        // handle any errors that may have occurred such as an HTTP 404.
-    })
-    .then(function(vastResponse) {
-        // use the vastResponse
-    });
+// import what you need
+import {
+  VastAdManager,
+  VastErrorCodes,
+  VastParser
+} from '@unruly/vast-parser'
+
+// do what you want
 ```
 
-### addEventListener
+### VastAdManager
 
-It is possible to register event listeners for when a request is about to be made and when it has finished.
+#### new VastAdManager(): { requestVastChain, addEventListener }
+
+Creates a `VastAdManager`.
+
+##### vastAdManager.requestVastChain(config: ({ url: string })): Promise<VastResponse>
+
+Recursively requests a given VAST URL until a VAST Inline is reached.
+
+Resolves to a [`VastResponse`](https://github.com/unruly/vast-parser/blob/master/src/model/vastResponse.js).
+
+Rejects to a [`VastError`](https://github.com/unruly/vast-parser/blob/master/src/vastError.js) with a `code` matching to one of the `VastErrorCodes.code` (see `VastErrorCodes` section).
+
+##### vastAdManager.addEventListener(eventName: string, handler: (event: Event) => void): void
+
+Calls the given `handler` when an `event` of the `eventName` is fired. The `handler` is passed the `event` as its first parameter.
+
+**Event Names**
 
 - `requestStart` - start of request for VAST file
 - `requestEnd` - end of request for VAST file
 
-These events can be useful for logging purposes or for timing how long each request takes.
+**Event Properties**
 
-Each event passes has the following properties available:
+- `requestNumber` - the current depth of the VAST chain.
+- `uri` - the URI for the request.
+- `vastResponse` - the [`VastResponse`](https://github.com/unruly/vast-parser/blob/master/src/model/vastResponse.js) by being built reference.
 
-- `requestNumber` - the current request number, which can be more than one when VAST wrapper files are used
-- `uri` - the URI for the request
-- `vastResponse` - the `VastResponse` [object](https://github.com/unruly/vast-parser/blob/master/src/model/vastResponse.js) that is being added to while following a chain of VAST files.
+#### Caveats
 
+- VastAdManager currently does not support NodeJS as it relies on jQuery.
+
+### VastErrorCodes
+
+An Enum of possible error codes on a `VastError` (see `vastAdManager.requestVastChain` section).
+
+[For possible values, see the module.](https://github.com/unruly/vast-parser/blob/master/src/vastErrorCodes.js)
+
+### VastParser
+
+#### VastParser.parse(doc: (Document | { xml: string })): Document
+
+Parses a given VAST document into a JSXMLNode. JSXMLNode a simple JS representation of an XML document.
+
+#### Caveats
+
+- To work in NodeJS, you'll need to pass a `Document`. Use a library like `xmldom` to parse your document string before sending it to `VastParser.parse`.
 
 ## License
 

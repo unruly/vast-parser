@@ -44,7 +44,8 @@ yarn add @unruly/vast-parser
 
 You may need to include some polyfills depending on your target environment.
 
-- Promise
+- [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+- [URL](https://developer.mozilla.org/en-US/docs/Web/API/URL)
 
 ## Usage
 

@@ -1,2 +1,1 @@
-/* globals global */
-export default window || global
+export default typeof window === 'undefined' ? global : window

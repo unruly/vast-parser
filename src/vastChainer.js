@@ -100,7 +100,7 @@ export default function (
 
       vastTag = parseVast(data)
 
-      if (vastTag.VAST.Error) {
+      if (vastTag.VAST.Error && !vastTag.VAST.Ad) {
         dispatcher.trigger(requestEndEvent)
         reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'))
         return

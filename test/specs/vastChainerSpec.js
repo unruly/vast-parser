@@ -15,6 +15,8 @@ describe('VAST Chainer', function () {
 
   var mockNoAds
 
+  var mockAds
+
   var mockInline
 
   var mockError
@@ -36,6 +38,8 @@ describe('VAST Chainer', function () {
   var mockNoAdsString = '<NOADS></NOADS>'
 
   var vastErrorString = '<ERROR></ERROR>'
+
+  var mockAdsString = '<ERROR></ERROR><WRAPPER></WRAPPER>'
 
   var firstWrapperUrl = 'http://example.com/targeting/' + targetingUUID + '?params=values'
 
@@ -85,6 +89,8 @@ describe('VAST Chainer', function () {
       switch (document) {
         case mockNoAdsString:
           return mockNoAds
+        case mockAdsString:
+          return mockAds
         case mockInlineString:
           return mockInline
         case mockTwoWrapperString:
@@ -144,6 +150,10 @@ describe('VAST Chainer', function () {
     }
 
     mockNoAds = {
+      VAST: {}
+    }
+
+    mockAds = {
       VAST: {}
     }
 
@@ -273,8 +283,9 @@ describe('VAST Chainer', function () {
       expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty())
     })
 
-    it('rejects promise when VAST response has Error tag', function () {
+    it('rejects promise when VAST response has Error tag and No Ad', function () {
       mockNoAds.VAST.Error = true
+      mockNoAds.VAST.Ad = false
 
       vastChainer(mockDeps).getVastChain(wrapperConfig)
 
@@ -283,6 +294,22 @@ describe('VAST Chainer', function () {
 
       expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.NO_ADS, 'VAST request returned no ads and contains error tag'))
       expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty())
+    })
+
+    it('parses response when VAST response has Error tag and an Ad', function () {
+      mockAds.VAST.Error = true
+      mockAds.VAST.Ad = {}
+      mockAds.VAST.Ad.Wrapper = {}
+      mockAds.VAST.Ad.Wrapper.VASTAdTagURI = {}
+      mockAds.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue = 'true'
+
+      vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+      const settings = jQuery.ajax.firstCall.args[0]
+      settings.success(mockAdsString, undefined, { status: 200, getAllResponseHeaders () { return '' } })
+
+      expect(mockDeps.parseVast).to.have.been.called
+      expect(mockDeferred.reject).to.not.have.been.called
     })
 
     it('parses response when VAST tag request is successful', function () {

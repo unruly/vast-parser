@@ -47,7 +47,7 @@ function ensureArraysOnCreatives (vastInnerObject) {
 function parse (xmlDocument) {
   var parsedXml = xmlParser.parse(xmlDocument)
 
-  if (!parsedXml.VAST || parsedXml.VAST.Error || !parsedXml.VAST.Ad) {
+  if (!parsedXml.VAST || !parsedXml.VAST.Ad) {
     return parsedXml
   }
 

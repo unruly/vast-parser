@@ -185,6 +185,13 @@ describe('VAST Chainer', function () {
   }
 
   describe('getVastChain', function () {
+    it('should make a GET request by default', () => {
+      vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+      const settings = jQuery.ajax.firstCall.args[0]
+      expect(settings.method).to.equal('GET')
+    })
+
     it('rejects promise when VAST tag request times out in 10 seconds', function () {
       vastChainer(mockDeps).getVastChain('http://non.existent.endpoint')
 
@@ -575,6 +582,50 @@ describe('VAST Chainer', function () {
         ).to.equal(
           helpers.convertProtocol(expectedUrl + '&' + wrapperConfig.extraParams)
         )
+      })
+    })
+
+    describe('with a POST request', () => {
+      beforeEach(function () {
+        wrapperConfig.httpMethod = 'POST'
+        wrapperConfig.data = '<VAST><Ad>This is a Test VAST</Ad></VAST>'
+      })
+
+      it('makes an initial POST request if specified by the vastConfig', () => {
+        vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+        const settings = jQuery.ajax.firstCall.args[0]
+        expect(settings.method).to.equal('POST')
+      })
+
+      it('passes through XML data to be included in POST request', () => {
+        vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+        const settings = jQuery.ajax.firstCall.args[0]
+        expect(settings.data).to.equal(wrapperConfig.data)
+        expect(settings.contentType).to.equal('text/xml')
+      })
+
+      it('allows us to make a CORS request', () => {
+        vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+        const settings = jQuery.ajax.firstCall.args[0]
+        expect(settings.xhrFields.withCredentials).to.be.true
+      })
+
+      it('ensures a subsequent request is GET', () => {
+        jQuery.ajax = sinon.spy((settings) => {
+          if (settings.url === wrapperConfig.url) {
+            settings.success(mockWrapperString, undefined, { status: 200, getAllResponseHeaders () { return '' } })
+          }
+        })
+
+        vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+        expect(jQuery.ajax.calledTwice).to.equal(true)
+
+        const inlineRequest = jQuery.ajax.secondCall.args[0]
+        expect(inlineRequest.method).to.equal('GET')
       })
     })
   })

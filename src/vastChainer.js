@@ -33,7 +33,12 @@ export default function (
     dispatcher.on(eventName, handler)
   }
 
-  function getVast (vastResponse, vastConfig, sendCookies) {
+  function makeVastRequest (
+    vastResponse,
+    vastConfig,
+    sendCookies,
+    httpMethod = 'GET'
+  ) {
     let url = vastConfig.url
 
     let resolve
@@ -62,13 +67,19 @@ export default function (
     settings = {
       url: url,
       headers: vastConfig.headers || {},
-      dataType: 'xml'
+      dataType: 'xml',
+      method: httpMethod
     }
 
     if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
       settings.xhrFields = {
         withCredentials: true
       }
+    }
+
+    if (httpMethod === 'POST') {
+      settings.data = vastConfig.data || ''
+      settings.contentType = 'text/xml'
     }
 
     settings.timeout = AJAX_TIMEOUT
@@ -128,7 +139,7 @@ export default function (
         }
 
         vastRequestCounter++
-        getVast(vastResponse, nextRequestConfig, true)
+        makeVastRequest(vastResponse, nextRequestConfig, true)
           .then(resolve)
           .catch(reject)
       }
@@ -140,7 +151,7 @@ export default function (
         statusText
 
       if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
-        getVast(vastResponse, vastConfig, false)
+        makeVastRequest(vastResponse, vastConfig, false)
           .then(resolve)
           .catch(reject)
         return
@@ -189,7 +200,8 @@ export default function (
 
   function getVastChain (vastConfig) {
     let vastResponse = new Response()
-    return getVast(vastResponse, vastConfig, true)
+    const httpMethod = vastConfig.httpMethod || 'GET'
+    return makeVastRequest(vastResponse, vastConfig, true, httpMethod)
   }
 
   return {

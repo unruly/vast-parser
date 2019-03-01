@@ -79,7 +79,7 @@ export default function (
 
     if (httpMethod === 'POST') {
       settings.data = vastConfig.data || ''
-      settings.contentType = 'text/xml'
+      settings.contentType = vastConfig.contentType || 'application/xml'
     }
 
     settings.timeout = AJAX_TIMEOUT

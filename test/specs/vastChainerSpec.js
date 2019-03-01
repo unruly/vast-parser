@@ -589,6 +589,7 @@ describe('VAST Chainer', function () {
       beforeEach(function () {
         wrapperConfig.httpMethod = 'POST'
         wrapperConfig.data = '<VAST><Ad>This is a Test VAST</Ad></VAST>'
+        wrapperConfig.contentType = 'text/xml'
       })
 
       it('makes an initial POST request if specified by the vastConfig', () => {
@@ -598,12 +599,28 @@ describe('VAST Chainer', function () {
         expect(settings.method).to.equal('POST')
       })
 
-      it('passes through XML data to be included in POST request', () => {
+      it('passes through the correct data to be included in POST request', () => {
         vastChainer(mockDeps).getVastChain(wrapperConfig)
 
         const settings = jQuery.ajax.firstCall.args[0]
         expect(settings.data).to.equal(wrapperConfig.data)
-        expect(settings.contentType).to.equal('text/xml')
+        expect(settings.contentType).to.equal(wrapperConfig.contentType)
+      })
+
+      it('passes through application/xml to be included in POST request, if no contentType specified', () => {
+        wrapperConfig = { httpMethod: 'POST' }
+        vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+        const settings = jQuery.ajax.firstCall.args[0]
+        expect(settings.contentType).to.equal('application/xml')
+      })
+
+      it('passes an empty string to be included in POST request, if no data specified', () => {
+        wrapperConfig = { httpMethod: 'POST' }
+        vastChainer(mockDeps).getVastChain(wrapperConfig)
+
+        const settings = jQuery.ajax.firstCall.args[0]
+        expect(settings.data).to.equal('')
       })
 
       it('allows us to make a CORS request', () => {

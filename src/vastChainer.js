@@ -3,6 +3,7 @@ import vastErrorCodes from './vastErrorCodes'
 import VastError from './vastError'
 import VastResponse from './model/vastResponse'
 import helpers from './util/helpers'
+import { makeJqueryAjaxRequest as _makeJqueryAjaxRequest } from './util/makeJqueryAjaxRequest'
 import jQuery from 'jquery'
 
 const AJAX_TIMEOUT = 10000
@@ -23,7 +24,8 @@ export default function (
     PromiseModule = Promise,
     $ = jQuery,
     parseVast = vastParser.parse,
-    Response = VastResponse
+    Response = VastResponse,
+    makeJqueryAjaxRequest = _makeJqueryAjaxRequest
   } = {}) {
   let vastRequestCounter = 0
 
@@ -193,7 +195,7 @@ export default function (
     })
     dispatcher.trigger(requestStartEvent)
 
-    $.ajax(settings)
+    makeJqueryAjaxRequest(settings, $)
 
     return promise
   }

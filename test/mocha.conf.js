@@ -12,8 +12,8 @@ global.fetch = require('node-fetch')
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
 
-global.document = new JSDOM('<!doctype html><html><body></body></html>')
-global.window = document.defaultView
+global.window = new JSDOM('<!doctype html><html><body></body></html>').window
+global.document = window.document
 
 global.URL = function (href) {
   return url.parse(href)

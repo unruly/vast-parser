@@ -1,0 +1,197 @@
+{
+  "vast_wrapper_with-linear-ad-only": {
+    "wrappers": [
+      {
+        "VAST": {
+          "Ad": {
+            "Wrapper": {
+              "AdSystem": {
+                "nodeValue": "Test Ad Server",
+                "@version": "1.0"
+              },
+              "VASTAdTagURI": {
+                "nodeValue": "http://localhost/test/resources/vast/inlines/test_vast_inline_with-linear-ad.xml"
+              },
+              "Error": {
+                "nodeValue": "http://example.com/error/ERRORCODE"
+              },
+              "Impression": [
+                {
+                  "nodeValue": "http://example.com/imp"
+                },
+                {
+                  "nodeValue": "http://example.com/another-imp"
+                }
+              ],
+              "Creatives": {
+                "Creative": [
+                  {
+                    "Linear": {
+                      "TrackingEvents": {
+                        "Tracking": {
+                          "nodeValue": "http://example.com/start",
+                          "@event": "start"
+                        }
+                      },
+                      "VideoClicks": {
+                        "ClickTracking": [
+                          {
+                            "nodeValue": "http://example.com/linear-video-click",
+                            "@id": "video_click"
+                          },
+                          {
+                            "nodeValue": "http://example.com/linear-post-video-click",
+                            "@id": "post_video_click"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "@id": "1",
+            "@sequence": "1"
+          },
+          "@version": "3.0",
+          "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+          "@xsi:noNamespaceSchemaLocation": "../../vast/vast3_draft.xsd"
+        }
+      }
+    ],
+    "inline": {
+      "VAST": {
+        "Ad": {
+          "InLine": {
+            "AdSystem": {
+              "nodeValue": "Test Ad Server",
+              "@version": "1.0"
+            },
+            "AdTitle": {
+              "nodeValue": "Sample title"
+            },
+            "Description": {
+              "nodeValue": "Test description #hashtag"
+            },
+            "Impression": [
+              {}
+            ],
+            "Creatives": {
+              "Creative": [
+                {
+                  "NonLinearAds": {
+                    "NonLinear": {
+                      "StaticResource": {
+                        "nodeValue": "http://example.com/sample.jpg",
+                        "@creativeType": "image/jpeg"
+                      },
+                      "NonLinearClickThrough": {
+                        "nodeValue": "https://example.com/banner.html"
+                      },
+                      "@width": "0",
+                      "@height": "0",
+                      "NonLinearClickTracking": []
+                    }
+                  }
+                },
+                {
+                  "Linear": {
+                    "Duration": {
+                      "nodeValue": "00:00:05"
+                    },
+                    "MediaFiles": {
+                      "MediaFile": [
+                        {
+                          "nodeValue": "http://example.com/video.mp4",
+                          "@delivery": "streaming",
+                          "@type": "video/mp4",
+                          "@width": "480",
+                          "@height": "608"
+                        }
+                      ]
+                    },
+                    "VideoClicks": {
+                      "ClickThrough": {
+                        "nodeValue": "http://example.com/linear-video-clickthrough"
+                      },
+                      "ClickTracking": [
+                        {
+                          "nodeValue": "http://example.com/inline/linear-video-click",
+                          "@id": "video_click"
+                        },
+                        {
+                          "nodeValue": "http://example.com/inline/linear-post-video-click",
+                          "@id": "post_video_click"
+                        }
+                      ]
+                    },
+                    "AdParameters": {
+                      "nodeValue": "{\"testString\":\"an ad parameter string\",\"testBoolean\":false,\"testNumber\":1345680,\"testURL\":\"http://example.com\",\"testURLWithParams\":\"http%3A%2F%2Fexample.com%3Fparam1%3Dtrue%26param2%3Dfalse\",\"testArray\":[\"element1\",\"element2\"],\"testArrayWithObjects\":[{\"key\":\"value\"},{\"key\":\"value\"}]}",
+                      "@xmlEncoded": "true"
+                    },
+                    "Icons": {
+                      "Icon": {
+                        "StaticResource": {
+                          "nodeValue": "http://example.com/inline/icon.jpeg",
+                          "@creativeType": "image/jpeg"
+                        },
+                        "IconClicks": {
+                          "IconClickThrough": {
+                            "nodeValue": "http://example.com/inline/icon-click-through"
+                          },
+                          "IconClickTracking": [
+                            {
+                              "nodeValue": "http://example.com/inline/icon-click-tracking-1"
+                            },
+                            {
+                              "nodeValue": "http://example.com/inline/icon-click-tracking-2"
+                            }
+                          ]
+                        },
+                        "@program": "AdChoices",
+                        "@width": "60",
+                        "@height": "20",
+                        "@xPosition": "right",
+                        "@yPosition": "top"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "@id": "1",
+          "@sequence": "1"
+        },
+        "@version": "3.0",
+        "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+        "@xsi:noNamespaceSchemaLocation": "../../vast/vast3_draft.xsd"
+      }
+    },
+    "_raw": [
+      {
+        "requestNumber": 0,
+        "uri": "http://example.com/test/resources/vast/wrappers/vast_wrapper_with-linear-ad-only.xml",
+        "response": "test responseText",
+        "headers": "test headers"
+      },
+      {
+        "requestNumber": 1,
+        "uri": "//localhost/test/resources/vast/inlines/test_vast_inline_with-linear-ad.xml",
+        "response": "test responseText",
+        "headers": "test headers"
+      }
+    ]
+  },
+  "vast_wrapper_no-ads": {
+    "wrappers": [],
+    "_raw": [
+      {
+        "requestNumber": 0,
+        "uri": "http://example.com/test/resources/vast/wrappers/vast_wrapper_no-ads.xml",
+        "response": "test responseText",
+        "headers": "test headers"
+      }
+    ]
+  }
+}

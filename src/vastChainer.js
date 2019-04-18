@@ -79,136 +79,150 @@ export default function (
     vastResponse,
     vastConfig,
     sendCookies,
+    resolve,
+    reject,
     httpMethod = 'GET'
   ) {
     let url = appendParamsToUrl(vastConfig.url, vastConfig.extraParams)
 
-    return new PromiseModule(function (resolve, reject) {
-      let currentRequestNumber = vastRequestCounter
+    let settings = {
+      url: url,
+      headers: vastConfig.headers || {},
+      dataType: 'xml',
+      method: httpMethod
+    }
 
-      let settings = {
-        url: url,
-        headers: vastConfig.headers || {},
-        dataType: 'xml',
-        method: httpMethod
+    if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
+      settings.xhrFields = {
+        withCredentials: true
       }
+    }
 
-      if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
-        settings.xhrFields = {
-          withCredentials: true
-        }
-      }
+    if (httpMethod === 'POST') {
+      settings.data = vastConfig.data || ''
+      settings.contentType = vastConfig.contentType || 'application/xml'
+    }
 
-      if (httpMethod === 'POST') {
-        settings.data = vastConfig.data || ''
-        settings.contentType = vastConfig.contentType || 'application/xml'
-      }
+    settings.timeout = AJAX_TIMEOUT
 
-      settings.timeout = AJAX_TIMEOUT
+    settings.success = function (data, status, jqXHR) {
+      let requestEndEvent
 
-      settings.success = function (data, status, jqXHR) {
-        let requestEndEvent
+      requestEndEvent = $.Event('requestEnd', {
+        requestNumber: vastRequestCounter,
+        uri: url,
+        vastResponse: vastResponse
+      })
 
-        requestEndEvent = $.Event('requestEnd', {
-          requestNumber: currentRequestNumber,
-          uri: url,
-          vastResponse: vastResponse
-        })
+      vastResponse.addRawResponse({
+        requestNumber: vastRequestCounter,
+        uri: url,
+        response: jqXHR.responseText,
+        headers: jqXHR.getAllResponseHeaders().trim()
+      })
 
-        vastResponse.addRawResponse({
-          requestNumber: currentRequestNumber,
-          uri: url,
-          response: jqXHR.responseText,
-          headers: jqXHR.getAllResponseHeaders().trim()
-        })
-
-        if (!data) {
-          dispatcher.trigger(requestEndEvent)
-          reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse))
-          return
-        }
-
-        try {
-          let { inline, nextUrl } = evaluateVASTXMLDocument(data, vastResponse, dispatcher, requestEndEvent, parseVast)
-
-          if (inline) {
-            resolve(inline)
-          } else if (nextUrl) {
-            let nextRequestConfig = {
-              url: helpers.convertProtocol(nextUrl),
-              extraParams: vastConfig.extraParams,
-              corsCookieDomainBlacklist: vastConfig.corsCookieDomainBlacklist
-            }
-
-            vastRequestCounter++
-            makeVastRequest(vastResponse, nextRequestConfig, true)
-              .then(resolve)
-              .catch(reject)
-          } else {
-            throw new Error('OMG')
-          }
-        } catch (ex) {
-          reject(ex)
-        }
-      }
-
-      settings.error = function (jqXHR, textStatus, errorThrown) {
-        let code,
-          requestEndEvent,
-          statusText
-
-        if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
-          makeVastRequest(vastResponse, vastConfig, false)
-            .then(resolve)
-            .catch(reject)
-          return
-        }
-
-        if (jqXHR.status === 200 && !jqXHR.responseXML) {
-          code = vastErrorCodes.XML_PARSE_ERROR.code
-          statusText = vastErrorCodes.XML_PARSE_ERROR.message
-        } else {
-          code = vastErrorCodes.WRAPPER_URI_TIMEOUT.code
-          statusText = jqXHR.statusText
-        }
-
-        requestEndEvent = $.Event('requestEnd', {
-          requestNumber: currentRequestNumber,
-          uri: url,
-          vastResponse: vastResponse,
-          error: {
-            status: jqXHR.status,
-            statusText: statusText
-          }
-        })
-
-        vastResponse.addRawResponse({
-          requestNumber: currentRequestNumber,
-          uri: url,
-          response: jqXHR.responseText,
-          headers: jqXHR.getAllResponseHeaders().trim()
-        })
-
+      if (!data) {
         dispatcher.trigger(requestEndEvent)
-        reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url))
+        reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse))
+        return
       }
 
-      dispatcher.trigger(
-        $.Event('requestStart', {
-          requestNumber: currentRequestNumber,
-          uri: url,
-          vastResponse: vastResponse
-        })
-      )
+      parseVastBody(data, vastResponse, vastConfig, requestEndEvent, resolve, reject)
+    }
 
-      makeJqueryAjaxRequest(settings, $)
-    })
+    settings.error = function (jqXHR, textStatus, errorThrown) {
+      let code,
+        requestEndEvent,
+        statusText
+
+      if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
+        makeVastRequest(vastResponse, vastConfig, false, resolve, reject)
+        return
+      }
+
+      if (jqXHR.status === 200 && !jqXHR.responseXML) {
+        code = vastErrorCodes.XML_PARSE_ERROR.code
+        statusText = vastErrorCodes.XML_PARSE_ERROR.message
+      } else {
+        code = vastErrorCodes.WRAPPER_URI_TIMEOUT.code
+        statusText = jqXHR.statusText
+      }
+
+      requestEndEvent = $.Event('requestEnd', {
+        requestNumber: vastRequestCounter,
+        uri: url,
+        vastResponse: vastResponse,
+        error: {
+          status: jqXHR.status,
+          statusText: statusText
+        }
+      })
+
+      vastResponse.addRawResponse({
+        requestNumber: vastRequestCounter,
+        uri: url,
+        response: jqXHR.responseText,
+        headers: jqXHR.getAllResponseHeaders().trim()
+      })
+
+      dispatcher.trigger(requestEndEvent)
+      reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url))
+    }
+
+    dispatcher.trigger(
+      $.Event('requestStart', {
+        requestNumber: vastRequestCounter,
+        uri: url,
+        vastResponse: vastResponse
+      })
+    )
+
+    makeJqueryAjaxRequest(settings, $)
+  }
+
+  function parseVastBody (vastBody, vastResponse, vastConfig, requestEndEvent, resolve, reject) {
+    try {
+      let { inline, nextUrl } = evaluateVASTXMLDocument(vastBody, vastResponse, dispatcher, requestEndEvent, parseVast)
+
+      if (inline) {
+        resolve(inline)
+      } else if (nextUrl) {
+        let nextRequestConfig = {
+          url: helpers.convertProtocol(nextUrl),
+          extraParams: vastConfig.extraParams,
+          corsCookieDomainBlacklist: vastConfig.corsCookieDomainBlacklist
+        }
+
+        vastRequestCounter++
+        makeVastRequest(vastResponse, nextRequestConfig, true, resolve, reject)
+      } else {
+        throw new Error('OMG')
+      }
+    } catch (ex) {
+      reject(ex)
+    }
   }
 
   function getVastChain (vastConfig) {
     let vastResponse = new Response()
     const httpMethod = vastConfig.httpMethod || 'GET'
-    return makeVastRequest(vastResponse, vastConfig, true, httpMethod)
+    return new PromiseModule(function (resolve, reject) {
+      if (vastConfig.url) {
+        makeVastRequest(vastResponse, vastConfig, true, resolve, reject, httpMethod)
+      } else if (vastConfig.vastBody && vastConfig.vastBodyUrl) {
+        const requestEndEvent = $.Event('requestEnd', {
+          requestNumber: vastRequestCounter,
+          vastResponse: vastResponse
+        })
+
+        vastResponse.addRawResponse({
+          requestNumber: vastRequestCounter,
+          uri: vastConfig.vastBodyUrl
+        })
+
+        parseVastBody(vastConfig.vastBody, vastResponse, vastConfig, requestEndEvent, resolve, reject)
+      }
+    })
   }
 
   return {

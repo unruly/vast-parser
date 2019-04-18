@@ -193,7 +193,7 @@ describe('VAST Chainer', function () {
     })
 
     it('rejects promise when VAST tag request times out in 10 seconds', function () {
-      vastChainer(mockDeps).getVastChain('http://non.existent.endpoint')
+      vastChainer(mockDeps).getVastChain({ url: 'http://non.existent.endpoint'})
 
       expect(
         jQuery.ajax
@@ -221,7 +221,7 @@ describe('VAST Chainer', function () {
     })
 
     it('rejects promise when VAST tag request fails', function () {
-      vastChainer(mockDeps).getVastChain('http://non.existent.endpoint')
+      vastChainer(mockDeps).getVastChain({ url: 'http://non.existent.endpoint'})
 
       expect(
         jQuery.ajax
@@ -291,16 +291,33 @@ describe('VAST Chainer', function () {
     })
 
     it('rejects promise when VAST response has Error tag and No Ad', function () {
+
+      let mockPromise = {}
+      mockPromise.then = sinon.stub().returns(mockPromise)
+      mockPromise.catch = sinon.stub().returns(mockPromise)
+
+      let mockDeferreds = []
+
+      let PromiseModule = function (callback) {
+        let mockDeferred = {
+          reject: sinon.stub(),
+          resolve: sinon.stub()
+        }
+        mockDeferreds.push(mockDeferred)
+        callback(mockDeferred.resolve, mockDeferred.reject)
+        return mockPromise
+      }
+
       mockNoAds.VAST.Error = true
       mockNoAds.VAST.Ad = false
 
-      vastChainer(mockDeps).getVastChain(wrapperConfig)
+      vastChainer(Object.assign({}, mockDeps, {PromiseModule})).getVastChain(wrapperConfig)
 
       const settings = jQuery.ajax.firstCall.args[0]
       settings.success(mockNoAdsString, undefined, { status: 200, getAllResponseHeaders () { return '' } })
 
-      expect(mockDeferred.reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.NO_ADS, 'VAST request returned no ads and contains error tag'))
-      expect(mockDeferred.reject).to.have.been.calledWithMatch(hasVastResponseProperty())
+      expect(mockDeferreds[0].reject).to.have.been.calledWithMatch(vastError(vastErrorCodes.NO_ADS, 'VAST request returned no ads and contains error tag'))
+      expect(mockDeferreds[0].reject).to.have.been.calledWithMatch(hasVastResponseProperty())
     })
 
     it('parses response when VAST response has Error tag and an Ad', function () {
@@ -466,16 +483,12 @@ describe('VAST Chainer', function () {
         }
       }
 
-      vastChainer(mockDeps).getVastChain(wrapperConfig)
+      vastChainer(mockDeps)
+        .getVastChain(wrapperConfig)
 
-      var inlineTags = mockDeferred.resolve.firstCall.args[0]
+      var finalTags = mockDeferred.resolve.firstCall.args[0]
 
-      var wrapperThen = mockPromise.then.firstCall.args[0]
-      wrapperThen(inlineTags)
-
-      var finalTags = mockDeferred.resolve.secondCall.args[0]
-
-      expect(mockDeferred.resolve).to.have.been.calledTwice
+      expect(mockDeferred.resolve).to.have.been.calledOnce
       expect(finalTags).to.be.an.instanceof(VastResponse)
       expect(finalTags.inline).to.equal(mockInline)
       expect(finalTags.wrappers[0]).to.equal(mockWrapper)
@@ -504,18 +517,8 @@ describe('VAST Chainer', function () {
 
       vastChainer(mockDeps).getVastChain(wrapperConfig)
 
-      var inlineTags = mockDeferred.resolve.firstCall.args[0]
+      var finalTags = mockDeferred.resolve.firstCall.args[0]
 
-      var wrapperThen = mockPromise.then.firstCall.args[0]
-      wrapperThen(inlineTags)
-
-      var secondWrapperTags = mockDeferred.resolve.secondCall.args[0]
-      var twoWrapperThen = mockPromise.then.secondCall.args[0]
-      twoWrapperThen(secondWrapperTags)
-
-      var finalTags = mockDeferred.resolve.thirdCall.args[0]
-
-      expect(mockDeferred.resolve).to.have.been.calledThrice
       expect(finalTags).to.be.an.instanceof(VastResponse)
       expect(finalTags.inline).to.equal(mockInline)
       expect(finalTags.wrappers[0]).to.equal(mockTwoWrapperWrapper)
@@ -608,7 +611,7 @@ describe('VAST Chainer', function () {
       })
 
       it('passes through application/xml to be included in POST request, if no contentType specified', () => {
-        wrapperConfig = { httpMethod: 'POST' }
+        wrapperConfig = { httpMethod: 'POST', url: 'http://inlineVASTUrlDomain.com/' }
         vastChainer(mockDeps).getVastChain(wrapperConfig)
 
         const settings = jQuery.ajax.firstCall.args[0]
@@ -616,7 +619,7 @@ describe('VAST Chainer', function () {
       })
 
       it('passes an empty string to be included in POST request, if no data specified', () => {
-        wrapperConfig = { httpMethod: 'POST' }
+        wrapperConfig = { httpMethod: 'POST', url: 'http://inlineVASTUrlDomain.com/' }
         vastChainer(mockDeps).getVastChain(wrapperConfig)
 
         const settings = jQuery.ajax.firstCall.args[0]

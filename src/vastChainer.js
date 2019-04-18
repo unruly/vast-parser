@@ -19,6 +19,46 @@ function domainAllowsCorsCookies (vastConfig, url) {
   return vastConfig.corsCookieDomainBlacklist.indexOf(getDomainFromURL(url)) === -1
 }
 
+function appendParamsToUrl (url, params) {
+  if (params && params.length > 0) {
+    if (url.indexOf('?') !== -1) {
+      url += '&' + params
+    } else {
+      url += '?' + params
+    }
+  }
+  return url
+}
+
+function evaluateVASTXMLDocument (vastBody, vastResponse, dispatcher, requestEndEvent, parseVast) {
+  let vastTag = parseVast(vastBody)
+
+  if (vastTag.VAST.Error && !vastTag.VAST.Ad) {
+    dispatcher.trigger(requestEndEvent)
+    throw new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag')
+  }
+
+  if (!vastTag.VAST.Ad) {
+    dispatcher.trigger(requestEndEvent)
+    throw new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads')
+  }
+
+  if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
+    vastResponse.inline = vastTag
+    dispatcher.trigger(requestEndEvent)
+    return {
+      inline: vastResponse
+    }
+  } else {
+    vastResponse.wrappers.push(vastTag)
+    dispatcher.trigger(requestEndEvent)
+
+    return {
+      nextUrl: vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue
+    }
+  }
+}
+
 export default function (
   {
     PromiseModule = Promise,
@@ -41,163 +81,128 @@ export default function (
     sendCookies,
     httpMethod = 'GET'
   ) {
-    let url = vastConfig.url
+    let url = appendParamsToUrl(vastConfig.url, vastConfig.extraParams)
 
-    let resolve
+    return new PromiseModule(function (resolve, reject) {
+      let currentRequestNumber = vastRequestCounter
 
-    let reject
-
-    let promise = new PromiseModule(function (_resolve, _reject) {
-      resolve = _resolve
-      reject = _reject
-    })
-
-    let currentRequestNumber = vastRequestCounter
-
-    let requestStartEvent
-
-    let settings
-
-    if (vastConfig.extraParams && vastConfig.extraParams.length > 0) {
-      if (vastConfig.url.indexOf('?') !== -1) {
-        url += '&' + vastConfig.extraParams
-      } else {
-        url += '?' + vastConfig.extraParams
-      }
-    }
-
-    settings = {
-      url: url,
-      headers: vastConfig.headers || {},
-      dataType: 'xml',
-      method: httpMethod
-    }
-
-    if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
-      settings.xhrFields = {
-        withCredentials: true
-      }
-    }
-
-    if (httpMethod === 'POST') {
-      settings.data = vastConfig.data || ''
-      settings.contentType = vastConfig.contentType || 'application/xml'
-    }
-
-    settings.timeout = AJAX_TIMEOUT
-
-    settings.success = function (data, status, jqXHR) {
-      let vastTag,
-        childTagUri,
-        nextRequestConfig,
-        requestEndEvent
-
-      requestEndEvent = $.Event('requestEnd', {
-        requestNumber: currentRequestNumber,
-        uri: url,
-        vastResponse: vastResponse
-      })
-
-      vastResponse.addRawResponse({
-        requestNumber: currentRequestNumber,
-        uri: url,
-        response: jqXHR.responseText,
-        headers: jqXHR.getAllResponseHeaders().trim()
-      })
-
-      if (!data) {
-        dispatcher.trigger(requestEndEvent)
-        reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse))
-        return
+      let settings = {
+        url: url,
+        headers: vastConfig.headers || {},
+        dataType: 'xml',
+        method: httpMethod
       }
 
-      vastTag = parseVast(data)
-
-      if (vastTag.VAST.Error && !vastTag.VAST.Ad) {
-        dispatcher.trigger(requestEndEvent)
-        reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads and contains error tag'))
-        return
+      if (sendCookies && domainAllowsCorsCookies(vastConfig, url)) {
+        settings.xhrFields = {
+          withCredentials: true
+        }
       }
 
-      if (!vastTag.VAST.Ad) {
-        dispatcher.trigger(requestEndEvent)
-        reject(new VastError(vastErrorCodes.NO_ADS.code, vastResponse, 'VAST request returned no ads'))
-        return
+      if (httpMethod === 'POST') {
+        settings.data = vastConfig.data || ''
+        settings.contentType = vastConfig.contentType || 'application/xml'
       }
 
-      if (vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.InLine) {
-        vastResponse.inline = vastTag
-        dispatcher.trigger(requestEndEvent)
-        resolve(vastResponse)
-      } else {
-        vastResponse.wrappers.push(vastTag)
-        dispatcher.trigger(requestEndEvent)
+      settings.timeout = AJAX_TIMEOUT
 
-        childTagUri = vastTag.VAST && vastTag.VAST.Ad && vastTag.VAST.Ad.Wrapper && vastTag.VAST.Ad.Wrapper.VASTAdTagURI.nodeValue
-        nextRequestConfig = {
-          url: helpers.convertProtocol(childTagUri),
-          extraParams: vastConfig.extraParams,
-          corsCookieDomainBlacklist: vastConfig.corsCookieDomainBlacklist
+      settings.success = function (data, status, jqXHR) {
+        let requestEndEvent
+
+        requestEndEvent = $.Event('requestEnd', {
+          requestNumber: currentRequestNumber,
+          uri: url,
+          vastResponse: vastResponse
+        })
+
+        vastResponse.addRawResponse({
+          requestNumber: currentRequestNumber,
+          uri: url,
+          response: jqXHR.responseText,
+          headers: jqXHR.getAllResponseHeaders().trim()
+        })
+
+        if (!data) {
+          dispatcher.trigger(requestEndEvent)
+          reject(new VastError(vastErrorCodes.XML_PARSE_ERROR.code, vastResponse))
+          return
         }
 
-        vastRequestCounter++
-        makeVastRequest(vastResponse, nextRequestConfig, true)
-          .then(resolve)
-          .catch(reject)
-      }
-    }
+        try {
+          let { inline, nextUrl } = evaluateVASTXMLDocument(data, vastResponse, dispatcher, requestEndEvent, parseVast)
 
-    settings.error = function (jqXHR, textStatus, errorThrown) {
-      let code,
-        requestEndEvent,
-        statusText
+          if (inline) {
+            resolve(inline)
+          } else if (nextUrl) {
+            let nextRequestConfig = {
+              url: helpers.convertProtocol(nextUrl),
+              extraParams: vastConfig.extraParams,
+              corsCookieDomainBlacklist: vastConfig.corsCookieDomainBlacklist
+            }
 
-      if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
-        makeVastRequest(vastResponse, vastConfig, false)
-          .then(resolve)
-          .catch(reject)
-        return
-      }
-
-      if (jqXHR.status === 200 && !jqXHR.responseXML) {
-        code = vastErrorCodes.XML_PARSE_ERROR.code
-        statusText = vastErrorCodes.XML_PARSE_ERROR.message
-      } else {
-        code = vastErrorCodes.WRAPPER_URI_TIMEOUT.code
-        statusText = jqXHR.statusText
-      }
-
-      requestEndEvent = $.Event('requestEnd', {
-        requestNumber: currentRequestNumber,
-        uri: url,
-        vastResponse: vastResponse,
-        error: {
-          status: jqXHR.status,
-          statusText: statusText
+            vastRequestCounter++
+            makeVastRequest(vastResponse, nextRequestConfig, true)
+              .then(resolve)
+              .catch(reject)
+          } else {
+            throw new Error('OMG')
+          }
+        } catch (ex) {
+          reject(ex)
         }
-      })
+      }
 
-      vastResponse.addRawResponse({
-        requestNumber: currentRequestNumber,
-        uri: url,
-        response: jqXHR.responseText,
-        headers: jqXHR.getAllResponseHeaders().trim()
-      })
+      settings.error = function (jqXHR, textStatus, errorThrown) {
+        let code,
+          requestEndEvent,
+          statusText
 
-      dispatcher.trigger(requestEndEvent)
-      reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url))
-    }
+        if (jqXHR.status === 0 && textStatus !== 'timeout' && sendCookies) {
+          makeVastRequest(vastResponse, vastConfig, false)
+            .then(resolve)
+            .catch(reject)
+          return
+        }
 
-    requestStartEvent = $.Event('requestStart', {
-      requestNumber: currentRequestNumber,
-      uri: url,
-      vastResponse: vastResponse
+        if (jqXHR.status === 200 && !jqXHR.responseXML) {
+          code = vastErrorCodes.XML_PARSE_ERROR.code
+          statusText = vastErrorCodes.XML_PARSE_ERROR.message
+        } else {
+          code = vastErrorCodes.WRAPPER_URI_TIMEOUT.code
+          statusText = jqXHR.statusText
+        }
+
+        requestEndEvent = $.Event('requestEnd', {
+          requestNumber: currentRequestNumber,
+          uri: url,
+          vastResponse: vastResponse,
+          error: {
+            status: jqXHR.status,
+            statusText: statusText
+          }
+        })
+
+        vastResponse.addRawResponse({
+          requestNumber: currentRequestNumber,
+          uri: url,
+          response: jqXHR.responseText,
+          headers: jqXHR.getAllResponseHeaders().trim()
+        })
+
+        dispatcher.trigger(requestEndEvent)
+        reject(new VastError(code, vastResponse, 'VAST Request Failed (' + textStatus + ' ' + jqXHR.status + ') with message [' + errorThrown + '] for ' + url))
+      }
+
+      dispatcher.trigger(
+        $.Event('requestStart', {
+          requestNumber: currentRequestNumber,
+          uri: url,
+          vastResponse: vastResponse
+        })
+      )
+
+      makeJqueryAjaxRequest(settings, $)
     })
-    dispatcher.trigger(requestStartEvent)
-
-    makeJqueryAjaxRequest(settings, $)
-
-    return promise
   }
 
   function getVastChain (vastConfig) {

@@ -196,7 +196,7 @@ export default function (
         vastRequestCounter++
         makeVastRequest(vastResponse, nextRequestConfig, true, resolve, reject)
       } else {
-        throw new Error('OMG')
+        throw new VastError(vastErrorCodes.WRAPPER_URI_TIMEOUT.code, vastResponse)
       }
     } catch (ex) {
       reject(ex)

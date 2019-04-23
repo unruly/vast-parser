@@ -347,5 +347,72 @@
         "uri": "//localhost/getVAST"
       }
     ]
+  },
+  "vast_wrapper_with-missing-vast-ad-tag-uri": {
+    "wrappers": [
+      {
+        "VAST": {
+          "Ad": {
+            "Wrapper": {
+              "AdSystem": {
+                "nodeValue": "Test Ad Server",
+                "@version": "1.0"
+              },
+              "VASTAdTagURI": {},
+              "Error": {
+                "nodeValue": "http://example.com/error/ERRORCODE"
+              },
+              "Impression": [
+                {
+                  "nodeValue": "http://example.com/imp"
+                },
+                {
+                  "nodeValue": "http://example.com/another-imp"
+                }
+              ],
+              "Creatives": {
+                "Creative": [
+                  {
+                    "Linear": {
+                      "TrackingEvents": {
+                        "Tracking": {
+                          "nodeValue": "http://example.com/start",
+                          "@event": "start"
+                        }
+                      },
+                      "VideoClicks": {
+                        "ClickTracking": [
+                          {
+                            "nodeValue": "http://example.com/linear-video-click",
+                            "@id": "video_click"
+                          },
+                          {
+                            "nodeValue": "http://example.com/linear-post-video-click",
+                            "@id": "post_video_click"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "@id": "1",
+            "@sequence": "1"
+          },
+          "@version": "3.0",
+          "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+          "@xsi:noNamespaceSchemaLocation": "../../vast/vast3_draft.xsd"
+        }
+      }
+    ],
+    "_raw": [
+      {
+        "requestNumber": 0,
+        "uri": "http://example.com/test/resources/vast/wrappers/vast_wrapper_with-missing-vast-ad-tag-uri.xml",
+        "response": "test responseText",
+        "headers": "test headers"
+      }
+    ]
   }
 }

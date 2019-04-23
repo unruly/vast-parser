@@ -44,6 +44,32 @@ describe('vastChainer Integration tests', () => {
           done()
         })
     })
+
+    it('should return a VastError when the next vastUrl inside a wrapper is missing', done => {
+      const firstVastUrl = 'http://example.com/test/resources/vast/wrappers/vast_wrapper_with-missing-vast-ad-tag-uri.xml'
+      const mockVastConfig = { url: firstVastUrl }
+      const expectedVastResponse = allExpectedVastResponses['vast_wrapper_with-missing-vast-ad-tag-uri']
+
+      vastChainer({ makeJqueryAjaxRequest: mockMakeJqueryAjaxRequest })
+        .getVastChain(mockVastConfig)
+        .catch(vastError => {
+          expect(vastError).to.be.an.instanceOf(VastError)
+          expect(vastError.code).to.equal(301)
+          expect(vastError.message).to.include(
+            'Timeout of VAST URI provided in Wrapper element,' +
+            ' or of VAST URI provided in a subsequent Wrapper element.' +
+            ' (URI was either unavailable or reached a timeout as defined by the video player.)'
+          )
+
+          const { vastResponse } = vastError
+          expect(vastResponse).to.be.an.instanceOf(VastResponse)
+          expect(vastResponse).to.have.property('wrappers').that.deep.equals(expectedVastResponse.wrappers)
+          expect(vastResponse).to.have.property('inline').that.deep.equals(expectedVastResponse.inline)
+          expect(vastResponse).to.have.property('_raw').that.deep.equals(expectedVastResponse._raw)
+
+          done()
+        })
+    })
   })
 
   describe('vastConfig containing vastBody', () => {

@@ -193,7 +193,7 @@ describe('VAST Chainer', function () {
     })
 
     it('rejects promise when VAST tag request times out in 10 seconds', function () {
-      vastChainer(mockDeps).getVastChain({ url: 'http://non.existent.endpoint'})
+      vastChainer(mockDeps).getVastChain({ url: 'http://non.existent.endpoint' })
 
       expect(
         jQuery.ajax
@@ -221,7 +221,7 @@ describe('VAST Chainer', function () {
     })
 
     it('rejects promise when VAST tag request fails', function () {
-      vastChainer(mockDeps).getVastChain({ url: 'http://non.existent.endpoint'})
+      vastChainer(mockDeps).getVastChain({ url: 'http://non.existent.endpoint' })
 
       expect(
         jQuery.ajax
@@ -291,7 +291,6 @@ describe('VAST Chainer', function () {
     })
 
     it('rejects promise when VAST response has Error tag and No Ad', function () {
-
       let mockPromise = {}
       mockPromise.then = sinon.stub().returns(mockPromise)
       mockPromise.catch = sinon.stub().returns(mockPromise)
@@ -1132,6 +1131,20 @@ describe('VAST Chainer', function () {
       })
 
       expect(mockResponse.addRawResponse).to.have.been.calledTwice
+    })
+
+    it('rejects promise when neither a url nor vastBody/Url are provided', function () {
+      vastChainer(mockDeps).getVastChain({})
+
+      expect(
+        jQuery.ajax
+      ).not.to.have.been.called
+
+      expect(
+        mockDeferred.reject
+      ).to.have.been.calledWithMatch(
+        vastError(vastErrorCodes.UNDEFINED_ERROR, 'Vast-Parser configuration error, missing required attribute "url" or "vast (Both Body and BodyUrl)"')
+      )
     })
   })
 })

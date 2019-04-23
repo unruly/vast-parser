@@ -24,5 +24,9 @@ export default {
   NO_AD_AT_URI: {
     code: 401,
     message: 'File not found. Unable to find Linear/MediaFile from URI.'
+  },
+  UNDEFINED_ERROR: {
+    code: 900,
+    message: 'Undefined Error.'
   }
 }

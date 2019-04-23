@@ -221,6 +221,8 @@ export default function (
         })
 
         parseVastBody(vastConfig.vastBody, vastResponse, vastConfig, requestEndEvent, resolve, reject)
+      } else {
+        reject(new VastError(vastErrorCodes.UNDEFINED_ERROR.code, vastResponse, 'Vast-Parser configuration error, missing required attribute "url" or "vast (Both Body and BodyUrl)"'))
       }
     })
   }

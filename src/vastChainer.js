@@ -212,7 +212,8 @@ export default function (
       } else if (vastConfig.vastBody && vastConfig.vastBodyUrl) {
         const requestEndEvent = $.Event('requestEnd', {
           requestNumber: vastRequestCounter,
-          vastResponse: vastResponse
+          vastResponse: vastResponse,
+          uri: vastConfig.vastBodyUrl
         })
 
         vastResponse.addRawResponse({

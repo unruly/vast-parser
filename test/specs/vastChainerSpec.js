@@ -723,6 +723,33 @@ describe('VAST Chainer', function () {
       )
     })
 
+    it('should fire requestEnd with vastBodyUrl for vast body requests', function () {
+      const vastChainerInstance = vastChainer(mockDeps)
+
+      const vastConfig = {
+        vastBody: '<vast />',
+        vastBodyUrl: 'https://example.com/openrtb'
+      }
+
+      const jQueryEvents = {
+        End: {}
+      }
+      jQuery.Event = sinon.stub()
+      jQuery.Event.withArgs(
+        'requestEnd'
+      ).returns(jQueryEvents.End)
+
+      vastChainerInstance.getVastChain(vastConfig)
+
+      expect(jQuery.Event).to.have.been.calledWithMatch(
+        'requestEnd',
+        {
+          requestNumber: 0,
+          uri: 'https://example.com/openrtb'
+        }
+      )
+    })
+
     it('should only fire request start stop once when retrying without cookies', function () {
       const vastChainerInstance = vastChainer(mockDeps)
 

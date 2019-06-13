@@ -16,7 +16,7 @@
     "test": "yarn test:unit && yarn test:integration",
     "bump": "yarn version --patch",
     "publish:npm": "npm publish --userconfig ~/.npmrc-publish",
-    "prepublish": "yarn lint && yarn test && yarn build && yarn bump",
+    "prepublishOnly": "yarn lint && yarn test && yarn build && yarn bump",
     "postpublish": "git push && git push --tags"
   },
   "repository": {

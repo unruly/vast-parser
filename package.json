@@ -49,7 +49,7 @@
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0",
     "url": "^0.11.0",
-    "xmldom": "^0.1.27"
+    "xmldom": "^0.6.0"
   },
   "dependencies": {
     "jquery": "3.1.1"
